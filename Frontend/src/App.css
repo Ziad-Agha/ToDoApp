@@ -1,6 +1,7 @@
 /* -------------------------------- */
 /*            NAVBAR                */
 /* -------------------------------- */
+
 nav {
   background-color: #191f2f;
 }
@@ -25,7 +26,7 @@ nav a {
   text-decoration: none;
 }
 
-.navend {
+.nav-end {
   display: flex;
   margin-left: auto;
 }
@@ -34,15 +35,60 @@ nav a {
 /* -------------------------------- */
 /*           SUBNAVBAR              */
 /* -------------------------------- */
-.subnavbar {
+
+.sub-nav {
   height: 6rem;
   display: flex;
   align-items: center;
   background-color: #303747;
 }
 
-.subnavbar h1 {
+.sub-nav h1 {
   font-size: 2rem;
   margin: 0;
   padding: 1.5rem;
 }
+
+
+/* -------------------------------- */
+/*            TASKVIEW              */
+/* -------------------------------- */
+
+.tasks-view {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #e9dddb;
+  
+  width: 100%;
+  height: 70vh;
+}
+
+.tasks-section {
+  display: flex;
+  align-items: center;
+  background-color: #e2c7c0;
+
+  width: 24%;
+  height: 50vh;
+  padding: 1rem;
+  margin: 0.5rem;
+  border-radius: 15px;
+}
+
+
+
+
+
+
+/* .repeating-tasks-section {
+  
+}
+
+.normal-tasks-section {
+
+}
+
+.pending-tasks-section {
+
+} */
