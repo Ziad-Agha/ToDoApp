@@ -37,16 +37,102 @@ function SubNav() {
 }
 
 function TaskSection({ header, type }) {
-    return <section className={`tasks-section ${type}`}>
+    const dummyTasks: Task[] = [
+        {
+            user_id: "u_001",
+            task_id: "t_001",
+            title: "Design quest layout",
+            description: "Create wireframes for the main task board page",
+            difficulty: "medium",
+            type: "design",
+            status: "incomplete",
+            value: 50,
+            created_on: new Date("2026-06-20"),
+            deadline: new Date("2026-06-30"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_002",
+            title: "Set up PostgreSQL",
+            difficulty: "hard",
+            type: "backend",
+            status: "complete",
+            value: 75,
+            created_on: new Date("2026-06-18"),
+            deadline: new Date("2026-06-25"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_003",
+            title: "Write unit tests for auth module",
+            description: "Cover login, registration and token refresh endpoints",
+            difficulty: "medium",
+            type: "backend",
+            status: "incomplete",
+            value: 40,
+            created_on: new Date("2026-06-21"),
+            deadline: new Date("2026-07-05"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_004",
+            title: "Fix navbar alignment on mobile",
+            difficulty: "easy",
+            type: "frontend",
+            status: "incomplete",
+            value: 20,
+            created_on: new Date("2026-06-24"),
+            deadline: new Date("2026-06-27"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_005",
+            title: "Research XP progression systems",
+            description: "Look into how Habitica and Duolingo handle levelling curves",
+            difficulty: "easy",
+            type: "research",
+            status: "complete",
+            value: 15,
+            created_on: new Date("2026-06-15"),
+            deadline: new Date("2026-06-22"),
+        },
+    ];
+
+    return <section className='tasks-section'>
         <h3>{header}</h3>
         <div className="tasks-list">
-            <Task />
+            <TaskBox task={dummyTasks[0]} />
+            <TaskBox task={dummyTasks[1]} />
+            <TaskBox task={dummyTasks[2]} />
         </div>
     </section>
 }
 
-function Task(){
-    return <div className="task">
-        
-    </div>
+interface Task {
+    user_id: string;
+    task_id: string;
+    title: string;
+    description?: string; // or details or note
+    difficulty: string;
+    type: string;
+    status: string;
+    value: number;
+    created_on: Date;
+    deadline: Date;
 }
+
+function TaskBox({ task }) {
+    return (
+        <article className="flex task-box">
+            <div className="task-left">
+                <button className="checkmark" />
+            </div>
+            <div className="task-center">
+                <span className="task-name">{task.title}</span>
+            </div>
+            <div className="task-right">
+                <span className="task-value">{task.value}</span>
+            </div>
+        </article>
+    );
+};

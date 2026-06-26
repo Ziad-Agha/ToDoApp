@@ -1,3 +1,7 @@
+.flex {
+  display: flex;
+}
+
 /* -------------------------------- */
 /*            NAVBAR                */
 /* -------------------------------- */
@@ -66,9 +70,11 @@ nav a {
 
 .tasks-section {
   display: flex;
+  flex-direction: column;
   align-items: center;
   background-color: #e2c7c0;
 
+  min-width: 300px;
   width: 24%;
   height: 50vh;
   padding: 1rem;
@@ -76,8 +82,42 @@ nav a {
   border-radius: 15px;
 }
 
+.task-box {
+  min-width: 300px;
+  min-height: 70px;
+  border-radius: 5px;
+  margin: 5px 0;
+  /* padding: 5px; */
 
+  align-items: center;
+  background-color: #fff4f3;
+}
 
+.tasks-view h3,
+.tasks-view span {
+  color: #191f2f;
+}
+
+.task-left,
+.task-right {
+  flex: 0.2;
+  display: flex;
+  justify-content: center;
+}
+
+.task-center {
+  flex: 0.6;
+  display: flex;
+  justify-content: center;
+}
+
+.checkmark {
+  width: 40px;
+  height: 40px;
+  border-radius: 5px;
+  border-color: #d5aea4;
+  background-color: #d5aea4;
+}
 
 
 
