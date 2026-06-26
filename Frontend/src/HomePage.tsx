@@ -47,6 +47,8 @@ function TaskSection({ header, type }) {
 
 function Task(){
     return <div className="task">
-        
+
     </div>
 }
+
+export {Nav,SubNav}
