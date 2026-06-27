@@ -3,14 +3,20 @@
 /* -------------------------------- */
 
 nav a {
-  display: block;
-  color: white;
-  padding: 0.7rem 1.2rem;
+    display: block;
+    color: white;
+    padding: 0.7rem 1.2rem;
 
     &:hover {
         background-color: var(--color-nav-hover);
     }
+
     &.active {
         background-color: var(--color-nav-active);
     }
 }
+
+
+/* -------------------------------- */
+/*            NAVBAR                */
+/* -------------------------------- */

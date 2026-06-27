@@ -1,11 +1,112 @@
 export default function HomePage() {
+
+     const dummyTasks: Task[] = [
+        {
+            user_id: "u_001",
+            task_id: "t_001",
+            title: "Feed cats",
+            description: "Create wireframes for the main task board page",
+            difficulty: "medium",
+            type: "design",
+            recurrence: "Everyday",
+            timeleft: "8h left",
+            status: "incomplete",
+            value: 50,
+            created_on: new Date("2026-06-20"),
+            deadline: new Date("2026-06-30"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_002",
+            title: "Workout",
+            difficulty: "hard",
+            type: "backend",
+            recurrence: "Every 2 days",
+            timeleft: "8h left",
+            status: "complete",
+            value: 75,
+            created_on: new Date("2026-06-18"),
+            deadline: new Date("2026-06-25"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_003",
+            title: "Jumu'a",
+            description: "Cover login, registration and token refresh endpoints",
+            difficulty: "medium",
+            type: "backend",
+            recurrence: "Every Friday",
+            timeleft: "2h left",
+            status: "incomplete",
+            value: 40,
+            created_on: new Date("2026-06-21"),
+            deadline: new Date("2026-07-05"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_004",
+            title: "Quick shopping from Maxi",
+            difficulty: "easy",
+            type: "frontend",
+            recurrence: "Every 2 days",
+            timeleft:'9h left',
+            status: "incomplete",
+            value: 20,
+            created_on: new Date("2026-06-24"),
+            deadline: new Date("2026-06-27"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_005",
+            title: "Apply to Service Info Montreal",
+            description: "Look into how Habitica and Duolingo handle levelling curves",
+            difficulty: "easy",
+            type: "research",
+            recurrence: "Every Friday",
+            timeleft: '12h left',
+            status: "complete",
+            value: 15,
+            created_on: new Date("2026-06-15"),
+            deadline: new Date("2026-06-22"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_006",
+            title: "Recharge Opus",
+            description: "Look into how Habitica and Duolingo handle levelling curves",
+            difficulty: "easy",
+            type: "research",
+            recurrence: "Every Month",
+            // timeleft: '12h left',
+            status: "complete",
+            value: 15,
+            created_on: new Date("2026-06-15"),
+            deadline: new Date("2026-06-22"),
+        },
+        {
+            user_id: "u_001",
+            task_id: "t_007",
+            title: "Buy cat litter",
+            description: "Look into how Habitica and Duolingo handle levelling curves",
+            difficulty: "easy",
+            type: "research",
+            recurrence: "Every Saturday",
+            // timeleft: '12h left',
+            status: "complete",
+            value: 15,
+            created_on: new Date("2026-06-15"),
+            deadline: new Date("2026-06-22"),
+        },
+    ];
+
+
     return <>
         <Nav />
         <SubNav />
-        <main className="grid grid-cols-3 gap-6 p-10 bg-tasks-view w-full h-[70vh]">
-            <TaskSection header="Dailies" />
-            <TaskSection header="To Dos"  />
-            <TaskSection header="Pending" />
+        <main className="grid grid-cols-3 gap-3 p-8 pr-75 bg-tasks-view w-full h-[80vh]">
+            <TaskSection header="Dailies" tasks={[dummyTasks[0], dummyTasks[1], dummyTasks[2]]} />
+            <TaskSection header="To Dos" tasks={[dummyTasks[3], dummyTasks[4]]}/>
+            <TaskSection header="Pending" tasks={[dummyTasks[5], dummyTasks[6]]}/>
         </main>
     </>
 }
@@ -36,76 +137,18 @@ function SubNav() {
     </div>
 }
 
-function TaskSection({ header }) {
-    const dummyTasks: Task[] = [
-        {
-            user_id: "u_001",
-            task_id: "t_001",
-            title: "Design quest layout",
-            description: "Create wireframes for the main task board page",
-            difficulty: "medium",
-            type: "design",
-            status: "incomplete",
-            value: 50,
-            created_on: new Date("2026-06-20"),
-            deadline: new Date("2026-06-30"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_002",
-            title: "Set up PostgreSQL",
-            difficulty: "hard",
-            type: "backend",
-            status: "complete",
-            value: 75,
-            created_on: new Date("2026-06-18"),
-            deadline: new Date("2026-06-25"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_003",
-            title: "Write unit tests for auth module",
-            description: "Cover login, registration and token refresh endpoints",
-            difficulty: "medium",
-            type: "backend",
-            status: "incomplete",
-            value: 40,
-            created_on: new Date("2026-06-21"),
-            deadline: new Date("2026-07-05"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_004",
-            title: "Fix navbar alignment on mobile",
-            difficulty: "easy",
-            type: "frontend",
-            status: "incomplete",
-            value: 20,
-            created_on: new Date("2026-06-24"),
-            deadline: new Date("2026-06-27"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_005",
-            title: "Research XP progression systems",
-            description: "Look into how Habitica and Duolingo handle levelling curves",
-            difficulty: "easy",
-            type: "research",
-            status: "complete",
-            value: 15,
-            created_on: new Date("2026-06-15"),
-            deadline: new Date("2026-06-22"),
-        },
-    ];
+function TaskSection({ header, tasks }) {
+   
+    return <section>
+        <h2 className="text-left text-text-dark">{header}</h2>
+        <div className="flex flex-col bg-tasks-section h-[60vh] p-4 rounded-[15px]">
 
-    return <section className="flex flex-col items-center bg-tasks-section h-[50vh] p-4 rounded-[15px]">
-        <h3 className="text-text-dark">{header}</h3>
-        <div className="flex flex-col w-full">
-            <TaskBox task={dummyTasks[0]} />
-            <TaskBox task={dummyTasks[1]} />
-            <TaskBox task={dummyTasks[2]} />
+            <div className="flex flex-col w-full">
+                {tasks.map(task => <TaskBox key={task.task_id} task={task} />)}
+            </div>
         </div>
     </section>
+
 }
 
 interface Task {
@@ -115,6 +158,8 @@ interface Task {
     description?: string; // or details or note
     difficulty: string;
     type: string;
+    recurrence?: string;
+    timeleft?: string;
     status: string;
     value: number;
     created_on: Date;
@@ -123,16 +168,24 @@ interface Task {
 
 function TaskBox({ task }) {
     return (
-        <article className="flex items-center min-w-[300px] min-h-[70px] rounded bg-task-box my-[5px]">
-            <div className="flex-[0.2] flex justify-center">
-                <button className="w-10 h-10 rounded bg-checkmark border border-checkmark" />
+        <article className="grid grid-cols-[65px_1fr_65px] bg-task-box mb-[5px] rounded overflow-hidden">
+
+            <div className="flex justify-center pt-3 pb-3">
+                <button className="w-9 h-9 rounded bg-checkmark border border-checkmark" />
             </div>
-            <div className="flex-[0.6] flex justify-center">
-                <span className="text-text-dark">{task.title}</span>
+
+            <div className="flex flex-col text-text-dark text-left  pt-3 pb-3 h-[100%] relative">
+
+                <span className="leading-4">{task.title}</span>
+                <span className="text-xs opacity-50">{task.recurrence}</span>
+                { task.timeleft && <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">{task.timeleft}</span> }
+
             </div>
-            <div className="flex-[0.2] flex justify-center">
-                <span className="text-text-dark">{task.value}</span>
+
+            <div className="flex justify-center items-center h-full bg-coin-area">
+                <span className="text-coin-value">{task.value}</span>
             </div>
+
         </article>
     );
-};
+}
