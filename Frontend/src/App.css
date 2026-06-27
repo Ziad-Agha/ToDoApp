@@ -1,134 +1,16 @@
-.flex {
-  display: flex;
-}
-
 /* -------------------------------- */
 /*            NAVBAR                */
 /* -------------------------------- */
 
-nav {
-  background-color: #191f2f;
-}
-nav a:hover {
-  background-color: #222a40;
-}
-nav a.active {
-  background-color: #2b3550;
-}
-
-nav ul {
-  list-style-type: none;
-  display: flex;
-  margin: 0;
-  padding: 0;
-}
-
 nav a {
   display: block;
   color: white;
-  padding: 1rem 1.5rem;
-  text-decoration: none;
+  padding: 0.7rem 1.2rem;
+
+    &:hover {
+        background-color: var(--color-nav-hover);
+    }
+    &.active {
+        background-color: var(--color-nav-active);
+    }
 }
-
-.nav-end {
-  display: flex;
-  margin-left: auto;
-}
-
-
-/* -------------------------------- */
-/*           SUBNAVBAR              */
-/* -------------------------------- */
-
-.sub-nav {
-  height: 6rem;
-  display: flex;
-  align-items: center;
-  background-color: #303747;
-}
-
-.sub-nav h1 {
-  font-size: 2rem;
-  margin: 0;
-  padding: 1.5rem;
-}
-
-
-/* -------------------------------- */
-/*            TASKVIEW              */
-/* -------------------------------- */
-
-.tasks-view {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #e9dddb;
-  
-  width: 100%;
-  height: 70vh;
-}
-
-.tasks-section {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: #e2c7c0;
-
-  min-width: 300px;
-  width: 24%;
-  height: 50vh;
-  padding: 1rem;
-  margin: 0.5rem;
-  border-radius: 15px;
-}
-
-.task-box {
-  min-width: 300px;
-  min-height: 70px;
-  border-radius: 5px;
-  margin: 5px 0;
-  /* padding: 5px; */
-
-  align-items: center;
-  background-color: #fff4f3;
-}
-
-.tasks-view h3,
-.tasks-view span {
-  color: #191f2f;
-}
-
-.task-left,
-.task-right {
-  flex: 0.2;
-  display: flex;
-  justify-content: center;
-}
-
-.task-center {
-  flex: 0.6;
-  display: flex;
-  justify-content: center;
-}
-
-.checkmark {
-  width: 40px;
-  height: 40px;
-  border-radius: 5px;
-  border-color: #d5aea4;
-  background-color: #d5aea4;
-}
-
-
-
-/* .repeating-tasks-section {
-  
-}
-
-.normal-tasks-section {
-
-}
-
-.pending-tasks-section {
-
-} */

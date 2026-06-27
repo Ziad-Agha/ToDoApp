@@ -2,25 +2,25 @@ export default function HomePage() {
     return <>
         <Nav />
         <SubNav />
-        <main className="tasks-view">
-            <TaskSection header="Dailies" type="repeating-tasks-section" />
-            <TaskSection header="To Dos" type="normal-tasks-section" />
-            <TaskSection header="Pending" type="pending-tasks-section" />
+        <main className="grid grid-cols-3 gap-6 p-10 bg-tasks-view w-full h-[70vh]">
+            <TaskSection header="Dailies" />
+            <TaskSection header="To Dos"  />
+            <TaskSection header="Pending" />
         </main>
     </>
 }
 
 function Nav() {
     return <header>
-        <nav>
-            <ul>
+        <nav className="bg-nav">
+            <ul className="flex m-0 p-0">
                 <li><a href="#" title="Logo">Logo</a></li>
                 <li><a href="#" title="Tasks">Tasks</a></li>
                 <li><a href="#" title="Party">Party</a></li>
                 <li><a href="#" title="Stats">Stats</a></li>
                 <li><a href="#" title="Shop">Shop</a></li>
                 <li><a href="#" title="About">About</a></li>
-                <div className='nav-end'>
+                <div className="flex ml-auto">
                     <li><a href="#" title="Gems">G1</a></li>
                     <li><a href="#" title="Coins">C327</a></li>
                     <li><a href="#" title="Profile">Logo</a></li>
@@ -31,12 +31,12 @@ function Nav() {
 }
 
 function SubNav() {
-    return <div className="sub-nav">
-        <h1>LV 4</h1>
+    return <div className="h-24 flex items-center bg-sub-nav">
+        <h1 className="text-3xl m-0 px-6">LV 4</h1>
     </div>
 }
 
-function TaskSection({ header, type }) {
+function TaskSection({ header }) {
     const dummyTasks: Task[] = [
         {
             user_id: "u_001",
@@ -98,9 +98,9 @@ function TaskSection({ header, type }) {
         },
     ];
 
-    return <section className='tasks-section'>
-        <h3>{header}</h3>
-        <div className="tasks-list">
+    return <section className="flex flex-col items-center bg-tasks-section h-[50vh] p-4 rounded-[15px]">
+        <h3 className="text-text-dark">{header}</h3>
+        <div className="flex flex-col w-full">
             <TaskBox task={dummyTasks[0]} />
             <TaskBox task={dummyTasks[1]} />
             <TaskBox task={dummyTasks[2]} />
@@ -123,15 +123,15 @@ interface Task {
 
 function TaskBox({ task }) {
     return (
-        <article className="flex task-box">
-            <div className="task-left">
-                <button className="checkmark" />
+        <article className="flex items-center min-w-[300px] min-h-[70px] rounded bg-task-box my-[5px]">
+            <div className="flex-[0.2] flex justify-center">
+                <button className="w-10 h-10 rounded bg-checkmark border border-checkmark" />
             </div>
-            <div className="task-center">
-                <span className="task-name">{task.title}</span>
+            <div className="flex-[0.6] flex justify-center">
+                <span className="text-text-dark">{task.title}</span>
             </div>
-            <div className="task-right">
-                <span className="task-value">{task.value}</span>
+            <div className="flex-[0.2] flex justify-center">
+                <span className="text-text-dark">{task.value}</span>
             </div>
         </article>
     );
