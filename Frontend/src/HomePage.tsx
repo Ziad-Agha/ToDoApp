@@ -1,6 +1,6 @@
 export default function HomePage() {
 
-     const dummyTasks: Task[] = [
+    const dummyTasks: Task[] = [
         {
             user_id: "u_001",
             task_id: "t_001",
@@ -49,7 +49,7 @@ export default function HomePage() {
             difficulty: "easy",
             type: "frontend",
             recurrence: "Every 2 days",
-            timeleft:'9h left',
+            timeleft: '9h left',
             status: "incomplete",
             value: 20,
             created_on: new Date("2026-06-24"),
@@ -105,8 +105,8 @@ export default function HomePage() {
         <SubNav />
         <main className="grid grid-cols-3 gap-3 p-8 pr-75 bg-tasks-view w-full h-[80vh]">
             <TaskSection header="Dailies" tasks={[dummyTasks[0], dummyTasks[1], dummyTasks[2]]} />
-            <TaskSection header="To Dos" tasks={[dummyTasks[3], dummyTasks[4]]}/>
-            <TaskSection header="Pending" tasks={[dummyTasks[5], dummyTasks[6]]}/>
+            <TaskSection header="To Dos" tasks={[dummyTasks[3], dummyTasks[4]]} />
+            <TaskSection header="Pending" tasks={[dummyTasks[5], dummyTasks[6]]} />
         </main>
     </>
 }
@@ -138,7 +138,7 @@ function SubNav() {
 }
 
 function TaskSection({ header, tasks }) {
-   
+
     return <section>
         <h2 className="text-left text-text-dark">{header}</h2>
         <div className="flex flex-col bg-tasks-section h-[60vh] p-4 rounded-[15px]">
@@ -178,14 +178,28 @@ function TaskBox({ task }) {
 
                 <span className="leading-4">{task.title}</span>
                 <span className="text-xs opacity-50">{task.recurrence}</span>
-                { task.timeleft && <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">{task.timeleft}</span> }
+                {task.timeleft && <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">{task.timeleft}</span>}
 
             </div>
 
-            <div className="flex justify-center items-center h-full bg-coin-area">
-                <span className="text-coin-value">{task.value}</span>
+            <div className="flex flex-col justify-center items-center gap-1 h-full bg-coin-area">
+                <Coin />
+                <span className="text-coin-value font-semibold text-sm leading-2">{task.value}</span>
             </div>
 
         </article>
+    );
+}
+
+function Coin({ size = 26, outerColor = "#F5B731", innerColor = "#D4952A" }) {
+    const center = size / 2;
+    const outerRadius = size / 2;
+    const innerRadius = size * 0.35;
+
+    return (
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
+            <circle cx={center} cy={center} r={outerRadius} fill={outerColor} />
+            <circle cx={center} cy={center} r={innerRadius} fill={innerColor} />
+        </svg>
     );
 }
