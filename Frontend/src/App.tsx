@@ -12,10 +12,10 @@ function App() {
         path="/"
         element={<HomePage />}
       />
-        <Route
-            path="/weekly-view"
-            element={<WeeklyView />}
-        />
+      <Route
+          path="/weekly-view"
+          element={<WeeklyView />}
+      />
     </Routes>
   )
 }
