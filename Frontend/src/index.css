@@ -2,11 +2,14 @@
 @import "tailwindcss";
 
 @theme {
+  --color-nav1:#273338;
   --color-nav: #191f2f;
   --color-nav-hover: #222a40;
   --color-nav-active: #2b3550;
+  --color-sub-nav1: #2B5748;
   --color-sub-nav: #303747;
   --color-tasks-view: #fff4f3;
+  --color-tasks-section1: #9CB080;
   --color-tasks-section: #e2c7c0;
   --color-task-box: #fff4f3;
   --color-checkmark: #d5aea4;

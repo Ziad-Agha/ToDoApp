@@ -113,7 +113,7 @@ export default function HomePage() {
 
 function Nav() {
     return <header>
-        <nav className="bg-nav">
+        <nav className="bg-nav1">
             <ul className="flex m-0 p-0">
                 <li><a href="#" title="Logo">Logo</a></li>
                 <li><a href="#" title="Tasks">Tasks</a></li>
@@ -132,7 +132,7 @@ function Nav() {
 }
 
 function SubNav() {
-    return <div className="h-24 flex items-center bg-sub-nav">
+    return <div className="h-24 flex items-center bg-sub-nav1">
         <h1 className="text-3xl m-0 px-6">LV 4</h1>
     </div>
 }
@@ -141,7 +141,7 @@ function TaskSection({ header, tasks }) {
 
     return <section>
         <h2 className="text-left text-text-dark">{header}</h2>
-        <div className="flex flex-col bg-tasks-section h-[60vh] p-4 rounded-[15px]">
+        <div className="flex flex-col bg-tasks-section1 h-[60vh] p-4 rounded-[15px]">
 
             <div className="flex flex-col w-full">
                 {tasks.map(task => <TaskBox key={task.task_id} task={task} />)}
