@@ -228,6 +228,7 @@ function TaskMenu() {
       deadlineTime: deadlineTime,
       frequency: String(repeatInterval),
       weekday: weekly,
+      isPrivate: isPrivate,
     };
 
     try {

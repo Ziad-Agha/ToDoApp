@@ -12,6 +12,7 @@ interface task {
   graceperiod: string;
   frequency: string;
   weekday: string;
+  isPrivate: boolean;
   streak: string;
 }
 

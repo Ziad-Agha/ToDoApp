@@ -17,6 +17,7 @@ export function createTask(req: Request, res: Response) {
     deadlineTime,
     frequency,
     weekday,
+    isPrivate,
   } = req.body;
 
   const newTask: task = {
@@ -32,14 +33,15 @@ export function createTask(req: Request, res: Response) {
     deadlineTime,
     frequency,
     weekday,
+    isPrivate,
     graceperiod: "7",
-    streak: "7"
+    streak: "7",
   };
 
   tasks.push(newTask);
 
   res.status(201).json(newTask);
 }
-export function getAllTasks(req: Request, res: Response){
-    res.json(tasks);
+export function getAllTasks(req: Request, res: Response) {
+  res.json(tasks);
 }
