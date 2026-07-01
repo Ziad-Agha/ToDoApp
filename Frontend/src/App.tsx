@@ -3,8 +3,7 @@ import HomePage from './HomePage'
 
 import './App.css'
 
-function App() {
-
+function App(){
   return (
     <Routes>
       <Route
