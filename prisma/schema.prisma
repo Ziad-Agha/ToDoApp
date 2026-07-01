@@ -13,22 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> aa8c70c (#2 - Updated Task table, added User and Completion)
-model User {
-  user_id   String  @id @default(uuid())
-  username  String
-  email     String  @unique
-  password  String
-  level     Int     @default(0)
-  coins     Int     @default(0)
-  admin     Boolean @default(false)
-
-  tasks     Task[]
-}
-
 model Task {
   task_id       String    @id @default(uuid())
   user_id       String
