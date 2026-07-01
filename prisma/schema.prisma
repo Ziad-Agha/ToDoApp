@@ -15,36 +15,42 @@ datasource db {
 }
 
 model User {
-  user_id   String  @id @default(uuid())
-  username  String
-  email     String  @unique
-  password  String
-  level     Int     @default(0)
-  coins     Int     @default(0)
-  admin     Boolean @default(false)
-
-  tasks     Task[]
+  user_id                 String        @id @default(uuid())
+  username                String      
+  email                   String        @unique
+  password                String      
+  level                   Int           @default(0)
+  coins                   Int           @default(0)
+  admin                   Boolean       @default(false)
+  
+  tasks                   Task[]  
+  
+  friendship_initiated    Friendship[]  @relation("user1")
+  friendship_received     Friendship[]  @relation("user2")
+  party_membership        PartyMember[]
+  party_lead              Party[]
 }
 
 model Task {
-  task_id       String    @id @default(uuid())
-  user_id       String
-  title         String
-  note          String?
-  difficulty    String
-  created_on    DateTime  @default(now())
-  type          String
-  
-  status        String?
-  start_date    DateTime?
-  deadline      DateTime?
-  grace_period  Int?
+  task_id       String        @id @default(uuid())
+  user_id       String    
+  title         String    
+  note          String?   
+  difficulty    String    
+  created_on    DateTime      @default(now())
+  type          String    
+  private       Boolean       @default(false)
 
-  frequency     Int?
-  weekday       String?
-  streak        Int?
+  status        String?   
+  start_date    DateTime      @default(now())
+  deadline      DateTime?      
+  grace_period  Int?    
 
-  user          User @relation(fields: [user_id], references: [user_id])
+  frequency     Int?    
+  weekday       String?   
+  streak        Int?    
+
+  user          User          @relation(fields: [user_id], references: [user_id])
   completions   Completion[]
 }
 
@@ -54,5 +60,42 @@ model Completion {
   status          String
   completed_on    DateTime  @default(now())
 
-  task            Task @relation(fields: [task_id], references: [task_id])
+  task            Task      @relation(fields: [task_id], references: [task_id])
+}
+
+model Friendship {
+  user_id_1     String
+  user_id_2     String
+
+  status        String
+  since         DateTime  @default(now())
+  requested_by  String?
+
+  user1         User      @relation("user1", fields: [user_id_1], references: [user_id])
+  user2         User      @relation("user2", fields: [user_id_2], references: [user_id])
+
+
+  @@id([user_id_1, user_id_2])
+}
+
+model Party {
+  party_id    String        @id @default(uuid())
+  name        String
+  note        String?
+  leader_id   String
+  created_on  DateTime      @default(now())
+
+  members     PartyMember[]
+  leader      User          @relation(fields: [leader_id], references: [user_id])
+}
+
+model PartyMember {
+  party_id    String
+  user_id     String
+  role        String?
+
+  party       Party     @relation(fields: [party_id], references: [party_id])
+  user        User      @relation(fields: [user_id], references: [user_id])
+
+  @@id([party_id, user_id])
 }
