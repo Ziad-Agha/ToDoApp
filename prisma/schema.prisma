@@ -14,21 +14,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Task {
-  taskid      String @id @default(uuid)
-  
-  userid      String
-  title       String
-  note        String?
-  difficulty  String
-  createdon   DateTime @default(now())
-  type        String
-  
-  status      String?
-  deadline    DateTime?
-  graceperiod Int?
+model User {
+  user_id   String  @id @default(uuid())
+  username  String
+  email     String  @unique
+  password  String
+  level     Int     @default(0)
+  coins     Int     @default(0)
+  admin     Boolean @default(false)
 
-  frequency   Int?
-  weekday     String?
-  streak      Int?
+  tasks     Task[]
+}
+
+model Task {
+  task_id       String    @id @default(uuid())
+  user_id       String
+  title         String
+  note          String?
+  difficulty    String
+  created_on    DateTime  @default(now())
+  type          String
+  
+  status        String?
+  start_date    DateTime?
+  deadline      DateTime?
+  grace_period  Int?
+
+  frequency     Int?
+  weekday       String?
+  streak        Int?
+
+  user          User @relation(fields: [user_id], references: [user_id])
+  completions   Completion[]
+}
+
+model Completion {
+  completion_id   String    @id @default(uuid())
+  task_id         String
+  status          String
+  completed_on    DateTime  @default(now())
+
+  task            Task @relation(fields: [task_id], references: [task_id])
 }
