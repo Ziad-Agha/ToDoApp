@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -15,6 +14,9 @@ datasource db {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> aa8c70c (#2 - Updated Task table, added User and Completion)
 model User {
   user_id   String  @id @default(uuid())
   username  String
