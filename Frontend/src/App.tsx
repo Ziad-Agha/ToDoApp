@@ -1,9 +1,16 @@
-import TaskMenu from "./Components/TaskMenu"
+import { Routes, Route } from 'react-router-dom'
+import HomePage from './HomePage'
+
+import './App.css'
 
 function App(){
   return (
-  <TaskMenu/>
-    
+    <Routes>
+      <Route
+        path="/"
+        element={<HomePage />}
+      />
+    </Routes>
   )
 }
 
