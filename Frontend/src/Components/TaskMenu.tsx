@@ -5,20 +5,42 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
 function TaskMenu() {
-  const [title, setTitle] = useState<string>();
-  const [note, setNote] = useState<string>();
+  const [title, setTitle] = useState<string>("");
+  const [note, setNote] = useState<string>("");
   const [type, setType] = useState("day");
-  const [deadlineDate, setDeadlineDate] = useState(getDefaultDate());
+  const [deadlineDate, setDeadlineDate] = useState(getDefaultDate(new Date()));
   const [deadlineTime, setDeadlineTime] = useState("23:59");
   const [difficulty, setDifficulty] = useState("easy");
   const [repeatable, setRepeatable] = useState(false);
   const [weekly, setWeekly] = useState("Sunday");
-  const [repeatInterval, setRepeatInterval] = useState(2);
+  const [repeatInterval, setRepeatInterval] = useState(1);
   const [selectedWeek, setSelectedWeek] = useState<Date | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const weekRange = selectedWeek ? getWeekRange(selectedWeek) : null;
   const monthRange = selectedMonth ? getMonthRange(selectedMonth) : null;
+
+  function getDate(type: string) {
+    if (!repeatable) {
+      if (type === "day") {
+        return { start: deadlineDate, end: deadlineDate };
+      } else if (type === "week" && weekRange) {
+        return {
+          start: getDefaultDate(weekRange?.start),
+          end: getDefaultDate(weekRange.end),
+        };
+      } else if (type === "month" && monthRange) {
+        return {
+          start: getDefaultDate(monthRange?.start),
+          end: getDefaultDate(monthRange.end),
+        };
+      } else {
+        return null;
+      }
+    } else {
+      return null;
+    }
+  }
 
   type WeekRange = {
     start: Date; // Monday
@@ -117,7 +139,6 @@ function TaskMenu() {
             onPaste={(e) => e.preventDefault()}
           />
           <p>months</p>
-          <label>Date</label>
         </div>
       );
     }
@@ -135,7 +156,7 @@ function TaskMenu() {
     } else if (type === "week") {
       return (
         <DatePicker
-          selected={selectedWeek}
+          selected={weekRange?.end}
           onChange={(date: Date | null) => setSelectedWeek(date)}
           showWeekPicker
           calendarStartDay={1}
@@ -145,7 +166,7 @@ function TaskMenu() {
     } else if (type === "month") {
       return (
         <DatePicker
-          selected={selectedMonth}
+          selected={monthRange?.end}
           onChange={(date: Date | null) => setSelectedMonth(date)}
           showMonthYearPicker
           dateFormat="MMMM yyyy"
@@ -155,11 +176,10 @@ function TaskMenu() {
     }
   }
 
-  function getDefaultDate(): string {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, "0");
-    const day = String(now.getDate()).padStart(2, "0");
+  function getDefaultDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   }
 
@@ -195,6 +215,38 @@ function TaskMenu() {
     setIsPrivate(!isPrivate);
   }
 
+  async function handleSubmit() {
+    const newTask = {
+      name: title,
+      note: note,
+      difficulty: difficulty,
+      createdon: getDefaultDate(new Date()),
+      type: type,
+      startDate: getDate(type)?.start,
+      status: repeatable ? "" : "active",
+      deadline: getDate(type)?.end,
+      deadlineTime: deadlineTime,
+      frequency: String(repeatInterval),
+      weekday: weekly,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3001/api/tasks/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newTask),
+      });
+      if (!response.ok) {
+        throw new Error(`Server responded with status ${response.status}`);
+      }
+
+      const createdTask = await response.json();
+      console.log("Task created:", createdTask);
+    } catch (error) {
+      console.error("Failed to create task:", error);
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////
   return (
     <div className="task-menu-container">
       <div className="task-name-input">
@@ -256,7 +308,7 @@ function TaskMenu() {
         />
         <p>Private</p>
       </div>
-      <button type="submit">Create Task</button>
+      <button onClick={handleSubmit}>Create Task</button>
     </div>
   );
 }
