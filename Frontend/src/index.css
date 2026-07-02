@@ -17,7 +17,7 @@
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: var(--color-tasks-section);
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -46,7 +46,7 @@
   }
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --text: #9ca3af;
     --text-h: #f3f4f6;
@@ -64,7 +64,7 @@
   #social .button-icon {
     filter: invert(1) brightness(2);
   }
-}
+} */
 
 #root {
   /* width: 1126px; */
@@ -98,5 +98,6 @@ h2 {
   margin: 0 0 8px;
 }
 
-
-
+.task-element {
+    @apply bg-tasks-section rounded p-2;
+}
