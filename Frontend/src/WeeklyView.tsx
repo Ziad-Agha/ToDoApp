@@ -7,9 +7,9 @@ export default function WeeklyView() {
         <Nav/>
         <SubNav/>
         <main
-            className={"bg-main flex-1 w-full flex flex-col gap-4 "}>
+            className={"bg-main flex-1 w-full flex flex-col gap-4 px-2  min-h-0"}>
             <ButtonToggle />
-            <div className={"flex justify-around items-center flex-1"}>
+            <div className={"flex flex-1 min-h-0"}>
                 <TaskSection header="Sunday" tasks={[]} />
                 <TaskSection header="Monday" tasks={[]} />
                 <TaskSection header="Tuesday" tasks={[]} />
@@ -71,21 +71,21 @@ function GlowButton({label, isSelected, onClick}:
 
 function TaskSection({ header, tasks }: { header: string; tasks: string[] }) {
     return (
-        <section className="flex flex-col flex-1">
+        <section className="flex flex-col flex-1 ">
             <h2 className="text-center text-text-dark">{header}</h2>
-            <div className="flex flex-col bg-tasks-section1 flex-1 p-4 rounded-[15px] h-[60vh]">
+            <div className="flex flex-col bg-tasks-section1 flex-1 p-4 rounded-[15px]">
                 <div className="flex flex-col w-full">
 
                 </div>
-                {/*{tasks.map(task => <TaskBox key={task.task_id} task={task} />)}*/}
+                {tasks.map(task => <TaskBox key={task.task_id} task={task} />)}
             </div>
         </section>
     );
 }
 
-// function TaskBox() {
-//
-// }
+function TaskBox() {
+
+}
 
 
 
