@@ -2,7 +2,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-nav1:#273338;
+  --color-nav1: #273338;
   --color-nav: #191f2f;
   --color-nav-hover: #222a40;
   --color-nav-active: #2b3550;
@@ -16,6 +16,9 @@
   --color-text-dark: #191f2f;
   --color-coin-area: #fde7cd;
   --color-coin-value: #dd9d30;
+  /*weekly View*/
+  --color-main: #FFF5C6;
+
 }
 :root {
   --text: #6b6375;
