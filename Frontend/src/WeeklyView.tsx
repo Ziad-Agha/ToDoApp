@@ -2,14 +2,7 @@ import {useState} from "react";
 import {Nav, SubNav} from "./HomePage.tsx";
 
 export default function WeeklyView() {
-    /*const mainStyling = "flex-1\n" +
-        "  w-full\n" +
-        "  box-border\n" +
-        "  grid grid-cols-1\n" +
-        "  gap-4\n" +
-        "  p-4\n" +
-        "  md:grid-cols-2 md:p-8\n" +
-        "  lg:grid-cols-3 lg:px-12 lg:py-8";*/
+
     return <div className={"min-h-screen flex flex-col"}>
         <Nav/>
         <SubNav/>
@@ -54,7 +47,7 @@ function GlowButton({label, isSelected, onClick}:
                 h-[50px] w-[120px] m-[5px]
                 flex justify-center items-center
                 cursor-pointer
-                text-base rounded-[5px]
+                text-base rounded-[5px] font-mono
                 bg-[linear-gradient(145deg,#2e2d2d,#212121)]
                 transition-all duration-500
         ${isSelected
