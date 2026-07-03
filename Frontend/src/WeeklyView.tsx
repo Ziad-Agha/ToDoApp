@@ -73,7 +73,7 @@ function TaskSection({ header, tasks }: { header: string; tasks: string[] }) {
     return (
         <section className="flex flex-col flex-1 ">
             <h2 className="text-center text-text-dark">{header}</h2>
-            <div className="flex flex-col bg-tasks-section1 flex-1 p-4 rounded-[15px]">
+            <div className="flex flex-col bg-tasks-section1 flex-1 p-4 rounded-[15px] border-2 border-sub-nav1">
                 <div className="flex flex-col w-full">
 
                 </div>
