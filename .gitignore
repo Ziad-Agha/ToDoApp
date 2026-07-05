@@ -26,3 +26,5 @@ Thumbs.db
 
 # TypeScript build info
 *.tsbuildinfo
+
+/generated/prisma

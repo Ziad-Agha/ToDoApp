@@ -1,4 +1,4 @@
-import type React from "react";
+// import type React from "react";
 import { useState } from "react";
 import type { ChangeEvent } from "react";
 import DatePicker from "react-datepicker";
@@ -162,9 +162,21 @@ function TaskMenu() {
     if (type === "day") {
       return (
         <div className="task-deadline-input">
-          <label>Date</label>
-          <input type="date" value={deadlineDate} onChange={handleDateChange} />
-          <input type="time" value={deadlineTime} onChange={handleTimeChange} />
+          <div className="flex gap-2 items-center">
+            <label>Date:</label>
+            <input
+              type="date"
+              value={deadlineDate}
+              className="task-element"
+              onChange={handleDateChange}
+            />
+            <input
+              type="time"
+              value={deadlineTime}
+              className="task-element"
+              onChange={handleTimeChange}
+            />
+          </div>
         </div>
       );
     } else if (type === "week") {
@@ -293,78 +305,99 @@ function TaskMenu() {
       console.error("Failed to create task:", error);
     }
   }
-  //////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////
+
   return (
-    <div className="task-menu-container">
-      <div className="task-name-input">
+    <div className="task-menu-container bg-tasks-view self-center rounded-2xl w-[400px] p-10 m-8 text-left text-text-dark">
+      <div className="flex flex-col gap-3 self-center">
+        {/*    TITLE    */}
         <input
           type="text"
-          placeholder="Add Title"
           value={title}
+          placeholder="Add Title"
           onChange={handleTitleChange}
+          className="border-b w-[100%] text-2xl"
         />
-      </div>
-      <div className="task-note">
+
+        {/*    NOTE    */}
         <textarea
           name="note"
+          value={note}
+          rows={1}
           placeholder="Add Note"
           onChange={handleTextAreaChange}
-          value={note}
+          className="border-b w-[100%] text-lg"
         ></textarea>
-      </div>
 
-      <div className="task-repeatable-input">
-        <label>Type</label>
-        <select name="task-type" value={type} onChange={handleTypeChange}>
-          <option value="day">by day</option>
-          <option value="week">by week</option>
-          <option value="month">by month</option>
-        </select>
-        <div>
-          <p>Repeating</p>
+        {/*    TYPE    */}
+        <div className="task-type flex gap-2 items-center">
+          <label>Type:</label>
+          <select
+            name="task-type"
+            value={type}
+            onChange={handleTypeChange}
+            className="task-element"
+          >
+            <option value="day">daily</option>
+            <option value="week">weekly</option>
+            <option value="month">monthly</option>
+          </select>
+        </div>
+
+        {/*    RECURRENCE   */}
+        <div className="task-type flex gap-2 items-center">
           <input
             type="checkbox"
             name="repeating"
             checked={repeatable}
             onChange={handleRepeatableChange}
           />
+          <p>Repeating</p>
         </div>
+
+        {/*    DATE    */}
         <div className="repeat-options">
           {repeatable ? handleRepetition(type) : handleDeadline(type)}
         </div>
-      </div>
 
-      <div className="task-difficulty-input">
-        <p>Difficulty</p>
-        <select
-          name="difficulty"
-          value={difficulty}
-          onChange={handleDifficultyChange}
-        >
-          <option value="easy">easy</option>
-          <option value="medium">medium</option>
-          <option value="hard">hard</option>
-        </select>
-      </div>
-      <div className="is-private">
-        <input
-          type="checkbox"
-          name="private"
-          checked={isPrivate}
-          onChange={handlePrivacyChange}
-        />
-        <p>Private</p>
-      </div>
-      {errors.length > 0 && (
-        <div className="form-errors">
-          {errors.map((error, index) => (
-            <p key={index} style={{ color: "red" }}>
-              {error}
-            </p>
-          ))}
+        {/*    DIFFICULTY    */}
+        <div className="task-difficulty-input flex gap-2 items-center">
+          <p>Difficulty:</p>
+          <select
+            name="difficulty"
+            value={difficulty}
+            onChange={handleDifficultyChange}
+            className="task-element"
+          >
+            <option value="easy">easy</option>
+            <option value="medium">medium</option>
+            <option value="hard">hard</option>
+          </select>
         </div>
-      )}
-      <button onClick={handleSubmit}>Create Task</button>
+
+        {/*    PRIVATE    */}
+        <div className="is-private flex gap-2">
+          <input
+            type="checkbox"
+            name="private"
+            checked={isPrivate}
+            onChange={handlePrivacyChange}
+          />
+          <p>Private</p>
+        </div>
+        {errors.length > 0 && (
+          <div className="form-errors">
+            {errors.map((error, index) => (
+              <p key={index} style={{ color: "red" }}>
+                {error}
+              </p>
+            ))}
+          </div>
+        )}
+        <button className="bg-" onClick={handleSubmit}>
+          Create Task
+        </button>
+      </div>
     </div>
   );
 }
