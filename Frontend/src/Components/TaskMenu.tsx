@@ -17,6 +17,7 @@ function TaskMenu() {
   const [selectedWeek, setSelectedWeek] = useState<Date | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
+  const [errors, setErrors] = useState<string[]>([]);
   const weekRange = selectedWeek ? getWeekRange(selectedWeek) : null;
   const monthRange = selectedMonth ? getMonthRange(selectedMonth) : null;
 
@@ -52,33 +53,46 @@ function TaskMenu() {
     end: Date;
   };
 
-  function getMonthRange(date: Date): MonthRange {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const start = new Date(year, month, 1);
-    start.setHours(0, 0, 0, 0);
-
-    const end = new Date(year, month + 1, 0); // day 0 of next month = last day of this month
-    end.setHours(23, 59, 59, 999);
-
-    return { start, end };
-  }
-
   function getWeekRange(date: Date): WeekRange {
-    const day = date.getDay(); // 0 = Sunday, 1 = Monday, ...
+    const day = date.getDay();
     const diffToMonday = (day === 0 ? -6 : 1) - day;
 
     const start = new Date(date);
     start.setDate(date.getDate() + diffToMonday);
-    start.setHours(0, 0, 0, 0);
 
     const end = new Date(start);
     end.setDate(start.getDate() + 6);
-    end.setHours(23, 59, 59, 999);
 
     return {
-      start,
-      end,
+      start: new Date(
+        Date.UTC(
+          start.getFullYear(),
+          start.getMonth(),
+          start.getDate(),
+          0,
+          0,
+          0,
+        ),
+      ),
+      end: new Date(
+        Date.UTC(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 0),
+      ),
+    };
+  }
+
+  function buildDeadline(date: string, time: string): Date {
+    const [hours, minutes] = time.split(":").map(Number);
+    const [year, month, day] = date.split("-").map(Number);
+    return new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+  }
+
+  function getMonthRange(date: Date): MonthRange {
+    const year = date.getFullYear();
+    const month = date.getMonth();
+
+    return {
+      start: new Date(Date.UTC(year, month, 1, 0, 0, 0)),
+      end: new Date(Date.UTC(year, month + 1, 0, 23, 59, 0)),
     };
   }
 
@@ -216,17 +230,49 @@ function TaskMenu() {
   }
 
   async function handleSubmit() {
+    const validationErrors: string[] = [];
+
+    if (!title.trim()) validationErrors.push("Title is required.");
+    if (!difficulty) validationErrors.push("Difficulty is required.");
+
+    if (!repeatable) {
+      if (type === "day" && !deadlineDate)
+        validationErrors.push("Deadline date is required.");
+      if (type === "week") {
+        if (!selectedWeek) validationErrors.push("Please select a week.");
+        else if (isNaN(selectedWeek.getTime()))
+          validationErrors.push(
+            "Please select a valid week from the calendar. (Month/day/year)",
+          );
+      }
+
+      if (type === "month") {
+        if (!selectedMonth) validationErrors.push("Please select a month.");
+        else if (isNaN(selectedMonth.getTime()))
+          validationErrors.push(
+            "Please select a valid month from the calendar.",
+          );
+      }
+    }
+
+    if (validationErrors.length > 0) {
+      setErrors(validationErrors);
+      return; // ← stops here, fetch never runs
+    }
+
+    setErrors([]);
+
+    const dateRange = getDate(type);
     const newTask = {
       name: title,
       note: note,
       difficulty: difficulty,
-      createdon: getDefaultDate(new Date()),
+      createdon: new Date(),
       type: type,
-      startDate: getDate(type)?.start,
+      startDate: dateRange ? new Date(dateRange.start) : null,
+      deadline: dateRange ? buildDeadline(dateRange.end, deadlineTime) : null,
+      frequency: repeatInterval,
       status: repeatable ? "" : "active",
-      deadline: getDate(type)?.end,
-      deadlineTime: deadlineTime,
-      frequency: String(repeatInterval),
       weekday: weekly,
       isPrivate: isPrivate,
     };
@@ -309,6 +355,15 @@ function TaskMenu() {
         />
         <p>Private</p>
       </div>
+      {errors.length > 0 && (
+        <div className="form-errors">
+          {errors.map((error, index) => (
+            <p key={index} style={{ color: "red" }}>
+              {error}
+            </p>
+          ))}
+        </div>
+      )}
       <button onClick={handleSubmit}>Create Task</button>
     </div>
   );
