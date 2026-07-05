@@ -4,6 +4,57 @@ import type { ChangeEvent } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
+function getDefaultDate(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+type WeekRange = {
+  start: Date; // Monday
+  end: Date; // Sunday
+};
+
+type MonthRange = {
+  start: Date;
+  end: Date;
+};
+
+function getWeekRange(date: Date): WeekRange {
+  const day = date.getDay();
+  const diffToMonday = (day === 0 ? -6 : 1) - day;
+
+  const start = new Date(date);
+  start.setDate(date.getDate() + diffToMonday);
+
+  const end = new Date(start);
+  end.setDate(start.getDate() + 6);
+
+  return {
+    start: new Date(
+      Date.UTC(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0),
+    ),
+    end: new Date(
+      Date.UTC(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 0),
+    ),
+  };
+}
+
+function buildDeadline(date: string, time: string): Date {
+  const [hours, minutes] = time.split(":").map(Number);
+  const [year, month, day] = date.split("-").map(Number);
+  return new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
+}
+
+function getMonthRange(date: Date): MonthRange {
+  const year = date.getFullYear();
+  const month = date.getMonth();
+
+  return {
+    start: new Date(Date.UTC(year, month, 1, 0, 0, 0)),
+    end: new Date(Date.UTC(year, month + 1, 0, 23, 59, 0)),
+  };
+}
 function TaskMenu() {
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
@@ -41,59 +92,6 @@ function TaskMenu() {
     } else {
       return null;
     }
-  }
-
-  type WeekRange = {
-    start: Date; // Monday
-    end: Date; // Sunday
-  };
-
-  type MonthRange = {
-    start: Date;
-    end: Date;
-  };
-
-  function getWeekRange(date: Date): WeekRange {
-    const day = date.getDay();
-    const diffToMonday = (day === 0 ? -6 : 1) - day;
-
-    const start = new Date(date);
-    start.setDate(date.getDate() + diffToMonday);
-
-    const end = new Date(start);
-    end.setDate(start.getDate() + 6);
-
-    return {
-      start: new Date(
-        Date.UTC(
-          start.getFullYear(),
-          start.getMonth(),
-          start.getDate(),
-          0,
-          0,
-          0,
-        ),
-      ),
-      end: new Date(
-        Date.UTC(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 0),
-      ),
-    };
-  }
-
-  function buildDeadline(date: string, time: string): Date {
-    const [hours, minutes] = time.split(":").map(Number);
-    const [year, month, day] = date.split("-").map(Number);
-    return new Date(Date.UTC(year, month - 1, day, hours, minutes, 0));
-  }
-
-  function getMonthRange(date: Date): MonthRange {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-
-    return {
-      start: new Date(Date.UTC(year, month, 1, 0, 0, 0)),
-      end: new Date(Date.UTC(year, month + 1, 0, 23, 59, 0)),
-    };
   }
 
   function handleRepetition(type: string) {
@@ -202,45 +200,6 @@ function TaskMenu() {
     }
   }
 
-  function getDefaultDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  }
-
-  function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
-    setTitle(event.target.value);
-  }
-  function handleTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>) {
-    setNote(event.target.value);
-  }
-  function handleDateChange(event: ChangeEvent<HTMLInputElement>) {
-    setDeadlineDate(event.target.value);
-  }
-  function handleTimeChange(event: ChangeEvent<HTMLInputElement>) {
-    setDeadlineTime(event.target.value);
-  }
-  function handleTypeChange(event: ChangeEvent<HTMLSelectElement>) {
-    setType(event.target.value);
-  }
-  function handleIntervalChange(event: ChangeEvent<HTMLInputElement>) {
-    setRepeatInterval(Number(event.target.value));
-  }
-
-  function handleDifficultyChange(event: ChangeEvent<HTMLSelectElement>) {
-    setDifficulty(event.target.value);
-  }
-  function handleRepeatableChange() {
-    setRepeatable(!repeatable);
-  }
-  function handleWeekChange(event: ChangeEvent<HTMLSelectElement>) {
-    setWeekly(event.target.value);
-  }
-  function handlePrivacyChange() {
-    setIsPrivate(!isPrivate);
-  }
-
   async function handleSubmit() {
     const validationErrors: string[] = [];
 
@@ -305,6 +264,39 @@ function TaskMenu() {
       console.error("Failed to create task:", error);
     }
   }
+
+  function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
+    setTitle(event.target.value);
+  }
+  function handleTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>) {
+    setNote(event.target.value);
+  }
+  function handleDateChange(event: ChangeEvent<HTMLInputElement>) {
+    setDeadlineDate(event.target.value);
+  }
+  function handleTimeChange(event: ChangeEvent<HTMLInputElement>) {
+    setDeadlineTime(event.target.value);
+  }
+  function handleTypeChange(event: ChangeEvent<HTMLSelectElement>) {
+    setType(event.target.value);
+  }
+  function handleIntervalChange(event: ChangeEvent<HTMLInputElement>) {
+    setRepeatInterval(Number(event.target.value));
+  }
+
+  function handleDifficultyChange(event: ChangeEvent<HTMLSelectElement>) {
+    setDifficulty(event.target.value);
+  }
+  function handleRepeatableChange() {
+    setRepeatable(!repeatable);
+  }
+  function handleWeekChange(event: ChangeEvent<HTMLSelectElement>) {
+    setWeekly(event.target.value);
+  }
+  function handlePrivacyChange() {
+    setIsPrivate(!isPrivate);
+  }
+
   ///////////////////////////////////////////////////////////////////////////
 
   return (
