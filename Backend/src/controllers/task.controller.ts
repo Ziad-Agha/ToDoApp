@@ -30,7 +30,6 @@ export function createTask(req: Request, res: Response) {
     startDate,
     status,
     deadline,
-    deadlineTime,
     frequency,
     weekday,
     isPrivate,

@@ -3,14 +3,13 @@ interface task {
   name: string;
   note: string;
   difficulty: string;
-  createdon: string;
+  createdon: Date;
   type: string;
-  startDate: string;
+  startDate: Date;
   status: string;
-  deadline: string;
-  deadlineTime: string;
+  deadline: Date;
   graceperiod: string;
-  frequency: string;
+  frequency: number;
   weekday: string;
   isPrivate: boolean;
   streak: string;
