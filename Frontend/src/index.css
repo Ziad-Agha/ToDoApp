@@ -1,10 +1,11 @@
-
 @import "tailwindcss";
+@import "react-datepicker/dist/react-datepicker.css";
 
 @theme {
   --color-nav: #191f2f;
   --color-nav-hover: #222a40;
   --color-nav-active: #2b3550;
+  --color-nav-text: #FFFFFF;
   --color-sub-nav: #303747;
   --color-tasks-view: #fff4f3;
   --color-tasks-section: #e2c7c0;
@@ -14,6 +15,7 @@
   --color-coin-area: #fde7cd;
   --color-coin-value: #dd9d30;
 }
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
@@ -85,19 +87,76 @@ body {
 h1 {
   font-family: var(--heading);
   font-weight: 500;
-  
+
   font-size: 56px;
 }
 
 h2 {
   font-family: var(--heading);
   font-weight: 500;
-  
+
   font-size: 24px;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
 }
 
 .task-element {
-    @apply bg-tasks-section rounded p-2;
+  @apply bg-tasks-section rounded p-2;
 }
+
+.datepicker-input {
+  @apply w-full text-sm text-center;
+}
+
+.react-datepicker,
+.react-datepicker__time-list-item {
+  background-color: var(--color-task-box)
+}
+
+.react-datepicker__header {
+  /* the top bar with month/year */
+  background-color: var(--color-sub-nav);
+
+  & h2, div{
+    color: var(--color-nav-text);
+  }
+}
+
+
+.react-datepicker__day--selected,
+.react-datepicker__time-list-item--selected {
+  /* the selected day */
+  background-color: var(--color-tasks-section) !important;
+  color: var(--color-nav) !important;
+}
+
+.react-datepicker__day:hover,
+.react-datepicker__time-list-item:hover {
+  /* hover state on days */
+  background-color: 
+  color-mix(in srgb, var(--color-tasks-section), transparent 60%) !important;  
+}
+
+/* .react-datepicker__input-container input {
+  outline: none;
+  box-shadow: none;
+  border: none;
+}
+.react-datepicker-wrapper:focus-within {
+  outline: 0 solid var(--color-accent);
+  border-radius: 0;
+} */
+
+/* .react-datepicker__tab-loop {
+  position: absolute;
+} */
+
+.react-datepicker__navigation-icon--previous,
+.react-datepicker__navigation-icon--next {
+  top: 4px;
+}
+
+.react-datepicker__triangle {
+  display: none;
+}
+
