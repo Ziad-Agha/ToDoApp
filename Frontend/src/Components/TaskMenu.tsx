@@ -1,17 +1,14 @@
-// import type React from "react";
 import { useState } from "react";
-import type { ChangeEvent } from "react";
 import DatePicker from "react-datepicker";
 
 type WeekRange = {
   start: Date; // Monday
   end: Date; // Sunday
-};
+}
 type MonthRange = {
   start: Date;
   end: Date;
-};
-
+}
 function getWeekRange(date: Date): WeekRange {
   const day = date.getDay();
   const mondayOffset = (day === 0 ? -6 : 1) - day;
@@ -31,7 +28,6 @@ function getWeekRange(date: Date): WeekRange {
     ),
   };
 }
-
 function getMonthRange(date: Date): MonthRange {
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -41,8 +37,7 @@ function getMonthRange(date: Date): MonthRange {
     end: new Date(Date.UTC(year, month + 1, 0, 23, 59, 0)),
   };
 }
-
-// Combines time and date into a Date object
+//  Combines time and date into a Date object
 function buildDeadline(date: Date | null, time: Date | null): Date | null {
   if (date && time) {
     const deadline = date && new Date(date);
@@ -51,10 +46,10 @@ function buildDeadline(date: Date | null, time: Date | null): Date | null {
   } return null
 }
 
-export default function TaskMenu() {
+//  State hooks for form variables and handle functions
+function useTaskForm() {
   const defaultTime = new Date()
   defaultTime.setHours(23, 59, 0, 0)
-
 
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
@@ -72,29 +67,27 @@ export default function TaskMenu() {
   const weekRange = selectedWeek ? getWeekRange(selectedWeek) : null;
   const monthRange = selectedMonth ? getMonthRange(selectedMonth) : null;
 
-  // Returns start and end dates based on chosen type [day, week, month]
+  /*  Returns start and end dates based on chosen type [day, week, month] */
   function getDate(type: string) {
-    if (!repeatable) {
-      if (type === "day") {
-        deadlineDate?.setHours(0, 0, 0, 0);
-        return { start: deadlineDate, end: deadlineDate };
-      } else if (type === "week" && weekRange) {
-        return {
-          start: weekRange?.start,
-          end: weekRange.end,
-        };
-      } else if (type === "month" && monthRange) {
-        return {
-          start: monthRange?.start,
-          end: monthRange.end,
-        };
-      }
-    } else {
-      return null;
+    if (repeatable) return null;
+
+    if (type === "day" && deadlineDate) {
+      const date = new Date(deadlineDate)
+      date.setHours(0, 0, 0, 0);
+      return { start: date, end: date };
     }
+
+    if (type === "week" && weekRange) {
+      return { start: weekRange.start, end: weekRange.end };
+    }
+
+    if (type === "month" && monthRange) {
+      return { start: monthRange.start, end: monthRange.end };
+    }
+
   }
 
-  //  Returns appropriate elment based on chosen type [day, week, month]
+  /*  Returns appropriate elment based on chosen type */
   function handleFrequency(type: string) {
     const labels: Record<string, string> = {
       day: "days",
@@ -104,16 +97,17 @@ export default function TaskMenu() {
 
     const frequencyInput = (
       <input type="number"
-        min="1"step="1" value={frequency}
-        onChange={handleFrequencyChange}
+        min="1" step="1" value={frequency}
+        onChange={(e) => setFrequency(Number(e.target.value))}
         onKeyDown={(e) => e.preventDefault()}
         onPaste={(e) => e.preventDefault()}
       />
     );
 
     const weekdaySelect = type === "week" && (
-      <><p>Day:</p>
-        <select name="weekly-task" value={weekly} onChange={handleWeekChange}>
+      <>
+        <p>Day:</p>
+        <select name="weekly-task" value={weekly} onChange={(e) => setWeekly(e.target.value)}>
           {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(day => (
             <option key={day} value={day}>{day}</option>
           ))}
@@ -131,10 +125,8 @@ export default function TaskMenu() {
     );
   }
 
-  /*  handleFrequency sub-function */
-  /*  Returns appropriate DatePickers based on chosen type [day, week, month] */
+  /*  Returns appropriate DatePickers based on chosen type */
   function handleDeadline(type: string) {
-    // DAY DATEPICKER
     if (type === "day") {
       return <div className="day-date-picker flex gap-2 items-center">
         <label>Date:</label>
@@ -158,8 +150,7 @@ export default function TaskMenu() {
         />
       </div>
     }
-    // WEEK DATEPICKER
-    else if (type === "week") {
+    if (type === "week") {
       return <div className="week-date-picker flex gap-2 items-center">
         <DatePicker
           selected={weekRange?.end}
@@ -171,8 +162,7 @@ export default function TaskMenu() {
         />
       </div>
     }
-    // MONTH DATEPICKER
-    else if (type === "month") {
+    if (type === "month") {
       return <div className="week-date-picker flex gap-2 items-center">
         <DatePicker
           selected={monthRange?.end}
@@ -257,106 +247,73 @@ export default function TaskMenu() {
     }
   }
 
-  // ------------ CHANGE EVENT HANDLE FUNCTIONS BLOCK ------------------ //
-  function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
-    setTitle(event.target.value);
-  }
-  function handleTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>) {
-    setNote(event.target.value);
-  }
-  function handleTypeChange(event: ChangeEvent<HTMLSelectElement>) {
-    setType(event.target.value);
-  }
-  function handleFrequencyChange(event: ChangeEvent<HTMLInputElement>) {
-    setFrequency(Number(event.target.value));
-  }
-  function handleDifficultyChange(event: ChangeEvent<HTMLSelectElement>) {
-    setDifficulty(event.target.value);
-  }
-  function handleRepeatableChange() {
-    setRepeatable(!repeatable);
-  }
-  function handleWeekChange(event: ChangeEvent<HTMLSelectElement>) {
-    setWeekly(event.target.value);
-  }
-  function handlePrivacyChange() {
-    setIsPrivate(!isPrivate);
-  }
+  return {
+    title, setTitle,
+    note, setNote,
+    type, setType,
+    difficulty, setDifficulty,
+    repeatable, setRepeatable,
+    isPrivate, setIsPrivate,
+    errors,
 
-  // ------------- ACTUAL TASKMENU COMPONENT ----------------- //
+    handleFrequency, handleDeadline, handleSubmit
+  }
+}
+
+export default function TaskMenu() {
+  const {
+    title, setTitle,
+    note, setNote,
+    type, setType,
+    difficulty, setDifficulty,
+    repeatable, setRepeatable,
+    isPrivate, setIsPrivate,
+    errors, handleFrequency,
+    handleDeadline, handleSubmit
+  } = useTaskForm();
+
   return <div className="task-menu-container bg-tasks-view self-center rounded-2xl w-[400px] p-10 m-8 text-left text-text-dark">
     <div className="flex flex-col gap-3 self-center">
-      {/*    TITLE    */}
-      <input type="text" value={title}
-        placeholder="Add Title"
-        onChange={handleTitleChange}
-        className="border-b w-[100%] text-2xl"
+      <input className="border-b w-[100%] text-2xl"
+        type="text" value={title} placeholder="Add Title"
+        onChange={(e) => setTitle(e.target.value)}
       />
-
-      {/*    NOTE    */}
-      <textarea name="note" value={note}
-        rows={1} placeholder="Add Note"
-        onChange={handleTextAreaChange}
-        className="border-b w-[100%] text-lg"
-      ></textarea>
-
-      {/*    TYPE    */}
+      <textarea className="border-b w-[100%] text-lg"
+        name="note" value={note} rows={1} placeholder="Add Note"
+        onChange={(e) => setNote(e.target.value)}
+      />
       <div className="task-type flex gap-2 items-center">
         <label>Type:</label>
-        <select
-          name="task-type"
-          value={type}
-          onChange={handleTypeChange}
-          className="task-element"
-        >
+        <select className="task-element" name="task-type" value={type}
+          onChange={(e) => setType(e.target.value)}>
           <option value="day">daily</option>
           <option value="week">weekly</option>
           <option value="month">monthly</option>
         </select>
       </div>
-
-      {/*    RECURRENCE   */}
       <div className="task-type flex gap-2 items-center">
-        <input
-          type="checkbox"
-          name="repeating"
-          checked={repeatable}
-          onChange={handleRepeatableChange}
-        />
+        <input type="checkbox" name="repeating" checked={repeatable}
+          onChange={() => setRepeatable(!repeatable)} />
         <p>Repeating</p>
       </div>
-
-      {/*    DATE    */}
       <div className="repeat-options">
         {repeatable ? handleFrequency(type) : handleDeadline(type)}
       </div>
-
-      {/*    DIFFICULTY    */}
       <div className="task-difficulty-input flex gap-2 items-center">
         <p>Difficulty:</p>
-        <select
-          name="difficulty"
-          value={difficulty}
-          onChange={handleDifficultyChange}
-          className="task-element"
-        >
+        <select className="task-element"
+          name="difficulty" value={difficulty}
+          onChange={(e) => setDifficulty(e.target.value)}>
           <option value="easy">easy</option>
           <option value="medium">medium</option>
           <option value="hard">hard</option>
         </select>
       </div>
-
-      {/*    PRIVATE    */}
       <div className="is-private flex gap-2">
-        <input
-          type="checkbox"
-          name="private"
-          checked={isPrivate}
-          onChange={handlePrivacyChange}
-        />
+        <input type="checkbox" name="private" checked={isPrivate}
+          onChange={() => setIsPrivate(!isPrivate)} />
         <p>Private</p>
       </div>
-
       {errors.length > 0 && (
         <div className="form-errors">
           {errors.map((error, index) => (
@@ -365,38 +322,9 @@ export default function TaskMenu() {
         </div>
       )}
 
-      <button 
-      className="bg-nav text-tasks-view w-[33%] p-2 rounded self-end text-lg" 
-      onClick={handleSubmit}>Create</button>
+      <button className="bg-nav text-tasks-view w-[33%] p-2 rounded self-end text-lg"
+        onClick={handleSubmit}>Create
+      </button>
     </div>
   </div>
 }
-
-
-
-
-// ABSTRACTION ATTEMPT
-
-// function titleInput() {
-//   const [title, setTitle] = useState<string>("");
-//   function handleTitleChange(event: ChangeEvent<HTMLInputElement>) {
-//     setTitle(event.target.value);
-//   }
-//   return <input type="text" value={title}
-//     placeholder="Add Title"
-//     onChange={handleTitleChange}
-//     className="border-b w-[100%] text-2xl"
-//   />
-// }
-
-// function noteTextArea() {
-//   const [note, setNote] = useState<string>("");
-//   function handleTextAreaChange(event: ChangeEvent<HTMLTextAreaElement>) {
-//     setNote(event.target.value);
-//   }
-//   return <textarea name="note" value={note}
-//     rows={1} placeholder="Add Note"
-//     onChange={handleTextAreaChange}
-//     className="border-b w-[100%] text-lg"
-//   ></textarea>
-// }
