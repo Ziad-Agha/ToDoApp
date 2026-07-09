@@ -1,14 +1,84 @@
 import { useState } from "react";
 import DatePicker from "react-datepicker";
 
+export default function TaskMenu() {
+  const {
+    title, setTitle,
+    note, setNote,
+    type, setType,
+    difficulty, setDifficulty,
+    repeatable, setRepeatable,
+    isPrivate, setIsPrivate,
+    errors, handleFrequency,
+    handleDeadline, handleSubmit
+  } = useTaskForm();
+
+  return <div className="task-menu-container bg-tasks-view self-center rounded-2xl w-[380px] p-10 m-8 text-left text-text-dark">
+    <div className="flex flex-col gap-3 self-center">
+      <input className="border-b w-[100%] text-2xl focus:outline-none"
+        type="text" value={title} placeholder="Add Title"
+        onChange={(e) => setTitle(e.target.value)}
+      />
+      <textarea className="border-b w-[100%] text-lg focus:outline-none"
+        name="note" value={note} rows={1} placeholder="Add Note"
+        onChange={(e) => setNote(e.target.value)}
+      />
+      <div className="task-type flex gap-2 items-center">
+        <label>Type:</label>
+        <select className="task-element" name="task-type" value={type}
+          onChange={(e) => setType(e.target.value)}>
+          <option value="day">daily</option>
+          <option value="week">weekly</option>
+          <option value="month">monthly</option>
+        </select>
+      </div>
+      <div className="task-type flex gap-2 items-center ">
+        <input type="checkbox" name="repeating" checked={repeatable}
+          onChange={() => setRepeatable(!repeatable)} />
+        <p>Regular</p>
+      </div>
+      <div className="repeat-options">
+        {repeatable ? handleFrequency(type) : handleDeadline(type)}
+      </div>
+      <div className="task-difficulty-input flex gap-2 items-center">
+        <p>Difficulty:</p>
+        <select className="task-element"
+          name="difficulty" value={difficulty}
+          onChange={(e) => setDifficulty(e.target.value)}>
+          <option value="easy">easy</option>
+          <option value="medium">medium</option>
+          <option value="hard">hard</option>
+        </select>
+      </div>
+      <div className="is-private flex gap-2">
+        <input type="checkbox" name="private" checked={isPrivate}
+          onChange={() => setIsPrivate(!isPrivate)} />
+        <p>Private</p>
+      </div>
+      {errors.length > 0 && (
+        <div className="form-errors">
+          {errors.map((error, index) => (
+            <p key={index} style={{ color: "red" }}>{error}</p>
+          ))}
+        </div>
+      )}
+
+      <button className="bg-nav text-tasks-view w-[33%] p-2 rounded self-end text-lg"
+        onClick={handleSubmit}>Create
+      </button>
+    </div>
+  </div>
+}
+
 type WeekRange = {
-  start: Date; // Monday
-  end: Date; // Sunday
+  start: Date;  // Monday
+  end: Date;      // Sunday
 }
 type MonthRange = {
   start: Date;
   end: Date;
 }
+
 function getWeekRange(date: Date): WeekRange {
   const day = date.getDay();
   const mondayOffset = (day === 0 ? -6 : 1) - day;
@@ -28,6 +98,7 @@ function getWeekRange(date: Date): WeekRange {
     ),
   };
 }
+
 function getMonthRange(date: Date): MonthRange {
   const year = date.getFullYear();
   const month = date.getMonth();
@@ -37,6 +108,7 @@ function getMonthRange(date: Date): MonthRange {
     end: new Date(Date.UTC(year, month + 1, 0, 23, 59, 0)),
   };
 }
+
 //  Combines time and date into a Date object
 function buildDeadline(date: Date | null, time: Date | null): Date | null {
   if (date && time) {
@@ -84,7 +156,6 @@ function useTaskForm() {
     if (type === "month" && monthRange) {
       return { start: monthRange.start, end: monthRange.end };
     }
-
   }
 
   /*  Returns appropriate elment based on chosen type */
@@ -96,30 +167,34 @@ function useTaskForm() {
     };
 
     const frequencyInput = (
-      <input type="number"
-        min="1" step="1" value={frequency}
-        onChange={(e) => setFrequency(Number(e.target.value))}
-        onKeyDown={(e) => e.preventDefault()}
+      <input className="task-element w-[16%] text-center"
+        type="number" min="1" step="1" value={frequency}
         onPaste={(e) => e.preventDefault()}
+        onKeyDown={(e) => e.preventDefault()}
+        onChange={(e) => setFrequency(Number(e.target.value))}
       />
     );
 
     const weekdaySelect = type === "week" && (
-      <>
+      <div className="flex gap-2 items-center">
         <p>Day:</p>
-        <select name="weekly-task" value={weekly} onChange={(e) => setWeekly(e.target.value)}>
+        <select className="task-element"
+          name="weekly-task" value={weekly}
+          onChange={(e) => setWeekly(e.target.value)}>
           {["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"].map(day => (
             <option key={day} value={day}>{day}</option>
           ))}
         </select>
-      </>
+      </div>
     );
 
     return (
-      <div>
-        <p>Repeats every</p>
-        {frequencyInput}
-        <p>{labels[type]}</p>
+      <div className="flex flex-col gap-2">
+        <div className="flex gap-2 items-center">
+          <p>Repeats every</p>
+          {frequencyInput}
+          <p>{labels[type]}</p>
+        </div>
         {weekdaySelect}
       </div>
     );
@@ -130,77 +205,66 @@ function useTaskForm() {
     if (type === "day") {
       return <div className="day-date-picker flex gap-2 items-center">
         <label>Date:</label>
-        <DatePicker
-          selected={deadlineDate}
-          onChange={(date: Date | null) => setDeadlineDate(date)}
-          showDateSelect
+        <DatePicker wrapperClassName="w-[120px]"
+          className="task-element datepicker-input"
           dateFormat="MMM. d, yyyy"
-          className="task-element datepicker-input "
-          wrapperClassName="w-[120px]"
+          showDateSelect selected={deadlineDate}
           onFocus={(e) => e.target.blur()}
+          onChange={(date: Date | null) => setDeadlineDate(date)}
+
         />
-        <DatePicker
-          selected={deadlineTime}
-          onChange={(date: Date | null) => setDeadlineTime(date)}
-          showTimeSelect showTimeSelectOnly
+        <DatePicker wrapperClassName="w-[90px]"
+          className="task-element datepicker-input focus:outline-none"
           timeFormat="hh:mm aa"
           dateFormat="hh:mm aa"
-          className="task-element datepicker-input"
-          wrapperClassName="w-[90px]"
+          selected={deadlineTime}
+          showTimeSelect showTimeSelectOnly
+          onChange={(date: Date | null) => setDeadlineTime(date)}
         />
       </div>
     }
     if (type === "week") {
       return <div className="week-date-picker flex gap-2 items-center">
-        <DatePicker
+        <DatePicker className="task-element"
+          placeholderText="Select a week"
+          showWeekPicker calendarStartDay={1}
           selected={weekRange?.end}
           onChange={(date: Date | null) => setSelectedWeek(date)}
-          showWeekPicker
-          calendarStartDay={1}
-          className="task-element"
-          placeholderText="Select a week"
         />
       </div>
     }
     if (type === "month") {
       return <div className="week-date-picker flex gap-2 items-center">
-        <DatePicker
-          selected={monthRange?.end}
-          onChange={(date: Date | null) => setSelectedMonth(date)}
-          showMonthYearPicker
-          dateFormat="MMMM yyyy"
-          className="task-element"
+        <DatePicker className="task-element"
           placeholderText="Select a month"
+          dateFormat="MMMM yyyy"
+          showMonthYearPicker selected={monthRange?.end}
+          onChange={(date: Date | null) => setSelectedMonth(date)}
         />
       </div>
     }
   }
 
   async function handleSubmit() {
-
-    // ------------------ VALIDATION BLOCK -------------------------- //
+    // ------------------ VALIDATION -------------------------- //
     const validationErrors: string[] = [];
 
-    // Use turnary op--------------------------------------------------
-    if (!title.trim()) validationErrors.push("Title is required.");
-    if (!difficulty) validationErrors.push("Difficulty is required.");
+    if (!title.trim()) validationErrors.push("Title is required.")
+    if (!difficulty) validationErrors.push("Difficulty is required.")
 
-    // Try switch------------------------------------------------------
     if (!repeatable) {
-      if (type === "day" && !deadlineDate)
-        validationErrors.push("Deadline is required.");
-      if (type === "week") {
-        if (!selectedWeek) validationErrors.push("Please select a week.");
-        else if (isNaN(selectedWeek.getTime()))
-          validationErrors.push("Please select a valid week from the calendar. (MM/DD/YYYY)");
+      const dateValidators: Record<string, () => string | null> = {
+        day: () => !deadlineDate ? "Deadline is required." : null,
+        week: () => !selectedWeek ? "Please select a week."
+          : isNaN(selectedWeek.getTime()) ? "Please select a valid week. (MM/DD/YYYY)"
+            : null,
+        month: () => !selectedMonth ? "Please select a month."
+          : isNaN(selectedMonth.getTime()) ? "Please select a valid month."
+            : null,
       }
 
-      // Use turnary op--------------------------------------------------
-      if (type === "month") {
-        if (!selectedMonth) validationErrors.push("Please select a month.");
-        else if (isNaN(selectedMonth.getTime()))
-          validationErrors.push("Please select a valid month from the calendar.");
-      }
+      const dateError = dateValidators[type]?.()
+      if (dateError) validationErrors.push(dateError)
     }
 
     if (validationErrors.length > 0) {
@@ -210,6 +274,7 @@ function useTaskForm() {
 
     setErrors([]);
 
+    // ------------------ TASK CREATION -------------------------- //
     const dateRange = getDate(type);
     const newTask = {
       name: title,
@@ -258,73 +323,4 @@ function useTaskForm() {
 
     handleFrequency, handleDeadline, handleSubmit
   }
-}
-
-export default function TaskMenu() {
-  const {
-    title, setTitle,
-    note, setNote,
-    type, setType,
-    difficulty, setDifficulty,
-    repeatable, setRepeatable,
-    isPrivate, setIsPrivate,
-    errors, handleFrequency,
-    handleDeadline, handleSubmit
-  } = useTaskForm();
-
-  return <div className="task-menu-container bg-tasks-view self-center rounded-2xl w-[400px] p-10 m-8 text-left text-text-dark">
-    <div className="flex flex-col gap-3 self-center">
-      <input className="border-b w-[100%] text-2xl"
-        type="text" value={title} placeholder="Add Title"
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <textarea className="border-b w-[100%] text-lg"
-        name="note" value={note} rows={1} placeholder="Add Note"
-        onChange={(e) => setNote(e.target.value)}
-      />
-      <div className="task-type flex gap-2 items-center">
-        <label>Type:</label>
-        <select className="task-element" name="task-type" value={type}
-          onChange={(e) => setType(e.target.value)}>
-          <option value="day">daily</option>
-          <option value="week">weekly</option>
-          <option value="month">monthly</option>
-        </select>
-      </div>
-      <div className="task-type flex gap-2 items-center">
-        <input type="checkbox" name="repeating" checked={repeatable}
-          onChange={() => setRepeatable(!repeatable)} />
-        <p>Repeating</p>
-      </div>
-      <div className="repeat-options">
-        {repeatable ? handleFrequency(type) : handleDeadline(type)}
-      </div>
-      <div className="task-difficulty-input flex gap-2 items-center">
-        <p>Difficulty:</p>
-        <select className="task-element"
-          name="difficulty" value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}>
-          <option value="easy">easy</option>
-          <option value="medium">medium</option>
-          <option value="hard">hard</option>
-        </select>
-      </div>
-      <div className="is-private flex gap-2">
-        <input type="checkbox" name="private" checked={isPrivate}
-          onChange={() => setIsPrivate(!isPrivate)} />
-        <p>Private</p>
-      </div>
-      {errors.length > 0 && (
-        <div className="form-errors">
-          {errors.map((error, index) => (
-            <p key={index} style={{ color: "red" }}>{error}</p>
-          ))}
-        </div>
-      )}
-
-      <button className="bg-nav text-tasks-view w-[33%] p-2 rounded self-end text-lg"
-        onClick={handleSubmit}>Create
-      </button>
-    </div>
-  </div>
 }

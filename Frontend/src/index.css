@@ -147,9 +147,9 @@ h2 {
   border-radius: 0;
 } */
 
-/* .react-datepicker__tab-loop {
+.react-datepicker__tab-loop {
   position: absolute;
-} */
+}
 
 .react-datepicker__navigation-icon--previous,
 .react-datepicker__navigation-icon--next {
