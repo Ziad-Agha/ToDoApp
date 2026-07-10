@@ -9,14 +9,15 @@ export default function WeeklyView() {
         <main
             className={"bg-main flex-1 w-full flex flex-col gap-4 px-2  min-h-0"}>
             <ButtonToggle />
-            <div className={"flex flex-1 min-h-0"}>
-                <TaskSection header="Sunday" tasks={[]} />
-                <TaskSection header="Monday" tasks={[]} />
-                <TaskSection header="Tuesday" tasks={[]} />
-                <TaskSection header="Wednesday" tasks={[]} />
-                <TaskSection header="Thursday" tasks={[]} />
-                <TaskSection header="Friday" tasks={[]} />
-                <TaskSection header="Saturday" tasks={[]} />
+            <div className={"flex flex-1 min-h-0 "}>
+                {days.map((day, i) => (
+                    <TaskSection
+                        key={day}
+                        header={day}
+                        date={weekDates[i]}
+                        tasks={[dummyTasks[0], dummyTasks[1], dummyTasks[2]]} // tasks filtered by date
+                    />
+                ))}
             </div>
         </main>
     </div>;
@@ -69,11 +70,29 @@ function GlowButton({label, isSelected, onClick}:
     );
 }
 
-function TaskSection({ header, tasks }: { header: string; tasks: string[] }) {
+function getWeekDates(): Date[] {
+    const today = new Date();
+    const sunday = new Date(today);
+    sunday.setDate(today.getDate() - today.getDay()); // rewind to Sunday
+
+    return Array.from({ length: 7 }, (_, i) => {
+        const day = new Date(sunday);
+        day.setDate(sunday.getDate() + i);
+        return day;
+    });
+}
+console.log(new Date().toDateString());
+function TaskSection({ header, tasks, date }: { header: string; tasks: string[]; date: Date }) {
+
+    const isToday = new Date().toDateString() === date.toDateString();
+
     return (
         <section className="flex flex-col flex-1 ">
-            <h2 className="text-center text-text-dark">{header}</h2>
-            <div className="flex flex-col bg-tasks-section1 flex-1 p-4 rounded-[15px] border-2 border-sub-nav1">
+            <h2 className={`text-center ${isToday ? "text-red-500" : "text-text-dark"}`}>
+                {header}
+                <span className="ml-1 opacity-70">{date.getDate()}</span>
+            </h2>
+            <div className="flex flex-col bg-tasks-section1 flex-1 p-2 rounded-[15px] border-2 border-sub-nav1 ">
                 <div className="flex flex-col w-full">
 
                 </div>
@@ -83,8 +102,29 @@ function TaskSection({ header, tasks }: { header: string; tasks: string[] }) {
     );
 }
 
-function TaskBox() {
+function TaskBox({ task }) {
+    return (
+        <article className="grid grid-cols-[auto_1fr_auto] bg-task-box mb-[5px] rounded overflow-hidden">
 
+            <div className="flex justify-center pt-3 pb-3">
+                <button className="w-9 h-9 rounded bg-checkmark border border-checkmark" />
+            </div>
+
+            <div className="flex flex-col text-text-dark text-left  pt-3 pb-3 h-[100%] relative">
+
+                <span className="leading-4">{task.title}</span>
+                <span className="text-xs opacity-50">{task.recurrence}</span>
+                {task.timeleft && <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">{task.timeleft}</span>}
+
+            </div>
+
+            <div className="flex flex-col justify-center items-center gap-1 h-full bg-coin-area">
+
+                <span className="text-coin-value font-semibold text-sm leading-2">{task.value}</span>
+            </div>
+
+        </article>
+    );
 }
 
 
