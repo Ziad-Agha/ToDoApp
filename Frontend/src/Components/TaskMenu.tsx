@@ -13,13 +13,13 @@ export default function TaskMenu() {
     handleDeadline, handleSubmit
   } = useTaskForm();
 
-  return <div className="task-menu-container bg-tasks-view self-center rounded-2xl w-[380px] p-10 m-8 text-left text-text-dark">
+  return <div className="task-menu-container bg-tertiary self-center rounded-2xl w-95 p-10 m-8 text-left text-text-dark">
     <div className="flex flex-col gap-3 self-center">
-      <input className="border-b w-[100%] text-2xl focus:outline-none"
+      <input className="border-b w-full text-2xl focus:outline-none"
         type="text" value={title} placeholder="Add Title"
         onChange={(e) => setTitle(e.target.value)}
       />
-      <textarea className="border-b w-[100%] text-lg focus:outline-none"
+      <textarea className="border-b w-full text-lg focus:outline-none"
         name="note" value={note} rows={1} placeholder="Add Note"
         onChange={(e) => setNote(e.target.value)}
       />
@@ -63,7 +63,7 @@ export default function TaskMenu() {
         </div>
       )}
 
-      <button className="bg-nav text-tasks-view w-[33%] p-2 rounded self-end text-lg"
+      <button className="bg-nav text-tertiary w-[33%] p-2 rounded self-end text-lg"
         onClick={handleSubmit}>Create
       </button>
     </div>
@@ -72,7 +72,7 @@ export default function TaskMenu() {
 
 type WeekRange = {
   start: Date;  // Monday
-  end: Date;      // Sunday
+  end: Date;    // Sunday
 }
 type MonthRange = {
   start: Date;
@@ -206,15 +206,14 @@ function useTaskForm() {
       return <div className="day-date-picker flex gap-2 items-center">
         <label>Date:</label>
         <DatePicker wrapperClassName="w-[120px]"
-          className="task-element datepicker-input"
+          className="task-element w-full text-sm text-center"
           dateFormat="MMM. d, yyyy"
           showDateSelect selected={deadlineDate}
           onFocus={(e) => e.target.blur()}
           onChange={(date: Date | null) => setDeadlineDate(date)}
-
         />
         <DatePicker wrapperClassName="w-[90px]"
-          className="task-element datepicker-input focus:outline-none"
+          className="task-element w-full text-sm text-center focus:outline-none"
           timeFormat="hh:mm aa"
           dateFormat="hh:mm aa"
           selected={deadlineTime}
@@ -262,7 +261,6 @@ function useTaskForm() {
           : isNaN(selectedMonth.getTime()) ? "Please select a valid month."
             : null,
       }
-
       const dateError = dateValidators[type]?.()
       if (dateError) validationErrors.push(dateError)
     }
@@ -304,7 +302,6 @@ function useTaskForm() {
       if (!response.ok) {
         throw new Error(`Server responded with status ${response.status}`);
       }
-
       const createdTask = await response.json();
       console.log("Task created:", createdTask);
     } catch (error) {
