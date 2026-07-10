@@ -1,14 +1,19 @@
 import { Routes, Route } from 'react-router-dom'
-import HomePage from './HomePage'
+ import HomePage from './HomePage'
 
 import './App.css'
+import TaskMenu from './Components/TaskMenu'
 
 function App(){
   return (
     <Routes>
-      <Route
+       <Route
         path="/"
         element={<HomePage />}
+      /> 
+      <Route
+      path="/menu"
+      element={<TaskMenu/>}
       />
     </Routes>
   )

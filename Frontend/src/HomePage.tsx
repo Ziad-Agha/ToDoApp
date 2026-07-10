@@ -137,7 +137,7 @@ function SubNav() {
     </div>
 }
 
-function TaskSection({ header, tasks }) {
+function TaskSection({ header, tasks }: {header: string, tasks: Task[]}) {
 
     return <section>
         <h2 className="text-left text-text-dark">{header}</h2>
@@ -150,6 +150,7 @@ function TaskSection({ header, tasks }) {
     </section>
 
 }
+
 
 interface Task {
     user_id: string;
@@ -166,7 +167,9 @@ interface Task {
     deadline: Date;
 }
 
-function TaskBox({ task }) {
+
+
+function TaskBox({ task }: {task: Task}) {
     return (
         <article className="grid grid-cols-[65px_1fr_65px] bg-task-box mb-[5px] rounded overflow-hidden">
 
