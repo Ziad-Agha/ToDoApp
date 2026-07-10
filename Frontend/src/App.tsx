@@ -1,8 +1,8 @@
 import { Routes, Route } from 'react-router-dom'
  import HomePage from './HomePage'
 
-import './App.css'
-import TaskMenu from './Components/TaskMenu'
+// import './App.css'
+import TaskForm from './Components/TaskForm'
 
 function App(){
   return (
@@ -13,7 +13,7 @@ function App(){
       /> 
       <Route
       path="/menu"
-      element={<TaskMenu/>}
+      element={<TaskForm/>}
       />
     </Routes>
   )

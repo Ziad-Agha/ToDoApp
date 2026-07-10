@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
-
-export default function TaskMenu() {
+// bg-
+export default function TaskForm() {
   const {
     title, setTitle,
     note, setNote,
@@ -13,7 +13,7 @@ export default function TaskMenu() {
     handleDeadline, handleSubmit
   } = useTaskForm();
 
-  return <div className="task-menu-container bg-tertiary self-center rounded-2xl w-95 p-10 m-8 text-left text-text-dark">
+  return <div className="task-form-container bg-backdrop self-center rounded-2xl w-95 p-10 m-8 text-left text-text-dark">
     <div className="flex flex-col gap-3 self-center">
       <input className="border-b w-full text-2xl focus:outline-none"
         type="text" value={title} placeholder="Add Title"
@@ -25,12 +25,15 @@ export default function TaskMenu() {
       />
       <div className="task-type flex gap-2 items-center">
         <label>Type:</label>
-        <select className="task-element" name="task-type" value={type}
-          onChange={(e) => setType(e.target.value)}>
-          <option value="day">daily</option>
-          <option value="week">weekly</option>
-          <option value="month">monthly</option>
-        </select>
+        <CustomSelect
+          value={type}
+          onChange={setType}
+          options={[
+            { value: "day", label: "daily" },
+            { value: "week", label: "weekly" },
+            { value: "month", label: "monthly" },
+          ]}
+        />
       </div>
       <div className="task-type flex gap-2 items-center ">
         <input type="checkbox" name="repeating" checked={repeatable}
@@ -41,14 +44,16 @@ export default function TaskMenu() {
         {repeatable ? handleFrequency(type) : handleDeadline(type)}
       </div>
       <div className="task-difficulty-input flex gap-2 items-center">
-        <p>Difficulty:</p>
-        <select className="task-element"
-          name="difficulty" value={difficulty}
-          onChange={(e) => setDifficulty(e.target.value)}>
-          <option value="easy">easy</option>
-          <option value="medium">medium</option>
-          <option value="hard">hard</option>
-        </select>
+        <label>Difficulty:</label>
+        <CustomSelect
+          value={difficulty}
+          onChange={setDifficulty}
+          options={[
+            { value: "easy", label: "easy" },
+            { value: "medium", label: "medium" },
+            { value: "hard", label: "hard" },
+          ]}
+        />
       </div>
       <div className="is-private flex gap-2">
         <input type="checkbox" name="private" checked={isPrivate}
@@ -63,7 +68,7 @@ export default function TaskMenu() {
         </div>
       )}
 
-      <button className="bg-nav text-tertiary w-[33%] p-2 rounded self-end text-lg"
+      <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg"
         onClick={handleSubmit}>Create
       </button>
     </div>
@@ -167,7 +172,7 @@ function useTaskForm() {
     };
 
     const frequencyInput = (
-      <input className="task-element w-[16%] text-center"
+      <input className="task-element w-[16%] text-center focus:outline-none caret-transparent"
         type="number" min="1" step="1" value={frequency}
         onPaste={(e) => e.preventDefault()}
         onKeyDown={(e) => e.preventDefault()}
@@ -206,14 +211,14 @@ function useTaskForm() {
       return <div className="day-date-picker flex gap-2 items-center">
         <label>Date:</label>
         <DatePicker wrapperClassName="w-[120px]"
-          className="task-element w-full text-sm text-center"
+          className="task-element w-full text-sm text-center focus:outline-none caret-transparent"
           dateFormat="MMM. d, yyyy"
           showDateSelect selected={deadlineDate}
           onFocus={(e) => e.target.blur()}
           onChange={(date: Date | null) => setDeadlineDate(date)}
         />
         <DatePicker wrapperClassName="w-[90px]"
-          className="task-element w-full text-sm text-center focus:outline-none"
+          className="task-element w-full text-sm text-center focus:outline-none caret-transparent"
           timeFormat="hh:mm aa"
           dateFormat="hh:mm aa"
           selected={deadlineTime}
@@ -224,7 +229,7 @@ function useTaskForm() {
     }
     if (type === "week") {
       return <div className="week-date-picker flex gap-2 items-center">
-        <DatePicker className="task-element"
+        <DatePicker className="task-element focus:outline-none caret-transparent"
           placeholderText="Select a week"
           showWeekPicker calendarStartDay={1}
           selected={weekRange?.end}
@@ -233,8 +238,8 @@ function useTaskForm() {
       </div>
     }
     if (type === "month") {
-      return <div className="week-date-picker flex gap-2 items-center">
-        <DatePicker className="task-element"
+      return <div className="week-date-picker gap-2 items-center">
+        <DatePicker className="task-element focus:outline-none"
           placeholderText="Select a month"
           dateFormat="MMMM yyyy"
           showMonthYearPicker selected={monthRange?.end}
@@ -320,4 +325,68 @@ function useTaskForm() {
 
     handleFrequency, handleDeadline, handleSubmit
   }
+}
+
+
+/* --------------- CUSTOM SELECT --------------- */
+// Native select replacement for custom styling
+// Claude generated
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface CustomSelectProps {
+  value: string;
+  onChange: (value: string) => void;
+  options: SelectOption[];
+}
+
+function CustomSelect({ value, onChange, options }: CustomSelectProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  const selectedLabel = options.find(o => o.value === value)?.label ?? value;
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(e: MouseEvent) {
+      if (ref.current && !ref.current.contains(e.target as Node)) {
+        setIsOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div ref={ref} className="relative">
+      {/* Trigger */}
+      <button
+        className="task-element flex items-center gap-4"
+        onClick={() => setIsOpen(prev => !prev)}
+      >
+        {selectedLabel}
+        <span className={`transition-transform -mt-1`}>⌄</span>
+      </button>
+
+      {/* Dropdown */}
+      {isOpen && (
+        <ul className="absolute z-10 mt-1 w-full bg-backdrop border-taskcard border-2 rounded shadow-md">
+          {options.map(option => (
+            <li
+              key={option.value}
+              className={`p-1.5 m-0.5 rounded-xs cursor-pointer hover:bg-taskcard/60`}
+              onClick={() => {
+                onChange(option.value);
+                setIsOpen(false);
+              }}
+            >
+              {option.label}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 }

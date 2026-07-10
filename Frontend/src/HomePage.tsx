@@ -103,7 +103,7 @@ export default function HomePage() {
     return <>
         <Nav />
         <SubNav />
-        <main className="grid grid-cols-3 gap-3 p-8 pr-75 bg-tertiary w-full h-[80vh]">
+        <main className="grid grid-cols-3 gap-3 p-8 pr-75 bg-backdrop w-full h-[80vh]">
             <TaskSection header="Dailies" tasks={[dummyTasks[0], dummyTasks[1], dummyTasks[2]]} />
             <TaskSection header="To Dos" tasks={[dummyTasks[3], dummyTasks[4]]} />
             <TaskSection header="Pending" tasks={[dummyTasks[5], dummyTasks[6]]} />
@@ -113,7 +113,7 @@ export default function HomePage() {
 
 function Nav() {
     return <header>
-        <nav className="bg-primary">
+        <nav className="bg-nav">
             <ul className="flex m-0 p-0">
                 <li><a href="#" title="Logo">Logo</a></li>
                 <li><a href="#" title="Tasks">Tasks</a></li>
@@ -132,7 +132,7 @@ function Nav() {
 }
 
 function SubNav() {
-    return <div className="bg-secondary h-24 flex items-center">
+    return <div className="bg-subnav h-24 flex items-center">
         <h1 className="text-3xl m-0 px-6">LV 4</h1>
     </div>
 }
@@ -146,7 +146,7 @@ function TaskSection({ header, tasks }: TaskSectionProp) {
 
     return <section>
         <h2 className="text-left text-text-dark">{header}</h2>
-        <div className="flex flex-col bg-quaternary h-[60vh] p-4 rounded-[15px]">
+        <div className="flex flex-col bg-taskcard h-[60vh] p-4 rounded-[15px]">
 
             <div className="flex flex-col w-full">
                 {tasks.map(task => <TaskBox key={task.task_id} task={task} />)}
@@ -173,13 +173,13 @@ interface Task {
 
 function TaskBox({ task }: { task: Task }) {
     return (
-        <article className="bg-task-box grid grid-cols-[65px_1fr_65px] mb-5 rounded overflow-hidden">
+        <article className="bg-backdrop grid grid-cols-[65px_1fr_65px] mb-5 rounded overflow-hidden">
 
             <div className="flex justify-center pt-3 pb-3">
                 <button className="w-9 h-9 rounded bg-checkmark border border-checkmark" />
             </div>
 
-            <div className="flex flex-col text-text-dark text-left  pt-3 pb-3 h-full relative">
+            <div className="flex flex-col text-text-dark text-left py-3 h-full relative">
 
                 <span className="leading-4">{task.title}</span>
                 <span className="text-xs opacity-50">{task.recurrence}</span>
