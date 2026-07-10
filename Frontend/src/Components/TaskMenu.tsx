@@ -235,12 +235,12 @@ function TaskMenu() {
 
     const dateRange = getDate(type);
     const newTask = {
-      name: title,
+      title: title,
       note: note,
       difficulty: difficulty,
-      createdon: new Date(),
+      created_on: new Date(),
       type: type,
-      startDate: dateRange ? new Date(dateRange.start) : null,
+      start_date: dateRange ? new Date(dateRange.start) : null,
       deadline: dateRange ? buildDeadline(dateRange.end, deadlineTime) : null,
       frequency: repeatInterval,
       status: repeatable ? "" : "active",
