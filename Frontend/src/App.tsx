@@ -1,7 +1,5 @@
 import { Routes, Route } from 'react-router-dom'
- import HomePage from './HomePage'
-
-// import './App.css'
+import HomePage from './HomePage'
 import TaskForm from './Components/TaskForm'
 
 function App(){
@@ -12,7 +10,7 @@ function App(){
         element={<HomePage />}
       /> 
       <Route
-      path="/menu"
+      path="/taskform"
       element={<TaskForm/>}
       />
     </Routes>
