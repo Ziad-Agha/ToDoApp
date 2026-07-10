@@ -1,23 +1,24 @@
-
 @import "tailwindcss";
+@import "react-datepicker/dist/react-datepicker.css";
 
 @theme {
   --color-nav: #191f2f;
   --color-nav-hover: #222a40;
   --color-nav-active: #2b3550;
-  --color-sub-nav: #303747;
-  --color-tasks-view: #fff4f3;
-  --color-tasks-section: #e2c7c0;
-  --color-task-box: #fff4f3;
+  --color-nav-text: #FFFFFF;
+  --color-subnav: #303747;
+  --color-backdrop: #fff4f3;
+  --color-taskcard: #e2c7c0;
   --color-checkmark: #d5aea4;
   --color-text-dark: #191f2f;
   --color-coin-area: #fde7cd;
   --color-coin-value: #dd9d30;
 }
+
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: var(--color-tasks-section);
+  --bg: var(--color-taskcard);
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
   --accent: #aa3bff;
@@ -46,32 +47,10 @@
   }
 }
 
-/* @media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
-} */
-
 #root {
-  /* width: 1126px; */
   max-width: 100%;
   margin: 0 auto;
   text-align: center;
-  border-inline: 1px solid var(--border);
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -85,19 +64,103 @@ body {
 h1 {
   font-family: var(--heading);
   font-weight: 500;
-  
   font-size: 56px;
 }
 
 h2 {
   font-family: var(--heading);
   font-weight: 500;
-  
   font-size: 24px;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
 }
 
+
+
+/* ------------------- HOME PAGE ------------------- */
+/* ------------------------------------------------- */
+nav a {
+  display: block;
+  color: var(--color-nav-text);
+  padding: 0.7rem 1.2rem;
+
+  &:hover {
+    background-color: var(--color-nav-hover);
+  }
+
+  &.active {
+    background-color: var(--color-nav-active);
+  }
+}
+
 .task-element {
-    @apply bg-tasks-section rounded p-2;
+  @apply bg-taskcard rounded pt-1.5 pb-1.5 pr-1.75 pl-1.75;
+}
+
+
+
+
+.number-input::-webkit-inner-spin-button,
+.number-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.number-input {
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+
+
+
+/* ------------- TASK FORM: DATEPICKER ------------- */
+/* !DatePicker cannot be targeted with Tailwind      */
+/* ------------------------------------------------- */
+.react-datepicker__header {
+  background-color: var(--color-subnav);
+}
+
+.react-datepicker__header h2,
+.react-datepicker__header div,
+.react-datepicker-year-header {
+  color: var(--color-nav-text);
+}
+
+.react-datepicker,
+.react-datepicker__time-list-item {
+  background-color: var(--color-backdrop);
+}
+
+.react-datepicker__tab-loop {
+  position: absolute;
+}
+
+.react-datepicker__navigation-icon--previous,
+.react-datepicker__navigation-icon--next {
+  top: 4px;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected,
+.react-datepicker__time-list-item--selected,
+.react-datepicker__year-text--keyboard-selected,
+.react-datepicker__month-text--selected,
+.react-datepicker__month-text--keyboard-selected,
+.react-datepicker__quarter-text--keyboard-selected {
+  background-color: var(--color-taskcard) !important;
+  color: var(--color-nav) !important;
+}
+
+.react-datepicker__day:hover,
+.react-datepicker__time-list-item:hover,
+.react-datepicker__month-text:hover {
+  background-color: var(--color-taskcard) !important;
+  color: var(--color-nav) !important;
+}
+
+.react-datepicker__month-container 
+.react-datepicker__month-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 0;
 }
