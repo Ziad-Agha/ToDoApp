@@ -280,12 +280,12 @@ function useTaskForm() {
     // ------------------ TASK CREATION -------------------------- //
     const dateRange = getDate(type);
     const newTask = {
-      name: title,
+      title: title,
       note: note,
       difficulty: difficulty,
-      createdon: new Date(),
+      created_on: new Date(),
       type: type,
-      startDate: dateRange ? dateRange.start : null,
+      start_date: dateRange ? dateRange.start : null,
       deadline: dateRange ? buildDeadline(dateRange.end, deadlineTime) : null,
       frequency: frequency,
       status: repeatable ? "" : "active",

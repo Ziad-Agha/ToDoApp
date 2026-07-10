@@ -10,7 +10,6 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
 }
 
 model User {
@@ -38,10 +37,10 @@ model Task {
   difficulty    String    
   created_on    DateTime      @default(now())
   type          String    
-  private       Boolean       @default(false)
+  isPrivate       Boolean       @default(false)
 
   status        String?   
-  start_date    DateTime      @default(now())
+  start_date    DateTime?      
   deadline      DateTime?      
   grace_period  Int?    
 

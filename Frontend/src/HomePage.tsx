@@ -137,13 +137,8 @@ function SubNav() {
     </div>
 }
 
-interface TaskSectionProp {
-    header: string
-    tasks: Task[]
-}
 
-function TaskSection({ header, tasks }: TaskSectionProp) {
-
+function TaskSection({ header, tasks }: {header: string, tasks: Task[]}) {
     return <section>
         <h2 className="text-left text-text-dark">{header}</h2>
         <div className="flex flex-col bg-taskcard h-[60vh] p-4 rounded-[15px]">
@@ -155,6 +150,7 @@ function TaskSection({ header, tasks }: TaskSectionProp) {
     </section>
 
 }
+
 
 interface Task {
     user_id: string;
