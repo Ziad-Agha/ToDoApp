@@ -14,21 +14,10 @@ export default function TaskForm({ onClose }: { onClose: () => void }) {
     handleDeadline, handleSubmit
   } = useTaskForm();
 
-  // const handleFormSubmit = async (e: React.MouseEvent) => {
-  //   e.preventDefault();
-  //   try {
-  //     await handleSubmit();
-  //     onClose();
-  //   } catch (error) {
-  //     console.error('Failed to create task:', error);
-  //   }
-  // };
-
   return <div className="task-form bg-backdrop rounded-xl w-85 p-5 flex flex-col text-text-dark">
     <button className="text-nav/50 absolute self-end hover:text-nav"
-      onClick={onClose}><HiMiniXMark size={28}/>
+      onClick={onClose}><HiMiniXMark size={28} />
     </button>
-
     <div className="flex flex-col gap-3 p-5 self-center">
       <input className="border-b w-full text-2xl focus:outline-none"
         type="text" value={title} placeholder="Add Title"
@@ -83,9 +72,8 @@ export default function TaskForm({ onClose }: { onClose: () => void }) {
         </div>
       )}
     </div>
-
     <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
-      onClick={() => handleSubmit({onClose})}>Create
+      onClick={() => handleSubmit({ onClose })}>Create
     </button>
   </div>
 }
@@ -264,13 +252,10 @@ function useTaskForm() {
     }
   }
 
-  async function handleSubmit({ onClose } : {onClose : () => void}) {
-    // ------------------ VALIDATION -------------------------- //
-    const validationErrors: string[] = [];
-
-    if (!title.trim()) validationErrors.push("Title is required.")
-    if (!difficulty) validationErrors.push("Difficulty is required.")
-
+  function validateForm(): string[] {
+    const errors: string[] = [];
+    if (!title.trim()) errors.push("Title is required.")
+    if (!difficulty) errors.push("Difficulty is required.")
     if (!repeatable) {
       const dateValidators: Record<string, () => string | null> = {
         day: () => !deadlineDate ? "Deadline is required." : null,
@@ -282,17 +267,23 @@ function useTaskForm() {
             : null,
       }
       const dateError = dateValidators[type]?.()
-      if (dateError) validationErrors.push(dateError)
+      if (dateError) errors.push(dateError)
     }
 
-    if (validationErrors.length > 0) {
-      setErrors(validationErrors);
+    return errors;
+  }
+
+  async function handleSubmit({ onClose }: { onClose: () => void }) {
+    // Validate
+    const errors = validateForm();
+    if (errors.length > 0) {
+      setErrors(errors);
       return;
-    }
-
+    } else
+    
     setErrors([]);
 
-    // ------------------ TASK CREATION -------------------------- //
+    // Wrap data in an object
     const dateRange = getDate(type);
     const newTask = {
       title: title,
@@ -307,15 +298,9 @@ function useTaskForm() {
       weekday: weekly,
       isPrivate: isPrivate,
     };
-
-
-    // console.log('Form data before sending:', JSON.stringify(newTask, null, 2));
-
-    // ------------------ POST REQ BLOCK ----------------- //
-    //  SENDING TASK TO BACKEND SERVER
+    
+    // Send object -> routes -> controller
     try {
-      // API SHOULD BE REFERENCED NOT EXPLICIT
-      // SHOULDN'T THE REQUEST BE IN ROUTES?
       const response = await fetch("http://localhost:3001/api/tasks/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -329,6 +314,8 @@ function useTaskForm() {
     } catch (error) {
       console.error("Failed to create task:", error);
     }
+
+    // Close form
     onClose();
   }
 
@@ -339,15 +326,13 @@ function useTaskForm() {
     difficulty, setDifficulty,
     repeatable, setRepeatable,
     isPrivate, setIsPrivate,
-    errors,
-
-    handleFrequency, handleDeadline, handleSubmit
+    errors, handleFrequency, 
+    handleDeadline, handleSubmit
   }
 }
 
 
-/* --------------- CUSTOM SELECT --------------- */
-// Native select replacement for custom styling
+/* Custome Dropdown for custom styling */
 // Claude generated
 interface SelectOption {
   value: string;
