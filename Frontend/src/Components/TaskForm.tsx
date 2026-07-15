@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
-// bg-
-export default function TaskForm() {
+import { HiMiniXMark } from "react-icons/hi2";
+
+export default function TaskForm({ onClose }: { onClose: () => void }) {
   const {
     title, setTitle,
     note, setNote,
@@ -13,8 +14,22 @@ export default function TaskForm() {
     handleDeadline, handleSubmit
   } = useTaskForm();
 
-  return <div className="task-form-container bg-backdrop self-center rounded-2xl w-95 p-10 m-8 text-left text-text-dark">
-    <div className="flex flex-col gap-3 self-center">
+  // const handleFormSubmit = async (e: React.MouseEvent) => {
+  //   e.preventDefault();
+  //   try {
+  //     await handleSubmit();
+  //     onClose();
+  //   } catch (error) {
+  //     console.error('Failed to create task:', error);
+  //   }
+  // };
+
+  return <div className="task-form bg-backdrop rounded-xl w-85 p-5 flex flex-col text-text-dark">
+    <button className="text-nav/50 absolute self-end hover:text-nav"
+      onClick={onClose}><HiMiniXMark size={28}/>
+    </button>
+
+    <div className="flex flex-col gap-3 p-5 self-center">
       <input className="border-b w-full text-2xl focus:outline-none"
         type="text" value={title} placeholder="Add Title"
         onChange={(e) => setTitle(e.target.value)}
@@ -67,11 +82,11 @@ export default function TaskForm() {
           ))}
         </div>
       )}
-
-      <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg"
-        onClick={handleSubmit}>Create
-      </button>
     </div>
+
+    <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
+      onClick={() => handleSubmit({onClose})}>Create
+    </button>
   </div>
 }
 
@@ -249,7 +264,7 @@ function useTaskForm() {
     }
   }
 
-  async function handleSubmit() {
+  async function handleSubmit({ onClose } : {onClose : () => void}) {
     // ------------------ VALIDATION -------------------------- //
     const validationErrors: string[] = [];
 
@@ -294,6 +309,8 @@ function useTaskForm() {
     };
 
 
+    // console.log('Form data before sending:', JSON.stringify(newTask, null, 2));
+
     // ------------------ POST REQ BLOCK ----------------- //
     //  SENDING TASK TO BACKEND SERVER
     try {
@@ -312,6 +329,7 @@ function useTaskForm() {
     } catch (error) {
       console.error("Failed to create task:", error);
     }
+    onClose();
   }
 
   return {
@@ -362,7 +380,7 @@ function CustomSelect({ value, onChange, options }: CustomSelectProps) {
   return (
     <div ref={ref} className="relative">
       {/* Trigger */}
-      <button
+      <button type="button"
         className="task-element flex items-center gap-4"
         onClick={() => setIsOpen(prev => !prev)}
       >
