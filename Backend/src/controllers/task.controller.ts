@@ -46,3 +46,25 @@ export async function createTask(req: Request, res: Response) {
 }
 // export function getAllTasks(req: Request, res: Response) {
 //   res.json(tasks);}
+
+export async function getAllTasks(req: Request, res: Response) {
+  const tasks = await prisma.task.findMany({
+    where: { user_id: "49c1c38b-cba4-4980-9b8d-03451eaf70b2" }
+  })
+  console.log(tasks)
+  console.log(JSON.stringify(tasks))
+  res.status(200).json(tasks);
+}
+
+export async function getTask(req: Request, res: Response) {
+  const task_id = req.params.task_id as string;
+
+  console.log('Raw request params:', JSON.stringify(req.params, null, 2));
+
+
+  const task = await prisma.task.findUnique({
+    where: { task_id: task_id }
+  })
+  
+  res.status(200).json(task)
+}
