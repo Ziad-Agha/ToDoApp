@@ -301,7 +301,7 @@ function useTaskForm() {
     
     // Send object -> routes -> controller
     try {
-      const response = await fetch("http://localhost:3001/api/tasks/", {
+      const response = await fetch("http://localhost:3001/api/tasks/createTask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask),
