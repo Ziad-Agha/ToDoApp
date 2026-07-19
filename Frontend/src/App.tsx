@@ -1,20 +1,19 @@
-import { Routes, Route } from 'react-router-dom'
-import HomePage from './HomePage'
-import TaskForm from './Components/TaskForm'
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./HomePage";
+import TaskForm from "./Components/TaskForm";
+import LoginForm from "./Components/LoginForm";
+import RegisterForm from "./Components/RegisterForm";
 
-function App(){
+
+function App() {
   return (
     <Routes>
-       <Route
-        path="/"
-        element={<HomePage />}
-      /> 
-      <Route
-      path="/taskform"
-      element={<TaskForm/>}
-      />
+      <Route path="/" element={<LoginForm />}></Route>
+      <Route path="/register" element={<RegisterForm />}></Route>
+      <Route path="/home" element={<HomePage />} />
+      <Route path="/taskform" element={<TaskForm />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;
