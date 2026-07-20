@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
-// bg-
-export default function TaskForm() {
+import { HiMiniXMark } from "react-icons/hi2";
+
+export default function TaskForm({ onClose }: { onClose: () => void }) {
   const {
     title, setTitle,
     note, setNote,
@@ -13,8 +14,11 @@ export default function TaskForm() {
     handleDeadline, handleSubmit
   } = useTaskForm();
 
-  return <div className="task-form-container bg-backdrop self-center rounded-2xl w-95 p-10 m-8 text-left text-text-dark">
-    <div className="flex flex-col gap-3 self-center">
+  return <div className="task-form bg-backdrop rounded-xl w-85 p-5 flex flex-col text-text-dark">
+    <button className="text-nav/50 absolute self-end hover:text-nav"
+      onClick={onClose}><HiMiniXMark size={28} />
+    </button>
+    <div className="flex flex-col gap-3 p-5 self-center">
       <input className="border-b w-full text-2xl focus:outline-none"
         type="text" value={title} placeholder="Add Title"
         onChange={(e) => setTitle(e.target.value)}
@@ -67,11 +71,10 @@ export default function TaskForm() {
           ))}
         </div>
       )}
-
-      <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg"
-        onClick={handleSubmit}>Create
-      </button>
     </div>
+    <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
+      onClick={() => handleSubmit({ onClose })}>Create
+    </button>
   </div>
 }
 
@@ -249,13 +252,10 @@ function useTaskForm() {
     }
   }
 
-  async function handleSubmit() {
-    // ------------------ VALIDATION -------------------------- //
-    const validationErrors: string[] = [];
-
-    if (!title.trim()) validationErrors.push("Title is required.")
-    if (!difficulty) validationErrors.push("Difficulty is required.")
-
+  function validateForm(): string[] {
+    const errors: string[] = [];
+    if (!title.trim()) errors.push("Title is required.")
+    if (!difficulty) errors.push("Difficulty is required.")
     if (!repeatable) {
       const dateValidators: Record<string, () => string | null> = {
         day: () => !deadlineDate ? "Deadline is required." : null,
@@ -267,17 +267,23 @@ function useTaskForm() {
             : null,
       }
       const dateError = dateValidators[type]?.()
-      if (dateError) validationErrors.push(dateError)
+      if (dateError) errors.push(dateError)
     }
 
-    if (validationErrors.length > 0) {
-      setErrors(validationErrors);
+    return errors;
+  }
+
+  async function handleSubmit({ onClose }: { onClose: () => void }) {
+    // Validate
+    const errors = validateForm();
+    if (errors.length > 0) {
+      setErrors(errors);
       return;
-    }
-
+    } else
+    
     setErrors([]);
 
-    // ------------------ TASK CREATION -------------------------- //
+    // Wrap data in an object
     const dateRange = getDate(type);
     const newTask = {
       title: title,
@@ -292,14 +298,10 @@ function useTaskForm() {
       weekday: weekly,
       isPrivate: isPrivate,
     };
-
-
-    // ------------------ POST REQ BLOCK ----------------- //
-    //  SENDING TASK TO BACKEND SERVER
+    
+    // Send object -> routes -> controller
     try {
-      // API SHOULD BE REFERENCED NOT EXPLICIT
-      // SHOULDN'T THE REQUEST BE IN ROUTES?
-      const response = await fetch("http://localhost:3001/api/tasks/", {
+      const response = await fetch("http://localhost:3001/api/tasks/createTask", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask),
@@ -312,6 +314,9 @@ function useTaskForm() {
     } catch (error) {
       console.error("Failed to create task:", error);
     }
+
+    // Close form
+    onClose();
   }
 
   return {
@@ -321,15 +326,13 @@ function useTaskForm() {
     difficulty, setDifficulty,
     repeatable, setRepeatable,
     isPrivate, setIsPrivate,
-    errors,
-
-    handleFrequency, handleDeadline, handleSubmit
+    errors, handleFrequency, 
+    handleDeadline, handleSubmit
   }
 }
 
 
-/* --------------- CUSTOM SELECT --------------- */
-// Native select replacement for custom styling
+/* Custome Dropdown for custom styling */
 // Claude generated
 interface SelectOption {
   value: string;
@@ -362,7 +365,7 @@ function CustomSelect({ value, onChange, options }: CustomSelectProps) {
   return (
     <div ref={ref} className="relative">
       {/* Trigger */}
-      <button
+      <button type="button"
         className="task-element flex items-center gap-4"
         onClick={() => setIsOpen(prev => !prev)}
       >

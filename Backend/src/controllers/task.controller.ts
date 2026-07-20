@@ -6,6 +6,8 @@ import { connect } from "node:http2";
 let nextId = 1;
 
 export async function createTask(req: Request, res: Response) {
+  // console.log('Raw request body:', JSON.stringify(req.body, null, 2));
+  // console.log('Content-Type:', req.headers['content-type']);
   const {
     title,
     note,
