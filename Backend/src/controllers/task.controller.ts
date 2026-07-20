@@ -64,10 +64,10 @@ export async function getTask(req: Request, res: Response) {
   res.status(200).json(task)
 }
 
-export async function deleteTask(req: Request, res: Response){
-  const task_id = req.params.task_id as string
-  const task = await prisma.task.delete({
-    where: { task_id: task_id }
-  })
-  res.status(200).json(task)
-}
+// export async function deleteTask(req: Request, res: Response){
+//   const task_id = req.params.task_id as string
+//   const task = await prisma.task.delete({
+//     where: { task_id: task_id }
+//   })
+//   res.status(200).json(task)
+// }
