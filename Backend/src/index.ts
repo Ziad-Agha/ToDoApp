@@ -19,7 +19,7 @@ app.use(
 app.use(express.json());
 
 app.use("/api/tasks", tasksRouter);
-app.use("api/auth",authRouter);
+app.use("/api/auth", authRouter);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
