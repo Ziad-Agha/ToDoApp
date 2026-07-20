@@ -7,6 +7,8 @@ let nextId = 1;
 
 export async function createTask(req: Request, res: Response) {
   const user_id = req.user!.user_id;
+  // console.log('Raw request body:', JSON.stringify(req.body, null, 2));
+  // console.log('Content-Type:', req.headers['content-type']);
   const {
     title,
     note,
