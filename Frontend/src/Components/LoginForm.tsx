@@ -1,7 +1,8 @@
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function LoginForm() {
+  const [error, setError] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
   const passRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
@@ -16,6 +17,11 @@ export default function LoginForm() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ email, password }),
     });
+    if (!response.ok) {
+      const data = await response.json();
+      setError(data.error);
+      return;
+    }
     const data = await response.json();
     localStorage.setItem("token", data.token);
     navigate("/home");
@@ -43,7 +49,7 @@ export default function LoginForm() {
             ref={passRef}
           />
         </div>
-
+        {error && <p className="text-red-500 text-sm">{error}</p>}
         <button
           className="border bg-nav rounded p-2 text-backdrop py-2 px-4 mt-4 w-25 self-center hover:bg-subnav"
           type="submit"
