@@ -6,6 +6,7 @@ import { connect } from "node:http2";
 let nextId = 1;
 
 export async function createTask(req: Request, res: Response) {
+  const user_id = req.user!.user_id;
   const {
     title,
     note,
@@ -23,7 +24,7 @@ export async function createTask(req: Request, res: Response) {
   const newTask = await prisma.task.create({
     data: {
       user: {
-        connect: { user_id: "49c1c38b-cba4-4980-9b8d-03451eaf70b2" },
+        connect: { user_id },
       },
       title,
       note,
