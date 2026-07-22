@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// Login form asks for email and password
 export default function LoginForm() {
   const [error, setError] = useState("");
   const emailRef = useRef<HTMLInputElement>(null);
@@ -22,6 +23,8 @@ export default function LoginForm() {
       setError(data.error);
       return;
     }
+    // revieves token from API response and stores in localstorage of browser.
+    // Refer to authmiddleware to see how its used.
     const data = await response.json();
     localStorage.setItem("token", data.token);
     navigate("/home");

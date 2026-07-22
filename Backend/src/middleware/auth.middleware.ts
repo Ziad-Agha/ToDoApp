@@ -1,6 +1,9 @@
 import type { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 
+// verifies that request contains correct authorization header
+// and that the token is valid by hashing the provided token's paylaod and header against the secret.
+// pass the call to the appropriate endpoint after attaching the payload to the req. 
 export function authMiddleware(
   req: Request,
   res: Response,
