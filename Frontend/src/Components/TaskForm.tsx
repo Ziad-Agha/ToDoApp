@@ -303,7 +303,10 @@ function useTaskForm() {
     try {
       const response = await fetch("http://localhost:3001/api/tasks/createTask", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { 
+          "Content-Type": "application/json", 
+          "Authorization": `Bearer ${localStorage.getItem("token")}` 
+        },
         body: JSON.stringify(newTask),
       });
       if (!response.ok) {
