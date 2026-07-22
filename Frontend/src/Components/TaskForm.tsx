@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import { HiMiniXMark } from "react-icons/hi2";
+import apiFetch from "../utils/api";
 
 export default function TaskForm({ onClose }: { onClose: () => void }) {
   const {
@@ -280,8 +281,8 @@ function useTaskForm() {
       setErrors(errors);
       return;
     } else
-    
-    setErrors([]);
+
+      setErrors([]);
 
     // Wrap data in an object
     const dateRange = getDate(type);
@@ -298,15 +299,11 @@ function useTaskForm() {
       weekday: weekly,
       isPrivate: isPrivate,
     };
-    
+
     // Send object -> routes -> controller
     try {
-      const response = await fetch("http://localhost:3001/api/tasks/createTask", {
+      const response = await apiFetch("/tasks/createTask", {
         method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          "Authorization": `Bearer ${localStorage.getItem("token")}` 
-        },
         body: JSON.stringify(newTask),
       });
       if (!response.ok) {
@@ -329,7 +326,7 @@ function useTaskForm() {
     difficulty, setDifficulty,
     repeatable, setRepeatable,
     isPrivate, setIsPrivate,
-    errors, handleFrequency, 
+    errors, handleFrequency,
     handleDeadline, handleSubmit
   }
 }
