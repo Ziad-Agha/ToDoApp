@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";
-import { getDailyTasks, getActiveTasks } from "../services/taskService";
-import apiFetch from "../utils/api";
+import { getActiveTasks } from "../services/taskService";
 
 export default function DailyView() {
     const dummyTasks: Task[] = [
@@ -105,24 +104,18 @@ export default function DailyView() {
         },
     ];
 
-    const [dailyTasks, setDailyTasks] = useState<Task[]>([])
-    const [day, setDay] = useState<Date>(new Date("2026-07-21"))
-
+    const [tasks, setTasks] = useState<Task[]>([])
+    // const [day, setDay] = useState<Date>(new Date("2026-07-21"))
     const fetchTasks = async () => {
-        try {
-            // TESTING GETACTIVETASKS
-            const tasks = await getActiveTasks()
-            setDailyTasks(tasks)
-        } catch (err) {
-            console.error("Failed to fetch daily tasks:", err)
-        }
+        const response = await getActiveTasks()
+        setTasks(response)
     }
     useEffect(() => {
         fetchTasks()
     }, [])
 
     return <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
-        <TaskSection header="Dailies" tasks={dailyTasks} />
+        <TaskSection header="Dailies" tasks={tasks} />
         <TaskSection header="To Dos" tasks={[dummyTasks[3], dummyTasks[4]]} />
         <TaskSection header="Pending" tasks={[dummyTasks[5], dummyTasks[6]]} />
     </main>
@@ -130,7 +123,7 @@ export default function DailyView() {
 
 function TaskSection({ header, tasks }: { header: string, tasks: Task[] }) {
     const [isFormOpen, setIsFormOpen] = useState(false)
-    return <section>
+    return <section className="">
         <div className="text-subnav flex justify-between mb-0.5">
             <h2>{header}</h2>
             <NewTaskButton
@@ -138,7 +131,7 @@ function TaskSection({ header, tasks }: { header: string, tasks: Task[] }) {
                 onClick={() => setIsFormOpen(true)}
             />
         </div>
-        <div className="bg-taskcard flex flex-col h-[60vh] p-1.5 rounded-sm">
+        <div className="bg-taskcard flex flex-col h-[60vh] p-1.5 rounded-sm overflow-auto">
             <div className="flex flex-col w-full gap-1">
                 {tasks.map(task => <TaskBox key={task.task_id} task={task} />)}
             </div>

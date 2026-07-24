@@ -1,10 +1,10 @@
-import apiFetch from "../utils/api"
+import { apiFetch } from "../utils/api"
 
 interface Task {
   user_id: string;
   task_id: string;
   title: string;
-  description?: string; // or details or note
+  description?: string;
   difficulty: string;
   type: string;
   recurrence?: string;
@@ -15,6 +15,7 @@ interface Task {
   deadline: Date;
 }
 
+// INACTIVE
 export async function getDailyTasks(day: Date): Promise<Task[]> {
   const start = new Date(day); start.setHours(0, 0, 0, 0)
   const end = new Date(day); end.setHours(23, 59, 59, 999)

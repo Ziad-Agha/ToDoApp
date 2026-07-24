@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import { HiMiniXMark } from "react-icons/hi2";
-import apiFetch from "../utils/api";
+import { apiFetch, toUTCDate } from "../utils/api";
 
 export default function TaskForm({ onClose }: { onClose: () => void }) {
   const {
@@ -290,10 +290,10 @@ function useTaskForm() {
       title: title,
       note: note,
       difficulty: difficulty,
-      created_on: new Date(),
+      created_on: toUTCDate(new Date),
       type: type,
-      start_date: dateRange ? dateRange.start : null,
-      deadline: dateRange ? buildDeadline(dateRange.end, deadlineTime) : null,
+      start_date: dateRange ? toUTCDate(dateRange.start) : null,
+      deadline: dateRange && deadlineTime? buildDeadline(toUTCDate(dateRange.end), toUTCDate(deadlineTime)) : null,
       frequency: frequency,
       status: repeatable ? "" : "active",
       weekday: weekly,
