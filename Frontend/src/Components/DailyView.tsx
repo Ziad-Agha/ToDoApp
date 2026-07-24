@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";
-import { getDailyTasks } from "../services/taskService";
+import { getDailyTasks, getActiveTasks } from "../services/taskService";
+import apiFetch from "../utils/api";
 
 export default function DailyView() {
     const dummyTasks: Task[] = [
@@ -105,22 +106,23 @@ export default function DailyView() {
     ];
 
     const [dailyTasks, setDailyTasks] = useState<Task[]>([])
+    const [day, setDay] = useState<Date>(new Date("2026-07-21"))
 
     const fetchTasks = async () => {
         try {
-            const tasks = await getDailyTasks() // service function
+            // TESTING GETACTIVETASKS
+            const tasks = await getActiveTasks()
             setDailyTasks(tasks)
         } catch (err) {
             console.error("Failed to fetch daily tasks:", err)
         }
     }
-
     useEffect(() => {
         fetchTasks()
     }, [])
 
     return <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
-        <TaskSection header="Dailies" tasks={[dummyTasks[0], dummyTasks[1], dummyTasks[2]]} />
+        <TaskSection header="Dailies" tasks={dailyTasks} />
         <TaskSection header="To Dos" tasks={[dummyTasks[3], dummyTasks[4]]} />
         <TaskSection header="Pending" tasks={[dummyTasks[5], dummyTasks[6]]} />
     </main>
