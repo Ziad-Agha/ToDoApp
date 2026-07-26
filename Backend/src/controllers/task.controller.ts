@@ -45,5 +45,20 @@ export async function createTask(req: Request, res: Response) {
   res.status(201).json(newTask);
   // tasks.push(newTask);
 }
+export async function updateTask(req: Request, res: Response) {
+  try {
+    const { user_id } = req.user!;
+    const task_id = req.params.task_id as string;
+
+    const updatedTask = await prisma.task.update({
+      where: { task_id, user_id },
+      data: req.body,
+    });
+    res.json(updatedTask);
+  } catch (error) {
+    console.error("Full error:", JSON.stringify(error, null, 2));
+    res.status(500).json({ error });
+  }
+}
 // export function getAllTasks(req: Request, res: Response) {
 //   res.json(tasks);}
