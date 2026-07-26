@@ -2,122 +2,48 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";
-import { getActiveTasks } from "../services/taskService";
+import { filterTasks, getActiveTasks } from "../services/taskService";
+
+interface Task {
+    user_id: string;
+    task_id: string;
+    title: string;
+    description?: string; // or details or note
+    difficulty: string;
+    type: string;
+    recurrence?: string;
+    timeleft?: string;
+    status: string;
+    value: number;
+    created_on: Date;
+    deadline: Date;
+}
+
+interface FilteredTasks {
+    regulars: Task[]
+    uniques: Task[]
+    pendings: Task[]
+}
 
 export default function DailyView() {
-    const dummyTasks: Task[] = [
-        {
-            user_id: "u_001",
-            task_id: "t_001",
-            title: "Feed cats",
-            description: "Create wireframes for the main task board page",
-            difficulty: "medium",
-            type: "design",
-            recurrence: "Everyday",
-            timeleft: "8h left",
-            status: "incomplete",
-            value: 50,
-            created_on: new Date("2026-06-20"),
-            deadline: new Date("2026-06-30"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_002",
-            title: "Workout",
-            difficulty: "hard",
-            type: "backend",
-            recurrence: "Every 2 days",
-            timeleft: "8h left",
-            status: "complete",
-            value: 75,
-            created_on: new Date("2026-06-18"),
-            deadline: new Date("2026-06-25"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_003",
-            title: "Jumu'a",
-            description: "Cover login, registration and token refresh endpoints",
-            difficulty: "medium",
-            type: "backend",
-            recurrence: "Every Friday",
-            timeleft: "2h left",
-            status: "incomplete",
-            value: 40,
-            created_on: new Date("2026-06-21"),
-            deadline: new Date("2026-07-05"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_004",
-            title: "Quick shopping from Maxi",
-            difficulty: "easy",
-            type: "frontend",
-            recurrence: "Every 2 days",
-            timeleft: '9h left',
-            status: "incomplete",
-            value: 20,
-            created_on: new Date("2026-06-24"),
-            deadline: new Date("2026-06-27"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_005",
-            title: "Apply to Service Info Montreal",
-            description: "Look into how Habitica and Duolingo handle levelling curves",
-            difficulty: "easy",
-            type: "research",
-            recurrence: "Every Friday",
-            timeleft: '12h left',
-            status: "complete",
-            value: 15,
-            created_on: new Date("2026-06-15"),
-            deadline: new Date("2026-06-22"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_006",
-            title: "Recharge Opus",
-            description: "Look into how Habitica and Duolingo handle levelling curves",
-            difficulty: "easy",
-            type: "research",
-            recurrence: "Every Month",
-            // timeleft: '12h left',
-            status: "complete",
-            value: 15,
-            created_on: new Date("2026-06-15"),
-            deadline: new Date("2026-06-22"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_007",
-            title: "Buy cat litter",
-            description: "Look into how Habitica and Duolingo handle levelling curves",
-            difficulty: "easy",
-            type: "research",
-            recurrence: "Every Saturday",
-            // timeleft: '12h left',
-            status: "complete",
-            value: 15,
-            created_on: new Date("2026-06-15"),
-            deadline: new Date("2026-06-22"),
-        },
-    ];
-
-    const [tasks, setTasks] = useState<Task[]>([])
-    // const [day, setDay] = useState<Date>(new Date("2026-07-21"))
+    const [tasks, setTasks] = useState<FilteredTasks>({
+        regulars: [],
+        uniques: [],
+        pendings: [],
+    })
     const fetchTasks = async () => {
-        const response = await getActiveTasks()
-        setTasks(response)
+        const activeTasks = await getActiveTasks()
+        const filteredTasks = filterTasks(activeTasks)
+        setTasks(filteredTasks)
     }
     useEffect(() => {
         fetchTasks()
     }, [])
 
     return <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
-        <TaskSection header="Dailies" tasks={tasks} />
-        <TaskSection header="To Dos" tasks={[dummyTasks[3], dummyTasks[4]]} />
-        <TaskSection header="Pending" tasks={[dummyTasks[5], dummyTasks[6]]} />
+        <TaskSection header="Dailies" tasks={tasks.regulars} />
+        <TaskSection header="To Dos" tasks={tasks.uniques} />
+        <TaskSection header="Pending" tasks={tasks.pendings} />
     </main>
 }
 
@@ -143,21 +69,6 @@ function TaskSection({ header, tasks }: { header: string, tasks: Task[] }) {
             document.body
         )}
     </section>
-}
-
-interface Task {
-    user_id: string;
-    task_id: string;
-    title: string;
-    description?: string; // or details or note
-    difficulty: string;
-    type: string;
-    recurrence?: string;
-    timeleft?: string;
-    status: string;
-    value: number;
-    created_on: Date;
-    deadline: Date;
 }
 
 function TaskBox({ task }: { task: Task }) {
