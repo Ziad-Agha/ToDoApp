@@ -82,7 +82,7 @@ export async function getActiveTasks(req: Request, res: Response) {
   const tasks = await prisma.task.findMany({
     where: { 
       user_id: req.user!.user_id, 
-      status: { in: ["active", "regular", "pending"]} }
+      status: { in: ["active", "pending"] } }
   })
   // console.log("TASKS RETURNED: \n" + JSON.stringify(tasks))
   tasks.length > 0 ?

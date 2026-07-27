@@ -3,7 +3,10 @@ import DatePicker from "react-datepicker";
 import { HiMiniXMark } from "react-icons/hi2";
 import { apiFetch, toUTCDate } from "../utils/api";
 
-export default function TaskForm({ onClose }: { onClose: () => void }) {
+export default function TaskForm({ onClose, onTaskCreated }: {
+  onClose: () => void
+  onTaskCreated: () => void
+}) {
   const {
     title, setTitle,
     note, setNote,
@@ -74,7 +77,7 @@ export default function TaskForm({ onClose }: { onClose: () => void }) {
       )}
     </div>
     <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
-      onClick={() => handleSubmit({ onClose })}>Create
+      onClick={() => handleSubmit({ onClose, onTaskCreated })}>Create
     </button>
   </div>
 }
@@ -140,7 +143,7 @@ function useTaskForm() {
   const [difficulty, setDifficulty] = useState("easy");
   const [repeatable, setRepeatable] = useState(false);
   const [weekly, setWeekly] = useState("Sunday");
-  const [frequency, setFrequency] = useState(1);
+  const [frequency, setFrequency] = useState(0);
   const [selectedWeek, setSelectedWeek] = useState<Date | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -274,7 +277,10 @@ function useTaskForm() {
     return errors;
   }
 
-  async function handleSubmit({ onClose }: { onClose: () => void }) {
+  async function handleSubmit({ onClose, onTaskCreated }: {
+    onClose: () => void
+    onTaskCreated: () => void
+  }) {
     // Validate
     const errors = validateForm();
     if (errors.length > 0) {
@@ -293,9 +299,9 @@ function useTaskForm() {
       created_on: toUTCDate(new Date),
       type: type,
       start_date: dateRange ? toUTCDate(dateRange.start) : null,
-      deadline: dateRange && deadlineTime? buildDeadline(toUTCDate(dateRange.end), toUTCDate(deadlineTime)) : null,
+      deadline: dateRange && deadlineTime ? buildDeadline(toUTCDate(dateRange.end), toUTCDate(deadlineTime)) : null,
       frequency: frequency,
-      status: repeatable ? "" : "active",
+      status: "active",
       weekday: weekly,
       isPrivate: isPrivate,
     };
@@ -316,7 +322,9 @@ function useTaskForm() {
     }
 
     // Close form
+    onTaskCreated()
     onClose();
+
   }
 
   return {

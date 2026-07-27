@@ -26,6 +26,7 @@ interface FilteredTasks {
 }
 
 export default function DailyView() {
+    const [refresh, setRefresh] = useState(0)
     const [tasks, setTasks] = useState<FilteredTasks>({
         regulars: [],
         uniques: [],
@@ -38,16 +39,16 @@ export default function DailyView() {
     }
     useEffect(() => {
         fetchTasks()
-    }, [])
+    }, [refresh])
 
     return <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
-        <TaskSection header="Dailies" tasks={tasks.regulars} />
-        <TaskSection header="To Dos" tasks={tasks.uniques} />
-        <TaskSection header="Pending" tasks={tasks.pendings} />
+        <TaskSection header="Dailies" tasks={tasks.regulars} taskCreated={() => setRefresh(r => r + 1)}/>
+        <TaskSection header="To Dos"  tasks={tasks.uniques}  taskCreated={() => setRefresh(r => r + 1)}/>
+        <TaskSection header="Pending" tasks={tasks.pendings} taskCreated={() => setRefresh(r => r + 1)}/>
     </main>
 }
 
-function TaskSection({ header, tasks }: { header: string, tasks: Task[] }) {
+function TaskSection({ header, tasks, taskCreated}: { header: string, tasks: Task[], taskCreated: () => void }) {
     const [isFormOpen, setIsFormOpen] = useState(false)
     return <section className="">
         <div className="text-subnav flex justify-between mb-0.5">
@@ -64,7 +65,7 @@ function TaskSection({ header, tasks }: { header: string, tasks: Task[] }) {
         </div>
         {isFormOpen && createPortal(
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <TaskForm onClose={() => setIsFormOpen(false)} />
+                <TaskForm onClose={() => setIsFormOpen(false)} onTaskCreated={taskCreated}/>
             </div>,
             document.body
         )}

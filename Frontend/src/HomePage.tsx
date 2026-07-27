@@ -3,7 +3,7 @@ import DailyView from "./Components/DailyView"
 export default function HomePage() {
     return <>
         <Nav />
-        <SubNav />
+        {/* <SubNav /> */}
         <DailyView />
     </>
 }
