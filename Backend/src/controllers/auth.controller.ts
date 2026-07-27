@@ -3,6 +3,9 @@ import prisma from "../db/prisma";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
+// recieves request body and verifies if then email already exists.
+// creates user record in the database.
+// 
 export async function register(req: Request, res: Response) {
   const { email, username, password } = req.body;
 
@@ -13,7 +16,7 @@ export async function register(req: Request, res: Response) {
   if (existing) {
     return res.status(409).json({ error: "email already in use" });
   }
-
+  // creates hashed pass
   const hashed_pass = await bcrypt.hash(password, 10);
 
   const newUser = await prisma.user.create({
@@ -23,6 +26,9 @@ export async function register(req: Request, res: Response) {
       password: hashed_pass,
     },
   });
+
+  // creates token including signature, jwt header, user_id. 
+  // signature is a combination of user_id, header and secret. 
   const token = jwt.sign(
     { user_id: newUser.user_id },
     process.env.JWT_SECRET!,
@@ -31,6 +37,7 @@ export async function register(req: Request, res: Response) {
   res.json({ token });
 }
 
+// similar to register im too lazy.
 export async function login(req: Request, res: Response) {
   const { email, password } = req.body;
 
