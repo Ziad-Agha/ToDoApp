@@ -49,10 +49,11 @@ export async function updateTask(req: Request, res: Response) {
   try {
     const { user_id } = req.user!;
     const task_id = req.params.task_id as string;
+    const {title, note, isPrivate} = req.body;
 
     const updatedTask = await prisma.task.update({
       where: { task_id, user_id },
-      data: req.body,
+      data: {title, note, isPrivate},
     });
     res.json(updatedTask);
   } catch (error) {
