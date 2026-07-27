@@ -8,15 +8,15 @@ interface Task {
     user_id: string;
     task_id: string;
     title: string;
-    description?: string; // or details or note
+    description?: string;
     difficulty: string;
+    created_on: Date;
+    deadline: Date;
     type: string;
-    recurrence?: string;
+    frequency: number;
     timeleft?: string;
     status: string;
     value: number;
-    created_on: Date;
-    deadline: Date;
 }
 
 interface FilteredTasks {
@@ -26,29 +26,34 @@ interface FilteredTasks {
 }
 
 export default function DailyView() {
+
     const [refresh, setRefresh] = useState(0)
+    const taskCreated = () => setRefresh(r => r + 1)
+
     const [tasks, setTasks] = useState<FilteredTasks>({
         regulars: [],
         uniques: [],
         pendings: [],
     })
+
     const fetchTasks = async () => {
         const activeTasks = await getActiveTasks()
         const filteredTasks = filterTasks(activeTasks)
         setTasks(filteredTasks)
     }
+
     useEffect(() => {
         fetchTasks()
     }, [refresh])
 
     return <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
-        <TaskSection header="Dailies" tasks={tasks.regulars} taskCreated={() => setRefresh(r => r + 1)}/>
-        <TaskSection header="To Dos"  tasks={tasks.uniques}  taskCreated={() => setRefresh(r => r + 1)}/>
-        <TaskSection header="Pending" tasks={tasks.pendings} taskCreated={() => setRefresh(r => r + 1)}/>
+        <TaskSection header="Dailies" tasks={tasks.regulars} taskCreated={taskCreated} />
+        <TaskSection header="To Dos" tasks={tasks.uniques} taskCreated={taskCreated} />
+        <TaskSection header="Pending" tasks={tasks.pendings} taskCreated={taskCreated} />
     </main>
 }
 
-function TaskSection({ header, tasks, taskCreated}: { header: string, tasks: Task[], taskCreated: () => void }) {
+function TaskSection({ header, tasks, taskCreated }: { header: string, tasks: Task[], taskCreated: () => void }) {
     const [isFormOpen, setIsFormOpen] = useState(false)
     return <section className="">
         <div className="text-subnav flex justify-between mb-0.5">
@@ -65,7 +70,7 @@ function TaskSection({ header, tasks, taskCreated}: { header: string, tasks: Tas
         </div>
         {isFormOpen && createPortal(
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <TaskForm onClose={() => setIsFormOpen(false)} onTaskCreated={taskCreated}/>
+                <TaskForm onClose={() => setIsFormOpen(false)} onTaskCreated={taskCreated} />
             </div>,
             document.body
         )}
@@ -80,7 +85,7 @@ function TaskBox({ task }: { task: Task }) {
             </div>
             <div className="flex flex-col text-text-dark text-left py-3 h-full relative -ml-1">
                 <span className="text-sm leading-4">{task.title}</span>
-                <span className="text-xs opacity-50">{task.recurrence}</span>
+                <span className="text-xs opacity-50">{task.frequency}</span>
                 {task.timeleft && <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">{task.timeleft}</span>}
             </div>
             <div className="bg-coin-area flex flex-col justify-center items-center gap-1 h-full">

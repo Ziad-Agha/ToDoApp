@@ -13,7 +13,7 @@ interface Task {
   type: string;
   frequency: number;
   timeleft?: string;
-  status: string; //active, regular, pending
+  status: string;
   value: number;
 }
 
@@ -32,19 +32,19 @@ export async function getActiveTasks(): Promise<Task[]> {
   const response = await apiFetch("/tasks/getActiveTasks",
     { method: "GET" })
 
-  if (!response.ok) 
-    throw new Error(`Server error: ${response.status}`)  
-  
-    return response.json() as Promise<Task[]>
+  if (!response.ok)
+    throw new Error(`Server error: ${response.status}`)
+
+  return response.json() as Promise<Task[]>
 }
 
 /*
   Must update Task creation and Task interfaces
 
 */
-export function filterTasks(tasks: Task[])  {
+export function filterTasks(tasks: Task[]) {
   const regulars = tasks.filter(task => task.frequency > 0)
-  const uniques  = tasks.filter(task => task.frequency == 0)
+  const uniques = tasks.filter(task => task.frequency == 0)
   const pendings = tasks.filter(task => task.status === "pending")
 
   return { regulars, uniques, pendings }
