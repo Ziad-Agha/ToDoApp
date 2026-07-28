@@ -1,7 +1,5 @@
 import { apiFetch } from "../utils/api"
 
-
-/* Updated Task interface */
 interface Task {
   user_id: string;
   task_id: string;
@@ -38,13 +36,9 @@ export async function getActiveTasks(): Promise<Task[]> {
   return response.json() as Promise<Task[]>
 }
 
-/*
-  Must update Task creation and Task interfaces
-
-*/
 export function filterTasks(tasks: Task[]) {
   const regulars = tasks.filter(task => task.frequency > 0)
-  const uniques = tasks.filter(task => task.frequency == 0)
+  const uniques = tasks.filter(task => task.frequency == 0 && task.status != "pending")
   const pendings = tasks.filter(task => task.status === "pending")
 
   return { regulars, uniques, pendings }
