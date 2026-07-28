@@ -27,6 +27,7 @@ export default function LoginForm() {
     // Refer to authmiddleware to see how its used.
     const data = await response.json();
     localStorage.setItem("token", data.token);
+    console.log(`token ${data.token}`)
     navigate("/home");
   }
   return (

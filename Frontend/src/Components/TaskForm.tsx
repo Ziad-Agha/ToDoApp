@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import { HiMiniXMark } from "react-icons/hi2";
+import { apiFetch, toUTCDate } from "../utils/api";
 
-export default function TaskForm({ onClose }: { onClose: () => void }) {
+export default function TaskForm({ onClose, onTaskCreated }: {
+  onClose: () => void
+  onTaskCreated: () => void
+}) {
   const {
     title, setTitle,
     note, setNote,
@@ -73,7 +77,7 @@ export default function TaskForm({ onClose }: { onClose: () => void }) {
       )}
     </div>
     <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
-      onClick={() => handleSubmit({ onClose })}>Create
+      onClick={() => handleSubmit({ onClose, onTaskCreated })}>Create
     </button>
   </div>
 }
@@ -139,7 +143,7 @@ function useTaskForm() {
   const [difficulty, setDifficulty] = useState("easy");
   const [repeatable, setRepeatable] = useState(false);
   const [weekly, setWeekly] = useState("Sunday");
-  const [frequency, setFrequency] = useState(1);
+  const [frequency, setFrequency] = useState(0);
   const [selectedWeek, setSelectedWeek] = useState<Date | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -273,15 +277,18 @@ function useTaskForm() {
     return errors;
   }
 
-  async function handleSubmit({ onClose }: { onClose: () => void }) {
+  async function handleSubmit({ onClose, onTaskCreated }: {
+    onClose: () => void
+    onTaskCreated: () => void
+  }) {
     // Validate
     const errors = validateForm();
     if (errors.length > 0) {
       setErrors(errors);
       return;
     } else
-    
-    setErrors([]);
+
+      setErrors([]);
 
     // Wrap data in an object
     const dateRange = getDate(type);
@@ -289,21 +296,20 @@ function useTaskForm() {
       title: title,
       note: note,
       difficulty: difficulty,
-      created_on: new Date(),
+      created_on: toUTCDate(new Date),
       type: type,
-      start_date: dateRange ? dateRange.start : null,
-      deadline: dateRange ? buildDeadline(dateRange.end, deadlineTime) : null,
+      start_date: dateRange ? toUTCDate(dateRange.start) : null,
+      deadline: dateRange && deadlineTime ? buildDeadline(toUTCDate(dateRange.end), toUTCDate(deadlineTime)) : null,
       frequency: frequency,
-      status: repeatable ? "" : "active",
+      status: "active",
       weekday: weekly,
       isPrivate: isPrivate,
     };
-    
+
     // Send object -> routes -> controller
     try {
-      const response = await fetch("http://localhost:3001/api/tasks/createTask", {
+      const response = await apiFetch("/tasks/createTask", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newTask),
       });
       if (!response.ok) {
@@ -316,7 +322,9 @@ function useTaskForm() {
     }
 
     // Close form
+    onTaskCreated()
     onClose();
+
   }
 
   return {
@@ -326,7 +334,7 @@ function useTaskForm() {
     difficulty, setDifficulty,
     repeatable, setRepeatable,
     isPrivate, setIsPrivate,
-    errors, handleFrequency, 
+    errors, handleFrequency,
     handleDeadline, handleSubmit
   }
 }
