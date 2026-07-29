@@ -66,9 +66,8 @@ export async function getActiveTasks(req: Request, res: Response) {
       user_id: req.user!.user_id, 
       status: { in: ["active", "pending"] } }
   })
-  tasks.length > 0 ?
-    res.status(200).json(tasks) :
-    res.status(404).json({ error: "No tasks found." })
+  if (!tasks) return res.status(200).json({ error: "No tasks found." })
+  res.status(200).json(tasks)
 }
 
 // TODO: Get active tasks within a certain window, not all user tasks
