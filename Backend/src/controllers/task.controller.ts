@@ -44,9 +44,10 @@ export async function createTask(req: Request, res: Response) {
 
 export async function getActiveTasks(req: Request, res: Response) {
   const tasks = await prisma.task.findMany({
-    where: { 
-      user_id: req.user!.user_id, 
-      status: { in: ["active", "pending"] } }
+    where: {
+      user_id: req.user!.user_id,
+      status: { in: ["active", "pending"] }
+    }
   })
   tasks.length > 0 ?
     res.status(200).json(tasks) :
@@ -54,9 +55,9 @@ export async function getActiveTasks(req: Request, res: Response) {
 }
 
 // TODO: Get active tasks within a certain window, not all user tasks
-export async function getDailyTasks(req: Request, res: Response) {
+export async function getCurrentDayTasks(req: Request, res: Response) {
   const start = new Date(req.query.start as string)
-  const  end  = new Date(req.query.end as string)
+  const end = new Date(req.query.end as string)
 
   const tasks = await prisma.task.findMany({
     where: {
@@ -66,6 +67,9 @@ export async function getDailyTasks(req: Request, res: Response) {
     }
   })
 
-  if (!tasks) return res.status(200).json({ error: "No tasks found." })
-  res.status(200).json(tasks)
+    res.status(200).json(tasks)
+
+  // tasks.length > 0 ?
+  //   res.status(200).json(tasks) :
+  //   res.status(200).json({ error: "No tasks found." })
 }

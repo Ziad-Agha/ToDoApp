@@ -15,22 +15,26 @@ interface Task {
   value: number;
 }
 
-// INACTIVE
-export async function getDailyTasks(day: Date): Promise<Task[]> {
-  const start = new Date(day); start.setHours(0, 0, 0, 0)
-  const end = new Date(day); end.setHours(23, 59, 59, 999)
-
-  const response = await apiFetch(`/tasks/getDailyTasks?start=${start.toISOString()}&end=${end.toISOString()}`,
-    { method: "GET" })
-  if (!response.ok) throw new Error(`Server error: ${response.status}`)
-  return response.json()
-}
-
 export async function getActiveTasks(): Promise<Task[]> {
-  const response = await apiFetch("/tasks/getActiveTasks",
+  const response = await apiFetch(
+    "/tasks/getActiveTasks",
     { method: "GET" })
 
   if (!response.ok)
+    throw new Error(`Server error: ${response.status}`)
+
+  return response.json() as Promise<Task[]>
+}
+
+export async function getCurrentDayTasks(date: Date): Promise<Task[]> {
+  const start = new Date(date); start.setHours(0, 0, 0, 0)
+  const end = new Date(date); end.setHours(23, 59, 59, 999)
+
+  const response = await apiFetch(
+    `/tasks/d?start=${start.toISOString()}&end=${end.toISOString()}`,
+    { method: "GET" })
+
+  if (!response.ok) 
     throw new Error(`Server error: ${response.status}`)
 
   return response.json() as Promise<Task[]>

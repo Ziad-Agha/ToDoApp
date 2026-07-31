@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";
-import { filterTasks, getActiveTasks } from "../services/taskService";
-import { useTaskFormStore } from "../assets/store";
+import { filterTasks, getCurrentDayTasks } from "../services/taskService";
+import { useDateStore, useTaskFormStore } from "../assets/store";
 
 interface Task {
     user_id: string;
@@ -28,6 +28,8 @@ interface FilteredTasks {
 
 export default function DailyView() {
 
+
+    const currentDate = useDateStore(date => date.currentDate)
     const refresh = useTaskFormStore(state => state.refresh)
     const [tasks, setTasks] = useState<FilteredTasks>({
         regulars: [],
@@ -36,14 +38,19 @@ export default function DailyView() {
     })
 
     const fetchTasks = async () => {
-        const activeTasks = await getActiveTasks()
-        const filteredTasks = filterTasks(activeTasks)
-        setTasks(filteredTasks)
+        setTasks({ regulars: [], uniques: [], pendings: [] })
+        try {
+            const activeTasks = await getCurrentDayTasks(currentDate)
+            const filteredTasks = filterTasks(activeTasks)
+            setTasks(filteredTasks)
+        } catch (err) {
+            console.error("Failed to fetch tasks:", err)
+        }
     }
 
     useEffect(() => {
         fetchTasks()
-    }, [refresh])
+    }, [refresh, currentDate])
 
     return <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
         <TaskSection header="Dailies" tasks={tasks.regulars} />
@@ -52,9 +59,9 @@ export default function DailyView() {
     </main>
 }
 
-function TaskSection({ header, tasks }: { header: string, tasks: Task[]}) {
+function TaskSection({ header, tasks }: { header: string, tasks: Task[] }) {
     const isFormOpen = useTaskFormStore(state => state.isFormOpen)
-    
+
     return <section className="">
         <div className="text-subnav flex justify-between mb-0.5">
             <h2>{header}</h2>
@@ -67,7 +74,7 @@ function TaskSection({ header, tasks }: { header: string, tasks: Task[]}) {
         </div>
         {isFormOpen && createPortal(
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <TaskForm/>
+                <TaskForm />
             </div>,
             document.body
         )}
