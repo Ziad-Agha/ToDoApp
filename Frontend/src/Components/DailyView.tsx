@@ -41,9 +41,7 @@ export default function DailyView() {
         setTasks({ regulars: [], uniques: [], pendings: [] })
         try {
             const response = await getCurrentDayTasks(currentDate)
-            console.log("response: ",response)
             const filteredTasks = filterTasks(response)
-            console.log(filteredTasks)
             setTasks(filteredTasks)
         } catch (err) {
             console.error("Failed to fetch tasks:", err)
