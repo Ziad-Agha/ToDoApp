@@ -40,9 +40,10 @@ export default function DailyView() {
     const fetchTasks = async () => {
         setTasks({ regulars: [], uniques: [], pendings: [] })
         try {
-            console.log("Current date - Pre getCurrentDayTasks: " + currentDate)
             const response = await getCurrentDayTasks(currentDate)
+            console.log("response: ",response)
             const filteredTasks = filterTasks(response)
+            console.log(filteredTasks)
             setTasks(filteredTasks)
         } catch (err) {
             console.error("Failed to fetch tasks:", err)
