@@ -1,21 +1,11 @@
 import { apiFetch } from "../utils/api";
+import type { Task } from "../utils/types";
 
-interface Task {
-  user_id: string;
-  task_id: string;
-  title: string;
-  description?: string;
-  difficulty: string;
-  created_on: Date;
-  deadline: Date;
-  type: string;
-  frequency: number;
-  timeleft?: string;
-  status: string;
-  value: number;
-}
 interface TaskUpdate {
-title: string, note: string, isPrivate: boolean}
+  title: string;
+  note?: string;
+  isPrivate: boolean;
+}
 
 // INACTIVE
 export async function getDailyTasks(day: Date): Promise<Task[]> {
@@ -49,12 +39,24 @@ export function filterTasks(tasks: Task[]) {
 
   return { regulars, uniques, pendings };
 }
-export async function updateRequest(task_id: string,{title, note, isPrivate}: TaskUpdate): Promise<Task> {
+export async function updateRequest(
+  task_id: string,
+  { title, note, isPrivate }: TaskUpdate,
+): Promise<Task> {
   const response = await apiFetch(`/tasks/updateTask/${task_id}`, {
     method: "PUT",
-    body: JSON.stringify({title, note, isPrivate})
+    body: JSON.stringify({ title, note, isPrivate }),
   });
 
+  if (!response.ok) throw new Error(`Server error: ${response.status}`);
+
+  return response.json() as Promise<Task>;
+}
+
+export async function deleteRequest(task_id: string) {
+  const response = await apiFetch(`/tasks/deleteTask/${task_id}`, {
+    method: "DELETE",
+  });
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
   return response.json() as Promise<Task>;
