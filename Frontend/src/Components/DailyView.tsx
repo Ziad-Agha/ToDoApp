@@ -48,7 +48,6 @@ export default function DailyView() {
             console.error("Failed to fetch tasks:", err)
         }
     }
-    // console.log("Filtered Tasks at DailyView " + tasks)
 
     useEffect(() => {
         fetchTasks()

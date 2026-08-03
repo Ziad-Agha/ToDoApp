@@ -308,8 +308,6 @@ function useTaskForm() {
       isPrivate: isPrivate,
     };
 
-    console.log("\nIn TaskForm - Submit:\ndateRange.start:", dateRange!.start,"\ndeadline: ", buildDeadline(dateRange!.end, deadlineTime))
-
     // Send object -> routes -> controller
     try {
       const response = await apiFetch("/tasks/createTask", {

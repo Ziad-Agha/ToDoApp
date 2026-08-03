@@ -39,11 +39,11 @@ export async function createTask(req: Request, res: Response) {
 }
 
 export async function getCurrentDayTasks(req: Request, res: Response) {
+
+  // start and end are received as UTC ISO strings,
+  // since fetching from Postgres is done in UTC
   const start = new Date(req.query.start as string)
   const end = new Date(req.query.end as string)
-
-  console.log("In task.controller:\nStart: " + start + "\nEnd: " + end)
-  console.log("Start UTC:", start.toISOString()+"\nEnd UTC: "+end.toISOString())
 
   const tasks = await prisma.task.findMany({
     where: {
@@ -54,18 +54,4 @@ export async function getCurrentDayTasks(req: Request, res: Response) {
   })
 
   res.status(200).json(tasks)
-}
-
-
-// NOT IN USE
-export async function getActiveTasks(req: Request, res: Response) {
-  const tasks = await prisma.task.findMany({
-    where: {
-      user_id: req.user!.user_id,
-      status: { in: ["active", "pending"] }
-    }
-  })
-  tasks.length > 0 ?
-    res.status(200).json(tasks) :
-    res.status(404).json({ error: "No tasks found." })
 }
