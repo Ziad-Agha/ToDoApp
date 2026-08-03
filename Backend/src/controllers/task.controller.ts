@@ -45,11 +45,6 @@ export async function getCurrentDayTasks(req: Request, res: Response) {
   const start = new Date(req.query.start as string)
   const end = new Date(req.query.end as string)
 
-  console.log("Entering task.controller\n")
-
-  // console.log("In task.controller:\nStart: " + start + "\nEnd: " + end)
-  // console.log("Start UTC:", start.toISOString()+"\nEnd UTC: "+end.toISOString())
-
   const tasks = await prisma.task.findMany({
     where: {
       user_id: req.user!.user_id,
@@ -57,8 +52,6 @@ export async function getCurrentDayTasks(req: Request, res: Response) {
       status: { in: ["active", "pending"] },
     }
   })
-
-  console.log("Logging tasks in controller: ")
 
   res.status(200).json(tasks)
 }

@@ -31,8 +31,6 @@ export async function getCurrentDayTasks(date: Date): Promise<Task[]> {
   // start and end are created in local time
   const start = new Date(date); start.setHours(0, 0, 0, 0)
   const end = new Date(date); end.setHours(23, 59, 59, 999)
-
-  console.log("In taskService")
   
   // but sending them with toISOString turns them into UTC strings
   const response = await apiFetch(
