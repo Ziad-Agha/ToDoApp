@@ -5,7 +5,6 @@ import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 export default function HomePage() {
     return <>
         <Nav />
-        {/* <SubNav /> */}
         <DateNav />
         <DailyView />
     </>

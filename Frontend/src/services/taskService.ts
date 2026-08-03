@@ -30,6 +30,9 @@ export async function getCurrentDayTasks(date: Date): Promise<Task[]> {
   const start = new Date(date); start.setHours(0, 0, 0, 0)
   const end = new Date(date); end.setHours(23, 59, 59, 999)
 
+  console.log("In taskService - Pre-fetch:\nStart: " + start,"\nEnd: " + end)
+  console.log("Start UTC: ", start.toISOString(), "\nEnd UTC: ", end.toISOString())
+
   const response = await apiFetch(
     `/tasks/d?start=${start.toISOString()}&end=${end.toISOString()}`,
     { method: "GET" })

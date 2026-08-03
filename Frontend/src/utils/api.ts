@@ -10,14 +10,3 @@ export function apiFetch(path: string, options: RequestInit = {}) {
         }
     })
 }
-
-export function toUTCDate(date: Date): Date {
-  return new Date(Date.UTC(
-    date.getFullYear(),
-    date.getMonth(),
-    date.getDate(),
-    date.getHours(),
-    date.getMinutes(),
-    0, 0
-  ))
-}

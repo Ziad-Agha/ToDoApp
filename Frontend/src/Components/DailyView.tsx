@@ -40,13 +40,15 @@ export default function DailyView() {
     const fetchTasks = async () => {
         setTasks({ regulars: [], uniques: [], pendings: [] })
         try {
-            const activeTasks = await getCurrentDayTasks(currentDate)
-            const filteredTasks = filterTasks(activeTasks)
+            console.log("Current date - Pre getCurrentDayTasks: " + currentDate)
+            const response = await getCurrentDayTasks(currentDate)
+            const filteredTasks = filterTasks(response)
             setTasks(filteredTasks)
         } catch (err) {
             console.error("Failed to fetch tasks:", err)
         }
     }
+    // console.log("Filtered Tasks at DailyView " + tasks)
 
     useEffect(() => {
         fetchTasks()
