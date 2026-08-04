@@ -1,23 +1,19 @@
-import { Routes, Route } from 'react-router-dom'
-import HomePage from './HomePage'
+import { Routes, Route } from "react-router-dom";
+import HomePage from "./HomePage";
+import LoginForm from "./Components/LoginForm";
+import RegisterForm from "./Components/RegisterForm";
 import WeeklyView from './WeeklyView'
 
-import './App.css'
 
 function App() {
-
   return (
     <Routes>
-      <Route
-        path="/"
-        element={<HomePage />}
-      />
-      <Route
-          path="/weekly-view"
-          element={<WeeklyView />}
-      />
+      <Route path="/" element={<LoginForm />}></Route>
+      <Route path="/register" element={<RegisterForm />}></Route>
+      <Route path="/home" element={<HomePage />} />
+      <Route path="/weekly-view" element={<WeeklyView />} />
     </Routes>
-  )
+  );
 }
 
-export default App
+export default App;

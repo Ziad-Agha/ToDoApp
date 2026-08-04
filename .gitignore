@@ -17,12 +17,21 @@ npm-debug.log*
 
 # OS files
 .DS_Store
+**/.DS_Store
 Thumbs.db
+**/Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 *.local
 
 # TypeScript build info
 *.tsbuildinfo
+
+/generated/prisma
