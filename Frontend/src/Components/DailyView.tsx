@@ -32,7 +32,7 @@ export default function DailyView() {
   const setRawtasks = useTaskStore((state) => state.setTasks);
   const tasks = filterTasks(rawTasks);
   const fetchTasks = async () => {
-    // setTasks({ regulars: [], uniques: [], pendings: [] })
+    setRawtasks([]);
     try {
       const response = await getCurrentDayTasks(currentDate);
       setRawtasks(response);

@@ -6,87 +6,110 @@ import { useTaskStore } from "../assets/store";
 
 export default function TaskForm() {
   const task = useTaskForm();
-  const closeForm = useTaskStore(state => state.closeForm)
+  const closeForm = useTaskStore((state) => state.closeForm);
 
-  return <div className="task-form bg-backdrop rounded-xl w-85 p-5 flex flex-col text-text-dark">
+  return (
+    <div className="task-form bg-backdrop rounded-xl w-85 p-5 flex flex-col text-text-dark">
+      <button
+        className="text-nav/50 absolute self-end hover:text-nav"
+        onClick={closeForm}
+      >
+        <HiMiniXMark size={28} />
+      </button>
 
-    <button className="text-nav/50 absolute self-end hover:text-nav"
-      onClick={closeForm}><HiMiniXMark size={28} />
-    </button>
-
-    <div className="flex flex-col gap-3 p-5 self-center">
-      <input className="border-b w-full text-2xl focus:outline-none"
-        type="text"
-        value={task.title}
-        placeholder="Add Title"
-        onChange={(e) => task.setTitle(e.target.value)}
-      />
-      <textarea className="border-b w-full text-lg focus:outline-none"
-        name="note" value={task.note}
-        rows={1} placeholder="Add Note"
-        onChange={(e) => task.setNote(e.target.value)}
-      />
-      <div className="task-type flex gap-2 items-center">
-        <label>Type:</label>
-        <CustomSelect
-          value={task.type} onChange={task.setType}
-          options={[
-            { value: "day", label: "daily" },
-            { value: "week", label: "weekly" },
-            { value: "month", label: "monthly" },
-          ]}
+      <div className="flex flex-col gap-3 p-5 self-center">
+        <input
+          className="border-b w-full text-2xl focus:outline-none"
+          type="text"
+          value={task.title}
+          placeholder="Add Title"
+          onChange={(e) => task.setTitle(e.target.value)}
         />
-      </div>
-
-      <div className="task-type flex gap-2 items-center ">
-        <input type="checkbox" name="repeating" checked={task.regular}
-          onChange={() => task.setRegular(!task.regular)} />
-        <p>Regular</p>
-      </div>
-
-      <div className="frequency-options">
-        {task.regular ? task.handleFrequency(task.type) : task.handleDeadline(task.type)}
-      </div>
-
-      <div className="task-difficulty-input flex gap-2 items-center">
-        <label>Difficulty:</label>
-        <CustomSelect
-          value={task.difficulty}
-          onChange={task.setDifficulty}
-          options={[
-            { value: "easy", label: "easy" },
-            { value: "medium", label: "medium" },
-            { value: "hard", label: "hard" },
-          ]}
+        <textarea
+          className="border-b w-full text-lg focus:outline-none"
+          name="note"
+          value={task.note}
+          rows={1}
+          placeholder="Add Note"
+          onChange={(e) => task.setNote(e.target.value)}
         />
-      </div>
+        <div className="task-type flex gap-2 items-center">
+          <label>Type:</label>
+          <CustomSelect
+            value={task.type}
+            onChange={task.setType}
+            options={[
+              { value: "day", label: "daily" },
+              { value: "week", label: "weekly" },
+              { value: "month", label: "monthly" },
+            ]}
+          />
+        </div>
 
-      <div className="is-private flex gap-2">
-        <input type="checkbox" name="private" checked={task.isPrivate}
-          onChange={() => task.setIsPrivate(!task.isPrivate)} />
-        <p>Private</p>
-      </div>
+        <div className="task-type flex gap-2 items-center ">
+          <input
+            type="checkbox"
+            name="repeating"
+            checked={task.regular}
+            onChange={() => task.setRegular(!task.regular)}
+          />
+          <p>Regular</p>
+        </div>
 
-      {task.errors.length > 0 && 
-        <div className="form-errors">
-          {task.errors.map((error, index) => (
-            <p key={index} style={{ color: "red" }}>{error}</p>
-                    
+        <div className="frequency-options">
+          {task.regular
+            ? task.handleFrequency(task.type)
+            : task.handleDeadline(task.type)}
+        </div>
 
-          ))}
+        <div className="task-difficulty-input flex gap-2 items-center">
+          <label>Difficulty:</label>
+          <CustomSelect
+            value={task.difficulty}
+            onChange={task.setDifficulty}
+            options={[
+              { value: "easy", label: "easy" },
+              { value: "medium", label: "medium" },
+              { value: "hard", label: "hard" },
+            ]}
+          />
+        </div>
+
+        <div className="is-private flex gap-2">
+          <input
+            type="checkbox"
+            name="private"
+            checked={task.isPrivate}
+            onChange={() => task.setIsPrivate(!task.isPrivate)}
+          />
+          <p>Private</p>
+        </div>
+
+        {task.errors.length > 0 && (
+          <div className="form-errors">
+            {task.errors.map((error, index) => (
+              <p key={index} style={{ color: "red" }}>
+                {error}
+              </p>
+            ))}
           </div>
-        }
-        
-    <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
-      onClick={() => task.handleSubmit()}>Create
-    </button>
-  </div>
-  
+        )}
+      </div>
+
+      <button
+        className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
+        onClick={() => task.handleSubmit()}
+      >
+        Create
+      </button>
+    </div>
+  );
+}
 
 type WeekRange = {
-  start: Date;  // Monday
-  end: Date;    // Sunday
-}
+  start: Date; // Monday
+  end: Date; // Sunday
+};
 
 type MonthRange = {
   start: Date;
@@ -125,10 +148,10 @@ function getMonthRange(date: Date): MonthRange {
 
 //  Combines time and date into a Date object
 function buildDeadline(date: Date | null, time: Date | null): Date | null {
-  if (!date || !time) return null
+  if (!date || !time) return null;
   const deadline = new Date(date);
-  deadline.setHours(time?.getHours(), time?.getMinutes(), 0, 0)
-  return deadline
+  deadline.setHours(time?.getHours(), time?.getMinutes(), 0, 0);
+  return deadline;
 }
 
 //  State hooks for form variables and handle functions
@@ -147,7 +170,7 @@ function useTaskForm() {
   const [difficulty, setDifficulty] = useState("easy");
   const [regular, setRegular] = useState(false);
   const [weekly, setWeekly] = useState("Sunday");
-  const [frequency, setFrequency] = useState(0);
+  const [frequency, setFrequency] = useState(1);
   const [selectedWeek, setSelectedWeek] = useState<Date | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
@@ -332,11 +355,14 @@ function useTaskForm() {
       title: title,
       note: note,
       difficulty: difficulty,
-      created_on: new Date(new Date),
+      created_on: new Date(new Date()),
       type: type,
       start_date: dateRange ? new Date(dateRange.start) : null,
-      deadline: dateRange && deadlineTime ? buildDeadline(dateRange.end, deadlineTime) : null,
-      frequency: frequency,
+      deadline:
+        dateRange && deadlineTime
+          ? buildDeadline(dateRange.end, deadlineTime)
+          : null,
+      frequency: regular ? frequency : 0,
       status: "active",
       weekday: weekly,
       isPrivate: isPrivate,
