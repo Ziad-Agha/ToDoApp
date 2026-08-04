@@ -6,12 +6,15 @@ import {
   filterTasks,
   getActiveTasks,
   deleteRequest,
+    getCurrentDayTasks 
 } from "../services/taskService";
-import { useTaskStore } from "../assets/store";
+import { useTaskStore, useDateStore } from "../assets/store";
 import TaskUpdateForm from "./TaskUpdateForm";
 import type { Task } from "../utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { HiMiniXMark } from "react-icons/hi2";
+
+
 
 // interface FilteredTasks {
 //   regulars: Task[];
@@ -29,15 +32,21 @@ export default function DailyView() {
   const rawTasks = useTaskStore((state) => state.tasks);
   const setRawtasks = useTaskStore((state) => state.setTasks);
   const tasks = filterTasks(rawTasks);
+     const fetchTasks = async () => {
+       // setTasks({ regulars: [], uniques: [], pendings: [] })
+        try {
+            const response = await getCurrentDayTasks(currentDate)
+            setRawtasks(response);
+        } catch (err) {
+            console.error("Failed to fetch tasks:", err)
+        }
+    }
 
-  const fetchTasks = async () => {
-    const activeTasks = await getActiveTasks();
-    setRawtasks(activeTasks);
-  };
+
 
   useEffect(() => {
     fetchTasks();
-  }, []);
+  }, [currentDate]);
 
   return (
     <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">

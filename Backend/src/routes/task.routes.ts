@@ -1,5 +1,7 @@
 import { Router } from "express";
-import { createTask, deleteTask, getActiveTasks, getDailyTasks, updateTask  } from "../controllers/task.controller";
+
+import { createTask, deleteTask, getActiveTasks, getDailyTasks, updateTask, getCurrentDayTasks   } from "../controllers/task.controller";
+
 import { authMiddleware } from "../middleware/auth.middleware";
 
 const router = Router();
@@ -11,5 +13,6 @@ router.put("/updateTask/:task_id", updateTask);
 router.get("/getDailyTasks", getDailyTasks)
 router.get("/getActiveTasks", getActiveTasks)
 router.delete("/deleteTask/:task_id", deleteTask)
+router.get("/d", getCurrentDayTasks)
 
 export default router;

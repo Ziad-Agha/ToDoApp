@@ -2,8 +2,6 @@ import type { Request, Response } from "express";
 import prisma from "../db/prisma";
 import { connect } from "node:http2";
 
-let nextId = 1;
-
 export async function createTask(req: Request, res: Response) {
   const user_id = req.user!.user_id;
   const {
@@ -76,6 +74,12 @@ export async function getActiveTasks(req: Request, res: Response) {
 export async function getDailyTasks(req: Request, res: Response) {
   const start = new Date(req.query.start as string);
   const end = new Date(req.query.end as string);
+export async function getCurrentDayTasks(req: Request, res: Response) {
+
+  // start and end are received as UTC ISO strings,
+  // since fetching from Postgres is done in UTC
+  const start = new Date(req.query.start as string)
+  const end = new Date(req.query.end as string)
 
   const tasks = await prisma.task.findMany({
     where: {
@@ -95,7 +99,7 @@ export async function deleteTask(req: Request, res: Response){
     const deletedTask = await prisma.task.delete({
       where: { task_id, user_id },
     });
-    res.json(deletedTask);
+    res.status(200).json(deletedTask);
   } catch (error) {
     console.error("Full error:", JSON.stringify(error, null, 2));
     res.status(500).json({ error });
