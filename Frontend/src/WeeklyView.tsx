@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {Nav, SubNav} from "./HomePage.tsx";
+// import {SubNav, Nav} from "./HomePage.tsx";
 
 export default function WeeklyView() {
 
@@ -106,8 +106,8 @@ export default function WeeklyView() {
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     return <div className={"min-h-screen flex flex-col"}>
-        <Nav/>
-        <SubNav/>
+        {/*<Nav/>*/}
+        {/*<SubNav/>*/}
         <main
             className={"bg-main flex-1 w-full flex flex-col gap-4 px-2  min-h-0"}>
             <ButtonToggle />
