@@ -1,41 +1,35 @@
 import { useEffect, useRef, useState } from "react";
 import DatePicker from "react-datepicker";
 import { HiMiniXMark } from "react-icons/hi2";
-import { apiFetch, toUTCDate } from "../utils/api";
+import { apiFetch } from "../utils/api";
+import { useTaskFormStore } from "../assets/store";
 
-export default function TaskForm({ onClose, onTaskCreated }: {
-  onClose: () => void
-  onTaskCreated: () => void
-}) {
-  const {
-    title, setTitle,
-    note, setNote,
-    type, setType,
-    difficulty, setDifficulty,
-    repeatable, setRepeatable,
-    isPrivate, setIsPrivate,
-    errors, handleFrequency,
-    handleDeadline, handleSubmit
-  } = useTaskForm();
+export default function TaskForm() {
+  const task = useTaskForm();
+  const closeForm = useTaskFormStore(state => state.closeForm)
 
   return <div className="task-form bg-backdrop rounded-xl w-85 p-5 flex flex-col text-text-dark">
+
     <button className="text-nav/50 absolute self-end hover:text-nav"
-      onClick={onClose}><HiMiniXMark size={28} />
+      onClick={closeForm}><HiMiniXMark size={28} />
     </button>
+
     <div className="flex flex-col gap-3 p-5 self-center">
       <input className="border-b w-full text-2xl focus:outline-none"
-        type="text" value={title} placeholder="Add Title"
-        onChange={(e) => setTitle(e.target.value)}
+        type="text"
+        value={task.title}
+        placeholder="Add Title"
+        onChange={(e) => task.setTitle(e.target.value)}
       />
       <textarea className="border-b w-full text-lg focus:outline-none"
-        name="note" value={note} rows={1} placeholder="Add Note"
-        onChange={(e) => setNote(e.target.value)}
+        name="note" value={task.note}
+        rows={1} placeholder="Add Note"
+        onChange={(e) => task.setNote(e.target.value)}
       />
       <div className="task-type flex gap-2 items-center">
         <label>Type:</label>
         <CustomSelect
-          value={type}
-          onChange={setType}
+          value={task.type} onChange={task.setType}
           options={[
             { value: "day", label: "daily" },
             { value: "week", label: "weekly" },
@@ -43,19 +37,22 @@ export default function TaskForm({ onClose, onTaskCreated }: {
           ]}
         />
       </div>
+
       <div className="task-type flex gap-2 items-center ">
-        <input type="checkbox" name="repeating" checked={repeatable}
-          onChange={() => setRepeatable(!repeatable)} />
+        <input type="checkbox" name="repeating" checked={task.regular}
+          onChange={() => task.setRegular(!task.regular)} />
         <p>Regular</p>
       </div>
-      <div className="repeat-options">
-        {repeatable ? handleFrequency(type) : handleDeadline(type)}
+
+      <div className="frequency-options">
+        {task.regular ? task.handleFrequency(task.type) : task.handleDeadline(task.type)}
       </div>
+
       <div className="task-difficulty-input flex gap-2 items-center">
         <label>Difficulty:</label>
         <CustomSelect
-          value={difficulty}
-          onChange={setDifficulty}
+          value={task.difficulty}
+          onChange={task.setDifficulty}
           options={[
             { value: "easy", label: "easy" },
             { value: "medium", label: "medium" },
@@ -63,22 +60,26 @@ export default function TaskForm({ onClose, onTaskCreated }: {
           ]}
         />
       </div>
+
       <div className="is-private flex gap-2">
-        <input type="checkbox" name="private" checked={isPrivate}
-          onChange={() => setIsPrivate(!isPrivate)} />
+        <input type="checkbox" name="private" checked={task.isPrivate}
+          onChange={() => task.setIsPrivate(!task.isPrivate)} />
         <p>Private</p>
       </div>
-      {errors.length > 0 && (
+
+      {task.errors.length > 0 && (
         <div className="form-errors">
-          {errors.map((error, index) => (
+          {task.errors.map((error, index) => (
             <p key={index} style={{ color: "red" }}>{error}</p>
           ))}
         </div>
       )}
     </div>
+
     <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
-      onClick={() => handleSubmit({ onClose, onTaskCreated })}>Create
+      onClick={() => task.handleSubmit()}>Create
     </button>
+
   </div>
 }
 
@@ -86,6 +87,7 @@ type WeekRange = {
   start: Date;  // Monday
   end: Date;    // Sunday
 }
+
 type MonthRange = {
   start: Date;
   end: Date;
@@ -123,15 +125,17 @@ function getMonthRange(date: Date): MonthRange {
 
 //  Combines time and date into a Date object
 function buildDeadline(date: Date | null, time: Date | null): Date | null {
-  if (date && time) {
-    const deadline = date && new Date(date);
-    deadline.setHours(time?.getHours(), time?.getMinutes(), 0, 0)
-    return deadline
-  } return null
+  if (!date || !time) return null
+  const deadline = new Date(date);
+  deadline.setHours(time?.getHours(), time?.getMinutes(), 0, 0)
+  return deadline
 }
 
 //  State hooks for form variables and handle functions
 function useTaskForm() {
+
+  const taskCreated = useTaskFormStore(state => state.taskCreated)
+  const closeForm = useTaskFormStore(state => state.closeForm)
   const defaultTime = new Date()
   defaultTime.setHours(23, 59, 0, 0)
 
@@ -141,7 +145,7 @@ function useTaskForm() {
   const [deadlineDate, setDeadlineDate] = useState<Date | null>(new Date());
   const [deadlineTime, setDeadlineTime] = useState<Date | null>(defaultTime)
   const [difficulty, setDifficulty] = useState("easy");
-  const [repeatable, setRepeatable] = useState(false);
+  const [regular, setRegular] = useState(false);
   const [weekly, setWeekly] = useState("Sunday");
   const [frequency, setFrequency] = useState(0);
   const [selectedWeek, setSelectedWeek] = useState<Date | null>(null);
@@ -153,7 +157,7 @@ function useTaskForm() {
 
   /*  Returns start and end dates based on chosen type [day, week, month] */
   function getDate(type: string) {
-    if (repeatable) return null;
+    if (regular) return null;
 
     if (type === "day" && deadlineDate) {
       const date = new Date(deadlineDate)
@@ -260,7 +264,7 @@ function useTaskForm() {
     const errors: string[] = [];
     if (!title.trim()) errors.push("Title is required.")
     if (!difficulty) errors.push("Difficulty is required.")
-    if (!repeatable) {
+    if (!regular) {
       const dateValidators: Record<string, () => string | null> = {
         day: () => !deadlineDate ? "Deadline is required." : null,
         week: () => !selectedWeek ? "Please select a week."
@@ -277,10 +281,8 @@ function useTaskForm() {
     return errors;
   }
 
-  async function handleSubmit({ onClose, onTaskCreated }: {
-    onClose: () => void
-    onTaskCreated: () => void
-  }) {
+  async function handleSubmit() {
+
     // Validate
     const errors = validateForm();
     if (errors.length > 0) {
@@ -296,10 +298,10 @@ function useTaskForm() {
       title: title,
       note: note,
       difficulty: difficulty,
-      created_on: toUTCDate(new Date),
+      created_on: new Date(new Date),
       type: type,
-      start_date: dateRange ? toUTCDate(dateRange.start) : null,
-      deadline: dateRange && deadlineTime ? buildDeadline(toUTCDate(dateRange.end), toUTCDate(deadlineTime)) : null,
+      start_date: dateRange ? new Date(dateRange.start) : null,
+      deadline: dateRange && deadlineTime ? buildDeadline(dateRange.end, deadlineTime) : null,
       frequency: frequency,
       status: "active",
       weekday: weekly,
@@ -322,8 +324,8 @@ function useTaskForm() {
     }
 
     // Close form
-    onTaskCreated()
-    onClose();
+    taskCreated()
+    closeForm();
 
   }
 
@@ -332,13 +334,12 @@ function useTaskForm() {
     note, setNote,
     type, setType,
     difficulty, setDifficulty,
-    repeatable, setRepeatable,
+    regular, setRegular,
     isPrivate, setIsPrivate,
     errors, handleFrequency,
     handleDeadline, handleSubmit
   }
 }
-
 
 /* Custome Dropdown for custom styling */
 // Claude generated

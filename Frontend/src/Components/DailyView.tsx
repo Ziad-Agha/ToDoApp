@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";
-import { filterTasks, getActiveTasks } from "../services/taskService";
+import { filterTasks, getCurrentDayTasks } from "../services/taskService";
+import { useDateStore, useTaskFormStore } from "../assets/store";
 
 interface Task {
     user_id: string;
@@ -27,9 +28,9 @@ interface FilteredTasks {
 
 export default function DailyView() {
 
-    const [refresh, setRefresh] = useState(0)
-    const taskCreated = () => setRefresh(r => r + 1)
 
+    const currentDate = useDateStore(date => date.currentDate)
+    const refresh = useTaskFormStore(state => state.refresh)
     const [tasks, setTasks] = useState<FilteredTasks>({
         regulars: [],
         uniques: [],
@@ -37,31 +38,34 @@ export default function DailyView() {
     })
 
     const fetchTasks = async () => {
-        const activeTasks = await getActiveTasks()
-        const filteredTasks = filterTasks(activeTasks)
-        setTasks(filteredTasks)
+        setTasks({ regulars: [], uniques: [], pendings: [] })
+        try {
+            const response = await getCurrentDayTasks(currentDate)
+            const filteredTasks = filterTasks(response)
+            setTasks(filteredTasks)
+        } catch (err) {
+            console.error("Failed to fetch tasks:", err)
+        }
     }
 
     useEffect(() => {
         fetchTasks()
-    }, [refresh])
+    }, [refresh, currentDate])
 
     return <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
-        <TaskSection header="Dailies" tasks={tasks.regulars} taskCreated={taskCreated} />
-        <TaskSection header="To Dos" tasks={tasks.uniques} taskCreated={taskCreated} />
-        <TaskSection header="Pending" tasks={tasks.pendings} taskCreated={taskCreated} />
+        <TaskSection header="Dailies" tasks={tasks.regulars} />
+        <TaskSection header="To Dos" tasks={tasks.uniques} />
+        <TaskSection header="Pending" tasks={tasks.pendings} />
     </main>
 }
 
-function TaskSection({ header, tasks, taskCreated }: { header: string, tasks: Task[], taskCreated: () => void }) {
-    const [isFormOpen, setIsFormOpen] = useState(false)
+function TaskSection({ header, tasks }: { header: string, tasks: Task[] }) {
+    const isFormOpen = useTaskFormStore(state => state.isFormOpen)
+
     return <section className="">
         <div className="text-subnav flex justify-between mb-0.5">
             <h2>{header}</h2>
-            <NewTaskButton
-                header={header}
-                onClick={() => setIsFormOpen(true)}
-            />
+            <NewTaskButton header={header} />
         </div>
         <div className="bg-taskcard flex flex-col h-[60vh] p-1.5 rounded-sm overflow-auto">
             <div className="flex flex-col w-full gap-1">
@@ -70,7 +74,7 @@ function TaskSection({ header, tasks, taskCreated }: { header: string, tasks: Ta
         </div>
         {isFormOpen && createPortal(
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-                <TaskForm onClose={() => setIsFormOpen(false)} onTaskCreated={taskCreated} />
+                <TaskForm />
             </div>,
             document.body
         )}
@@ -109,9 +113,12 @@ function Coin({ size = 24, outerColor = "#F5B731", innerColor = "#D4952A" }) {
     );
 }
 
-function NewTaskButton({ header, onClick }: { header: string; onClick: () => void }) {
+function NewTaskButton({ header }: { header: string }) {
     // if (header == "Pending") return;
-    return <button className="p-0.5 text-subnav/70 hover:text-subnav" onClick={onClick}>
+
+    const openForm = useTaskFormStore(state => state.openForm)
+
+    return <button className="p-0.5 text-subnav/70 hover:text-subnav" onClick={openForm}>
         <FaPlus size={24} />
     </button>
 }
