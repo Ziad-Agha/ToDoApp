@@ -4,17 +4,14 @@ import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";
 import {
   filterTasks,
-  getActiveTasks,
   deleteRequest,
-    getCurrentDayTasks 
+  getCurrentDayTasks,
 } from "../services/taskService";
 import { useTaskStore, useDateStore } from "../assets/store";
 import TaskUpdateForm from "./TaskUpdateForm";
 import type { Task } from "../utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { HiMiniXMark } from "react-icons/hi2";
-
-
 
 // interface FilteredTasks {
 //   regulars: Task[];
@@ -29,20 +26,20 @@ export default function DailyView() {
   //   uniques: [],
   //   pendings: [],
   // });
+  const currentDate = useDateStore((date) => date.currentDate);
+
   const rawTasks = useTaskStore((state) => state.tasks);
   const setRawtasks = useTaskStore((state) => state.setTasks);
   const tasks = filterTasks(rawTasks);
-     const fetchTasks = async () => {
-       // setTasks({ regulars: [], uniques: [], pendings: [] })
-        try {
-            const response = await getCurrentDayTasks(currentDate)
-            setRawtasks(response);
-        } catch (err) {
-            console.error("Failed to fetch tasks:", err)
-        }
+  const fetchTasks = async () => {
+    // setTasks({ regulars: [], uniques: [], pendings: [] })
+    try {
+      const response = await getCurrentDayTasks(currentDate);
+      setRawtasks(response);
+    } catch (err) {
+      console.error("Failed to fetch tasks:", err);
     }
-
-
+  };
 
   useEffect(() => {
     fetchTasks();

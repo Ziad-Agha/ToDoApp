@@ -8,9 +8,7 @@ interface TaskUpdate {
 }
 
 export async function getActiveTasks(): Promise<Task[]> {
-  const response = await apiFetch(
-    "/tasks/getActiveTasks",
-    { method: "GET" })
+  const response = await apiFetch("/tasks/getActiveTasks", { method: "GET" });
 
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
@@ -18,20 +16,21 @@ export async function getActiveTasks(): Promise<Task[]> {
 }
 
 export async function getCurrentDayTasks(date: Date): Promise<Task[]> {
-  
   // start and end are created in local time
-  const start = new Date(date); start.setHours(0, 0, 0, 0)
-  const end = new Date(date); end.setHours(23, 59, 59, 999)
-  
+  const start = new Date(date);
+  start.setHours(0, 0, 0, 0);
+  const end = new Date(date);
+  end.setHours(23, 59, 59, 999);
+
   // but sending them with toISOString turns them into UTC strings
   const response = await apiFetch(
     `/tasks/d?start=${start.toISOString()}&end=${end.toISOString()}`,
-    { method: "GET", cache: "no-store", })
+    { method: "GET", cache: "no-store" },
+  );
 
-  if (!response.ok) 
-    throw new Error(`Server error: ${response.status}`)
+  if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-  return response.json() as Promise<Task[]>
+  return response.json() as Promise<Task[]>;
 }
 
 export function filterTasks(tasks: Task[]) {

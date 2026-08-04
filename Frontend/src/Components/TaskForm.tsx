@@ -67,64 +67,21 @@ export default function TaskForm() {
         <p>Private</p>
       </div>
 
-      {task.errors.length > 0 && (
+      {task.errors.length > 0 && 
         <div className="form-errors">
           {task.errors.map((error, index) => (
             <p key={index} style={{ color: "red" }}>{error}</p>
-          ))}
-        </div>
-        <div className="task-type flex gap-2 items-center ">
-          <input
-            type="checkbox"
-            name="repeating"
-            checked={task.regular}
-            onChange={() => task.setRegular(!task.regular)}
-          />
-          <p>Regular</p>
-        </div>
-        <div className="frequency-options">
-          {task.regular
-            ? task.handleFrequency(task.type)
-            : task.handleDeadline(task.type)}
-        </div>
-        <div className="task-difficulty-input flex gap-2 items-center">
-          <label>Difficulty:</label>
-          <CustomSelect
-            value={task.difficulty}
-            onChange={task.setDifficulty}
-            options={[
-              { value: "easy", label: "easy" },
-              { value: "medium", label: "medium" },
-              { value: "hard", label: "hard" },
-            ]}
-          />
-        </div>
-        <div className="is-private flex gap-2">
-          <input
-            type="checkbox"
-            name="private"
-            checked={task.isPrivate}
-            onChange={() => task.setIsPrivate(!task.isPrivate)}
-          />
-          <p>Private</p>
-        </div>
-        {task.errors.length > 0 && (
-          <div className="form-errors">
-            {task.errors.map((error, index) => (
-              <p key={index} style={{ color: "red" }}>
-                {error}
-              </p>
-            ))}
-          </div>
-        )}
-      </div>
+                    
 
+          ))}
+          </div>
+        }
+        
     <button className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
       onClick={() => task.handleSubmit()}>Create
     </button>
-
   </div>
-}
+  
 
 type WeekRange = {
   start: Date;  // Monday

@@ -71,9 +71,6 @@ export async function getActiveTasks(req: Request, res: Response) {
 }
 
 // TODO: Get active tasks within a certain window, not all user tasks
-export async function getDailyTasks(req: Request, res: Response) {
-  const start = new Date(req.query.start as string);
-  const end = new Date(req.query.end as string);
 export async function getCurrentDayTasks(req: Request, res: Response) {
 
   // start and end are received as UTC ISO strings,
