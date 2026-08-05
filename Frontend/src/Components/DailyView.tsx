@@ -2,37 +2,19 @@ import { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";
-import { filterTasks, deleteRequest, getCurrentMonthTasks } from "../services/taskService";
-import { useTaskStore, useDateStore } from "../assets/store";
+import { deleteRequest, filterTasksByDay } from "../services/taskService";
+import { useDateStore, useTaskStore } from "../assets/store";
 import TaskUpdateForm from "./TaskUpdateForm";
 import type { Task } from "../utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { HiMiniXMark } from "react-icons/hi2";
 
 export default function DailyView() {
+    const day = useDateStore(d => d.currentDate)
+    const rawTasks = useTaskStore(s => s.tasks)
+    const tasks = filterTasksByDay(rawTasks, day)
 
-    // Get today's date
-    const currentDate = useDateStore((d) => d.currentDate);
-    // Initialize raw tasks
-    const rawTasks = useTaskStore((s) => s.tasks);
-    const setRawtasks = useTaskStore((s) => s.setTasks);
-    const tasks = filterTasks(rawTasks);
-    
-    const fetchTasks = async () => {
-        // Empty raw tasks
-        setRawtasks([]);
-        try {
-            // Fetch actual tasks
-            const response = await getCurrentMonthTasks(currentDate);
-            setRawtasks(response)
-        } catch (err) {
-            console.error("Failed to fetch tasks:", err);
-        }
-    };
-
-    useEffect(() => {
-        fetchTasks();
-    }, [currentDate.getMonth()]);
+    useEffect(() => {}, )
 
     return (
         <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">

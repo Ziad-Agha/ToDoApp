@@ -8,8 +8,9 @@ interface TaskUpdate {
 }
 
 
-export async function getActiveTasks(): Promise<Task[]> {
-  const response = await apiFetch("/tasks/getActiveTasks", { method: "GET" });
+export async function getAllTasks(): Promise<Task[]> {
+  const response = await apiFetch(
+    "/tasks/allTasks", { method: "GET", cache: "no-store" });
 
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
@@ -37,7 +38,7 @@ export async function getCurrentDayTasks(date: Date): Promise<Task[]> {
 
 
 export async function getCurrentMonthTasks(d: Date): Promise<Task[]> {
- 
+
   // Set start to the first of the current month 
   const start = new Date(d.getFullYear(), d.getMonth(), 1)
   // Set end to the end of the current month 
@@ -49,7 +50,7 @@ export async function getCurrentMonthTasks(d: Date): Promise<Task[]> {
   )
 
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
-  
+
   return response.json() as Promise<Task[]>;
 }
 
@@ -78,10 +79,26 @@ export async function deleteRequest(task_id: string) {
 }
 
 
-export function filterTasks(tasks: Task[]) {
+export function filterTasksByCategory(tasks: Task[]) {
   const regulars = tasks.filter((task) => task.frequency > 0);
   const uniques = tasks.filter((task) => task.frequency == 0 && task.status != "pending");
   const pendings = tasks.filter((task) => task.status === "pending");
 
   return { regulars, uniques, pendings };
+}
+
+export function filterTasksByDay(tasks: Task[], day: Date) {
+  const dayTasks = tasks.filter(
+    (t) => t.deadline && isSameDay(t.deadline, day)
+  )
+  return filterTasksByCategory(dayTasks)
+}
+
+function isSameDay(deadline: Date, targetDate: Date): boolean {
+  const d = new Date(deadline)
+  return (
+    d.getFullYear() === targetDate.getFullYear() &&
+    d.getMonth() === targetDate.getMonth() &&
+    d.getDate() === targetDate.getDate() 
+  )
 }
