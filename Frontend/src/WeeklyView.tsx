@@ -1,4 +1,7 @@
 import {useState} from "react";
+import {Coin} from "./Components/DailyView.tsx"
+import type { Task } from "../utils/types";
+
 // import {SubNav, Nav} from "./HomePage.tsx";
 
 export default function WeeklyView() {
@@ -7,7 +10,7 @@ export default function WeeklyView() {
         {
             user_id: "u_001",
             task_id: "t_001",
-            title: "Feed cats",
+            title: "Feed cats ",
             description: "Create wireframes for the main task board page",
             difficulty: "medium",
             type: "design",
@@ -94,7 +97,7 @@ export default function WeeklyView() {
             difficulty: "easy",
             type: "research",
             recurrence: "Every Saturday",
-            // timeleft: '12h left',
+            timeleft: '12h left',
             status: "complete",
             value: 15,
             created_on: new Date("2026-06-15"),
@@ -110,7 +113,7 @@ export default function WeeklyView() {
         {/*<SubNav/>*/}
         <main
             className={"bg-main flex-1 w-full flex flex-col gap-4 px-2  min-h-0"}>
-            <ButtonToggle />
+            {/*<ButtonToggle /> to be used later*/}
             <div className={"flex flex-1 min-h-0 "}>
                 {days.map((day, i) => (
                     <TaskSection
@@ -125,8 +128,8 @@ export default function WeeklyView() {
     </div>;
 }
 
+// to be used later
 type ViewType = "weekly" | "monthly";
-
 function ButtonToggle() {
     const [selected, setSelected] = useState<ViewType>("weekly");
 
@@ -145,6 +148,7 @@ function ButtonToggle() {
     );
 }
 
+// to be used later
 function GlowButton({label, isSelected, onClick}:
                     {
                         label: string,
@@ -204,6 +208,7 @@ function TaskSection({ header, tasks, date }: { header: string; tasks: string[];
     );
 }
 
+
 function Checkbox() {
     const [checked, setChecked] = useState(false);
 
@@ -218,7 +223,7 @@ function Checkbox() {
                     height="20"
                     rx="4"
                     stroke={checked ? "#1e2235" : "#d1d6ee"}
-                    strokeWidth={checked ? 2 : 1}
+                    strokeWidth={checked ? 1 : 1}
                     fill="#fff"
                     style={{
                         transition: "stroke 0.2s, stroke-width 0.2s",
@@ -228,7 +233,7 @@ function Checkbox() {
                     d="M5.5,11.3L9,14.8L20.2,3.3l0,0c-0.5-1-1.5-1.8-2.7-1.8h-13c-1.7,0-3,1.3-3,3v13c0,1.7,1.3,3,3,3h13
              c1.7,0,3-1.3,3-3v-13c0-0.4-0.1-0.8-0.3-1.2"
                     stroke="#1e2235"
-                    strokeWidth="2"
+                    strokeWidth="1.5"
                     fill="none"
                     style={{
                         strokeDasharray: 93,
@@ -243,57 +248,26 @@ function Checkbox() {
     );
 }
 
-function TaskBox({ task }) {
+function TaskBox({ task }:{ task: Task }) {
     return (
-        <article className=" grid grid-cols-[auto_1fr_auto] bg-task-box mb-[5px] rounded overflow-hidden">
+        <article className=" grid grid-cols-[auto_1fr_auto] bg-task-box mb-1.25 rounded-[5px] overflow-hidden border-2">
 
-            <div className="flex flex-col justify-center items-center gap-1 h-full bg-coin-area">
+            <div className="flex flex-col justify-center items-center gap-1 h-full bg-coin-area px-1.5">
                 <Checkbox/>
             </div>
 
-            <div className="flex flex-col text-text-dark text-left  pt-3 pb-3 h-[100%] relative">
-
+            <div className="flex flex-col text-text-dark pt-2 pb-2 h-[100%] relative">
+                {task.timeleft && <span className="text-xs opacity-50 bottom-1 right-2.5">{task.timeleft}</span>}
                 <span className="leading-4">{task.title}</span>
                 <span className="text-xs opacity-50">{task.recurrence}</span>
-                {task.timeleft && <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">{task.timeleft}</span>}
-
             </div>
 
-            <div className="flex flex-col justify-center items-center gap-1 h-full bg-coin-area">
-
+            <div className="flex flex-col justify-center items-center gap-1 h-full bg-coin-area px-1.5">
+                <Coin/>
                 <span className="text-coin-value font-semibold text-sm leading-2">{task.value}</span>
             </div>
 
         </article>
     );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
