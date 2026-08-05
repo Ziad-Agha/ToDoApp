@@ -233,3 +233,5 @@ function DeleteAlert({ task, onClose }: { task: Task; onClose: () => void }) {
     document.body,
   );
 }
+
+export {Coin}
