@@ -9,7 +9,6 @@ export interface Task {
   type: string;
   isPrivate: boolean;
   frequency: number;
-  timeleft?: string;
   status: string;
   value: number;
 }

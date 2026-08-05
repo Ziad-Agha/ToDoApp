@@ -38,6 +38,7 @@ model Task {
   created_on    DateTime      @default(now())
   type          String    
   isPrivate       Boolean       @default(false)
+  value        Int
 
   status        String?   
   start_date    DateTime?      
