@@ -14,8 +14,6 @@ export default function DailyView() {
     const rawTasks = useTaskStore(s => s.tasks)
     const tasks = filterTasksByDay(rawTasks, day)
 
-    useEffect(() => {}, )
-
     return (
         <main className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
             <TaskSection header="Dailies" tasks={tasks.regulars} />

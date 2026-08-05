@@ -9,6 +9,7 @@ export default function HomePage() {
     // Fetch raw tasks
     const setRawtasks = useTaskStore((s) => s.setTasks);
     const fetchTasks = async () => {
+        console.log("fetchTasks run")
         setRawtasks([]);
         try {
             const response = await getAllTasks();
@@ -20,7 +21,7 @@ export default function HomePage() {
 
     useEffect(() => {
         fetchTasks();
-    });
+    }, []);
 
     return <>
         <Nav />
