@@ -94,7 +94,7 @@ export function filterTasksByDay(tasks: Task[], day: Date) {
   return filterTasksByCategory(dayTasks)
 }
 
-function isSameDay(deadline: Date, targetDate: Date): boolean {
+function isSameDay(deadline: string, targetDate: Date): boolean {
   const d = new Date(deadline)
   return (
     d.getFullYear() === targetDate.getFullYear() &&
