@@ -9,10 +9,21 @@
   --color-subnav: #303747;
   --color-backdrop: #fff4f3;
   --color-taskcard: #e2c7c0;
-  --color-checkmark: #d5aea4;
+    --color-checkmark: #d5aea4;
   --color-text-dark: #191f2f;
   --color-coin-area: #fde7cd;
   --color-coin-value: #dd9d30;
+  /*weekly View*/
+  --color-main: #FFF5C6;
+
+  --color-nav1: #273338;
+  --color-sub-nav1: #2B5748;
+  --color-sub-nav: #303747;
+  --color-tasks-view: #fff4f3;
+  --color-tasks-section1: #9CB080;
+  --color-tasks-section: #e2c7c0;
+  --color-task-box: #fff4f3;
+
 }
 
 :root {
@@ -26,7 +37,7 @@
   --accent-border: rgba(170, 59, 255, 0.5);
   --social-bg: rgba(244, 243, 236, 0.5);
   --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+          rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
   --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
   --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
@@ -157,7 +168,7 @@ nav a {
   color: var(--color-nav) !important;
 }
 
-.react-datepicker__month-container 
+.react-datepicker__month-container
 .react-datepicker__month-wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
