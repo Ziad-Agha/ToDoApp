@@ -35,3 +35,4 @@ $RECYCLE.BIN/
 *.tsbuildinfo
 
 /generated/prisma
+/Backend/node_modules/
