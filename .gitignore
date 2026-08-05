@@ -1,5 +1,6 @@
 # Dependencies (matches frontend/node_modules and backend/node_modules)
 node_modules/
+/Backend/node_modules/
 
 # Build output
 dist/
@@ -35,4 +36,3 @@ $RECYCLE.BIN/
 *.tsbuildinfo
 
 /generated/prisma
-/Backend/node_modules/
