@@ -230,3 +230,5 @@ function DayDateNav() {
     </div>
   );
 }
+
+export {Coin}
