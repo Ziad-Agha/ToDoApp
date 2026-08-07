@@ -64,11 +64,11 @@ export const useTaskStore = create<TaskStore>((set) => ({
     })),
 }));
 
-/*  
+/*
   On using next instead of currentDate
 
-  the creation of a new object (next) instead of altering the existing currentDate, 
-  is necessary because Zustand detects change by comparing obejct references. 
+  the creation of a new object (next) instead of altering the existing currentDate,
+  is necessary because Zustand detects change by comparing obejct references.
 
   Mutating an existing obj  => same obj ref  =>  doesn't trigger re-render
   Newly created object      => new obj ref   =>  triggers a re-render
