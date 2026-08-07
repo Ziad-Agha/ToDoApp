@@ -78,7 +78,7 @@ export const useDateStore = create<DateStore>((set) => ({
 /*  On using next instead of currentDate
 
     I creat a new object (next) instead of altering the existing currentDate, 
-    because Zustand detects change by comparing obejct references. 
+    because Zustand detects change by comparing object references.
 
     Mutating an existing obj  => same obj ref  =>  doesn't trigger re-render
     Newly created object      => new obj ref   =>  triggers a re-render
