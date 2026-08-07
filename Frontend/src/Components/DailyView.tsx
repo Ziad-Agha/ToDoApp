@@ -53,47 +53,45 @@ function TaskSection({ header, tasks }: { header: string; tasks: Task[] }) {
 function TaskBox({ task }: { task: Task }) {
     const isUpdateFormOpen = useTaskStore((state) => state.isUpdateFormOpen);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-    return (
-        <article
-            className="bg-backdrop grid grid-cols-[60px_1fr_60px] gap-1 rounded overflow-hidden"
-            onMouseEnter={() => setIsMenuOpen(true)}
-            onMouseLeave={() => setIsMenuOpen(false)}
-        >
-            <div className="flex justify-center py-3">
-                <button className="bg-checkmark w-8 h-8 rounded border border-checkmark" />
-            </div>
-            <div className="flex flex-col text-text-dark text-left h-full relative -ml-1">
-                {isMenuOpen && <TaskMenu task={task} />}
-                {isUpdateFormOpen === task.task_id &&
-                    createPortal(
-                        <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/50">
-                            <TaskUpdateForm
-                                task_id={task.task_id}
-                                title={task.title}
-                                note={task.note}
-                                isPrivate={task.isPrivate}
-                                onClose={() => setIsMenuOpen(false)}
-                            />
-                        </div>,
-                        document.body,
-                    )}
-                <span className="pt-3 text-sm leading-4">{task.title}</span>
-                <span className="pb-3 text-xs opacity-50">{task.frequency}</span>
-                {task.timeleft && (
-                    <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">
-                        {task.timeleft}
-                    </span>
-                )}
-            </div>
-            <div className="bg-coin-area flex flex-col justify-center items-center gap-1 h-full">
-                <Coin />
-                <span className="text-coin-value font-semibold text-sm leading-2">
-                    {task.value}
-                </span>
-            </div>
-        </article>
-    );
+  
+  return (
+    <article
+      className="bg-backdrop grid grid-cols-[60px_1fr_60px] gap-1 rounded overflow-hidden"
+      onMouseEnter={() => setIsMenuOpen(true)}
+      onMouseLeave={() => setIsMenuOpen(false)}
+    >
+      <div className="flex justify-center py-3">
+        <button className="bg-checkmark w-8 h-8 rounded border border-checkmark" />
+      </div>
+      <div className="flex flex-col text-text-dark text-left h-full relative -ml-1">
+        {isMenuOpen && <TaskMenu task={task} />}
+        {isUpdateFormOpen === task.task_id &&
+          createPortal(
+            <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/50">
+              <TaskUpdateForm
+                task_id={task.task_id}
+                title={task.title}
+                note={task.note}
+                isPrivate={task.isPrivate}
+                onClose={() => setIsMenuOpen(false)}
+              />
+            </div>,
+            document.body,
+          )}
+        <span className="pt-3 text-sm leading-4">{task.title}</span>
+        <span className="pb-3 text-xs opacity-50">{task.frequency}</span>
+        <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">
+          {calculateTimeLeft(task)}
+        </span>
+      </div>
+      <div className="bg-coin-area flex flex-col justify-center items-center gap-1 h-full">
+        <Coin />
+        <span className="text-coin-value font-semibold text-sm leading-2">
+          {task.value}
+        </span>
+      </div>
+    </article>
+  );
 }
 
 function Coin({ size = 24, outerColor = "#F5B731", innerColor = "#D4952A" }) {
