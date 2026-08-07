@@ -25,7 +25,7 @@ export default function HomePage() {
 
     return <>
         <Nav />
-        <DateNav />
+        {/* <DateNav /> */}
         <DailyView />
     </>
 }
@@ -57,26 +57,5 @@ function SubNav() {
     </div>
 }
 
-function DateNav() {
-    const { currentDate, nextDay, prevDay } = useDateStore()
-    const displayDate = new Intl.DateTimeFormat("en-US", {
-        weekday: "short",
-        month: "short",
-        day: "numeric"
-    }).format(currentDate)
 
-    return <div className="flex justify-center items-center text-nav">
-
-        <button onClick={prevDay}>
-            <MdNavigateBefore size={35} />
-        </button>
-
-        <button onClick={nextDay}>
-            <MdNavigateNext size={35} />
-        </button>
-
-        <span >{displayDate}</span>
-
-    </div>
-}
 
