@@ -1,116 +1,15 @@
 import {useState} from "react";
-import {Coin} from "./Components/DailyView.tsx"
-import type { Task } from "./utils/types";
+import {Coin} from "./DailyView.tsx";
+import type { Task } from "../utils/types";
 
 // import {SubNav, Nav} from "./HomePage.tsx";
 
 export default function WeeklyView() {
 
-    const dummyTasks: Task[] = [
-        {
-            user_id: "u_001",
-            task_id: "t_001",
-            title: "Feed cats ",
-            description: "Create wireframes for the main task board page",
-            difficulty: "medium",
-            type: "design",
-            recurrence: "Everyday",
-            timeleft: "8h left",
-            status: "incomplete",
-            value: 50,
-            created_on: new Date("2026-06-20"),
-            deadline: new Date("2026-06-30"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_002",
-            title: "Workout",
-            difficulty: "hard",
-            type: "backend",
-            recurrence: "Every 2 days",
-            timeleft: "8h left",
-            status: "complete",
-            value: 75,
-            created_on: new Date("2026-06-18"),
-            deadline: new Date("2026-06-25"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_003",
-            title: "Jumu'a",
-            description: "Cover login, registration and token refresh endpoints",
-            difficulty: "medium",
-            type: "backend",
-            recurrence: "Every Friday",
-            timeleft: "2h left",
-            status: "incomplete",
-            value: 40,
-            created_on: new Date("2026-06-21"),
-            deadline: new Date("2026-07-05"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_004",
-            title: "Quick shopping from Maxi",
-            difficulty: "easy",
-            type: "frontend",
-            recurrence: "Every 2 days",
-            timeleft: '9h left',
-            status: "incomplete",
-            value: 20,
-            created_on: new Date("2026-06-24"),
-            deadline: new Date("2026-06-27"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_005",
-            title: "Apply to Service Info Montreal",
-            description: "Look into how Habitica and Duolingo handle levelling curves",
-            difficulty: "easy",
-            type: "research",
-            recurrence: "Every Friday",
-            timeleft: '12h left',
-            status: "complete",
-            value: 15,
-            created_on: new Date("2026-06-15"),
-            deadline: new Date("2026-06-22"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_006",
-            title: "Recharge Opus",
-            description: "Look into how Habitica and Duolingo handle levelling curves",
-            difficulty: "easy",
-            type: "research",
-            recurrence: "Every Month",
-            // timeleft: '12h left',
-            status: "complete",
-            value: 15,
-            created_on: new Date("2026-06-15"),
-            deadline: new Date("2026-06-22"),
-        },
-        {
-            user_id: "u_001",
-            task_id: "t_007",
-            title: "Buy cat litter",
-            description: "Look into how Habitica and Duolingo handle levelling curves",
-            difficulty: "easy",
-            type: "research",
-            recurrence: "Every Saturday",
-            timeleft: '12h left',
-            status: "complete",
-            value: 15,
-            created_on: new Date("2026-06-15"),
-            deadline: new Date("2026-06-22"),
-        },
-    ];
-
     const weekDates = getWeekDates();
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
     return <div className={"min-h-screen flex flex-col"}>
-        {/*<Nav/>*/}
-        {/*<SubNav/>*/}
         <main
             className={"bg-main flex-1 w-full flex flex-col gap-4 px-2  min-h-0"}>
             {/*<ButtonToggle /> to be used later*/}
@@ -120,7 +19,7 @@ export default function WeeklyView() {
                         key={day}
                         header={day}
                         date={weekDates[i]}
-                        tasks={[dummyTasks[0], dummyTasks[1], dummyTasks[2]]} // tasks filtered by date
+                        tasks={task} // tasks filtered by date
                     />
                 ))}
             </div>
@@ -188,7 +87,7 @@ function getWeekDates(): Date[] {
     });
 }
 
-function TaskSection({ header, tasks, date }: { header: string; tasks: string[]; date: Date }) {
+function TaskSection({ header, tasks, date }: { header: string; tasks: Task[]; date: Date }) {
 
     const isToday = new Date().toDateString() === date.toDateString();
 
