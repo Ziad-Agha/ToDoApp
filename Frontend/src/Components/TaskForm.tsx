@@ -3,6 +3,7 @@ import DatePicker from "react-datepicker";
 import { HiMiniXMark } from "react-icons/hi2";
 import { apiFetch } from "../utils/api";
 import { useTaskStore } from "../assets/store";
+import { buildDeadline, getMonthRange, getWeekRange } from "../utils/dateUtils"
 
 export default function TaskForm() {
   const task = useTaskForm();
@@ -106,53 +107,7 @@ export default function TaskForm() {
   );
 }
 
-type WeekRange = {
-  start: Date; // Monday
-  end: Date; // Sunday
-};
 
-type MonthRange = {
-  start: Date;
-  end: Date;
-};
-
-function getWeekRange(date: Date): WeekRange {
-  const day = date.getDay();
-  const mondayOffset = (day === 0 ? -6 : 1) - day;
-
-  const start = new Date(date);
-  start.setDate(date.getDate() + mondayOffset);
-
-  const end = new Date(start);
-  end.setDate(start.getDate() + 6);
-
-  return {
-    start: new Date(
-      Date.UTC(start.getFullYear(), start.getMonth(), start.getDate(), 0, 0, 0),
-    ),
-    end: new Date(
-      Date.UTC(end.getFullYear(), end.getMonth(), end.getDate(), 23, 59, 0),
-    ),
-  };
-}
-
-function getMonthRange(date: Date): MonthRange {
-  const year = date.getFullYear();
-  const month = date.getMonth();
-
-  return {
-    start: new Date(Date.UTC(year, month, 1, 0, 0, 0)),
-    end: new Date(Date.UTC(year, month + 1, 0, 23, 59, 0)),
-  };
-}
-
-//  Combines time and date into a Date object
-function buildDeadline(date: Date | null, time: Date | null): Date | null {
-  if (!date || !time) return null;
-  const deadline = new Date(date);
-  deadline.setHours(time?.getHours(), time?.getMinutes(), 0, 0);
-  return deadline;
-}
 
 //  State hooks for form variables and handle functions
 function useTaskForm() {
