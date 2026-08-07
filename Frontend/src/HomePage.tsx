@@ -1,8 +1,28 @@
-import { useDateStore } from "./assets/store"
+import { useDateStore, useTaskStore } from "./assets/store"
 import DailyView from "./Components/DailyView"
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
+import { getAllTasks } from "./services/taskService";
+import { useEffect } from "react";
 
 export default function HomePage() {
+
+    // Fetch raw tasks
+    const setRawtasks = useTaskStore((s) => s.setTasks);
+    const fetchTasks = async () => {
+        console.log("fetchTasks run")
+        setRawtasks([]);
+        try {
+            const response = await getAllTasks();
+            setRawtasks(response)
+        } catch (err) {
+            console.error("Failed to fetch tasks:", err);
+        }
+    };
+
+    useEffect(() => {
+        fetchTasks();
+    }, []);
+
     return <>
         <Nav />
         <DateNav />
@@ -46,17 +66,17 @@ function DateNav() {
     }).format(currentDate)
 
     return <div className="flex justify-center items-center text-nav">
-        
+
         <button onClick={prevDay}>
             <MdNavigateBefore size={35} />
         </button>
-        
+
         <button onClick={nextDay}>
-            <MdNavigateNext size={35}/>
+            <MdNavigateNext size={35} />
         </button>
-        
+
         <span >{displayDate}</span>
-        
+
     </div>
 }
 

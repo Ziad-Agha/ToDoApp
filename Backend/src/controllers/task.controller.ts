@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../db/prisma";
-import { connect } from "node:http2";
+
 
 export async function createTask(req: Request, res: Response) {
   const user_id = req.user!.user_id;
@@ -36,10 +36,12 @@ export async function createTask(req: Request, res: Response) {
       isPrivate,
     },
   });
+
   res.status(201).json(newTask);
 }
 
-// updates the title,note, or privacy of a task.
+
+// Updates the title, note, or privacy of a task.
 export async function updateTask(req: Request, res: Response) {
   try {
     const { user_id } = req.user!;
@@ -56,25 +58,18 @@ export async function updateTask(req: Request, res: Response) {
     res.status(500).json({ error });
   }
 }
-// export function getAllTasks(req: Request, res: Response) {
-//   res.json(tasks);}
 
-export async function getActiveTasks(req: Request, res: Response) {
+
+export async function getAllTasks(req: Request, res: Response) {
   const tasks = await prisma.task.findMany({
-    where: {
-      user_id: req.user!.user_id,
-      status: { in: ["active", "pending"] },
-    },
+    where: { user_id: req.user!.user_id },
   });
-  if (!tasks) return res.status(200).json({ error: "No tasks found." });
   res.status(200).json(tasks);
 }
 
-// TODO: Get active tasks within a certain window, not all user tasks
+
 export async function getCurrentDayTasks(req: Request, res: Response) {
 
-  // start and end are received as UTC ISO strings,
-  // since fetching from Postgres is done in UTC
   const start = new Date(req.query.start as string)
   const end = new Date(req.query.end as string)
 
@@ -89,6 +84,8 @@ export async function getCurrentDayTasks(req: Request, res: Response) {
   if (!tasks) return res.status(200).json({ error: "No tasks found." });
   res.status(200).json(tasks);
 }
+
+
 export async function deleteTask(req: Request, res: Response){
    try {
     const { user_id } = req.user!;
