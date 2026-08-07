@@ -54,59 +54,44 @@ function TaskBox({ task }: { task: Task }) {
     const isUpdateFormOpen = useTaskStore((state) => state.isUpdateFormOpen);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // const taskRef = useRef<HTMLDivElement>(null);
-
-    // function handleHover(e: MouseEvent) {
-    //   if (taskRef.current && taskRef.current.contains(e.target as Node)) {
-    //     console.log("pressed");
-    //     openMenu();
-    //   }
-    // }
-
-    // useEffect(() => {
-    //   document.addEventListener("mouseover", handleHover);
-    //   return () => document.removeEventListener("mouseover", handleHover);
-    // }, []);
-    return (
-        <article
-            className="bg-backdrop grid grid-cols-[60px_1fr_60px] gap-1 rounded overflow-hidden"
-            onMouseEnter={() => setIsMenuOpen(true)}
-            onMouseLeave={() => setIsMenuOpen(false)}
-        >
-            <div className="flex justify-center py-3">
-                <button className="bg-checkmark w-8 h-8 rounded border border-checkmark" />
-            </div>
-            <div className="flex flex-col text-text-dark text-left h-full relative -ml-1">
-                {isMenuOpen && <TaskMenu task={task} />}
-                {isUpdateFormOpen === task.task_id &&
-                    createPortal(
-                        <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/50">
-                            <TaskUpdateForm
-                                task_id={task.task_id}
-                                title={task.title}
-                                note={task.note}
-                                isPrivate={task.isPrivate}
-                                onClose={() => setIsMenuOpen(false)}
-                            />
-                        </div>,
-                        document.body,
-                    )}
-                <span className="pt-3 text-sm leading-4">{task.title}</span>
-                <span className="pb-3 text-xs opacity-50">{task.frequency}</span>
-                {task.timeleft && (
-                    <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">
-                        {task.timeleft}
-                    </span>
-                )}
-            </div>
-            <div className="bg-coin-area flex flex-col justify-center items-center gap-1 h-full">
-                <Coin />
-                <span className="text-coin-value font-semibold text-sm leading-2">
-                    {task.value}
-                </span>
-            </div>
-        </article>
-    );
+  return (
+    <article
+      className="bg-backdrop grid grid-cols-[60px_1fr_60px] gap-1 rounded overflow-hidden"
+      onMouseEnter={() => setIsMenuOpen(true)}
+      onMouseLeave={() => setIsMenuOpen(false)}
+    >
+      <div className="flex justify-center py-3">
+        <button className="bg-checkmark w-8 h-8 rounded border border-checkmark" />
+      </div>
+      <div className="flex flex-col text-text-dark text-left h-full relative -ml-1">
+        {isMenuOpen && <TaskMenu task={task} />}
+        {isUpdateFormOpen === task.task_id &&
+          createPortal(
+            <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/50">
+              <TaskUpdateForm
+                task_id={task.task_id}
+                title={task.title}
+                note={task.note}
+                isPrivate={task.isPrivate}
+                onClose={() => setIsMenuOpen(false)}
+              />
+            </div>,
+            document.body,
+          )}
+        <span className="pt-3 text-sm leading-4">{task.title}</span>
+        <span className="pb-3 text-xs opacity-50">{task.frequency}</span>
+        <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">
+          {calculateTimeLeft(task)}
+        </span>
+      </div>
+      <div className="bg-coin-area flex flex-col justify-center items-center gap-1 h-full">
+        <Coin />
+        <span className="text-coin-value font-semibold text-sm leading-2">
+          {task.value}
+        </span>
+      </div>
+    </article>
+  );
 }
 
 function Coin({ size = 24, outerColor = "#F5B731", innerColor = "#D4952A" }) {
@@ -201,4 +186,21 @@ function DeleteAlert({ task, onClose }: { task: Task; onClose: () => void }) {
         </div>,
         document.body,
     );
+}
+function calculateTimeLeft(task: Task) {
+  const today = new Date();
+  const taskDate = new Date(task.deadline);
+  const timeLeft = taskDate.getTime() - today.getTime();
+  let timeLeftString =
+    timeLeft > 86400000 ? calculateDays(timeLeft) : calculateHours(timeLeft);
+  if (timeLeft < 0) timeLeftString = `0 hours left`;
+  return timeLeftString;
+}
+
+function calculateDays(timeLeft: number): string {
+  return `${Math.round(timeLeft / 86400000)}d left`;
+}
+
+function calculateHours(timeLeft: number): string {
+  return `${Math.round(timeLeft / 3600000)}h left`;
 }
