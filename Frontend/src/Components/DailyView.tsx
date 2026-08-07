@@ -53,7 +53,7 @@ function TaskSection({ header, tasks }: { header: string; tasks: Task[] }) {
 function TaskBox({ task }: { task: Task }) {
     const isUpdateFormOpen = useTaskStore((state) => state.isUpdateFormOpen);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-
+  
   return (
     <article
       className="bg-backdrop grid grid-cols-[60px_1fr_60px] gap-1 rounded overflow-hidden"
