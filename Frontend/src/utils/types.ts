@@ -4,12 +4,11 @@ export interface Task {
   title: string;
   note?: string;
   difficulty: string;
-  created_on: Date;
-  deadline: Date;
+  created_on: string;
+  deadline: string;
   type: string;
   isPrivate: boolean;
   frequency: number;
-  timeleft?: string;
   status: string;
   value: number;
 }
