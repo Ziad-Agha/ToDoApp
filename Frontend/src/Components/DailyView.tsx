@@ -17,12 +17,11 @@ export default function DailyView() {
 
   return (
     <main>
-      <DayDateNav />
       <div className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
         <TaskSection header="Dailies" tasks={tasks.regulars} />
         <TaskSection header="To Dos" tasks={tasks.uniques} />
         <TaskSection header="Pending" tasks={tasks.pendings} />
-      </div>
+      </div>{" "}
     </main>
   );
 }
@@ -208,27 +207,4 @@ function calculateDays(timeLeft: number): string {
 function calculateHours(timeLeft: number): string {
   return `${Math.round(timeLeft / 3600000)}h left`;
 }
-function DayDateNav() {
-  const { currentDate, nextDay, prevDay } = useDateStore();
-  const displayDate = new Intl.DateTimeFormat("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  }).format(currentDate);
-
-  return (
-    <div className="flex justify-center items-center text-nav">
-      <button onClick={prevDay}>
-        <MdNavigateBefore size={35} />
-      </button>
-
-      <button onClick={nextDay}>
-        <MdNavigateNext size={35} />
-      </button>
-
-      <span>{displayDate}</span>
-    </div>
-  );
-}
-
-export {Coin}
+export { Coin };

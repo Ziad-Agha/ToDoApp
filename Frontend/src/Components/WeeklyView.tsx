@@ -1,6 +1,6 @@
 import {useState} from "react";
-import {Coin} from "./Components/DailyView.tsx"
-import type { Task } from "./utils/types";
+import {Coin} from "./DailyView.tsx"
+import type { Task } from "../utils/types.ts";
 
 // import {SubNav, Nav} from "./HomePage.tsx";
 
