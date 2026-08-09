@@ -1,13 +1,15 @@
 import {useState} from "react";
 import {Coin} from "./DailyView.tsx";
 import type { Task } from "../utils/types";
+import {useTaskStore} from "../assets/store.ts";
 
-// import {SubNav, Nav} from "./HomePage.tsx";
 
 export default function WeeklyView() {
-
     const weekDates = getWeekDates();
     const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+    const rawTasks = useTaskStore((state) => state.tasks);
+    const tasks = filterTasksByWeek(rawTasks, weekDates);
 
     return <div className={"min-h-screen flex flex-col"}>
         <main
@@ -19,7 +21,7 @@ export default function WeeklyView() {
                         key={day}
                         header={day}
                         date={weekDates[i]}
-                        tasks={task} // tasks filtered by date
+                        tasks={tasks} // tasks filtered by date
                     />
                 ))}
             </div>
@@ -155,7 +157,7 @@ function TaskBox({ task }:{ task: Task }) {
                 <Checkbox/>
             </div>
 
-            <div className="flex flex-col text-text-dark pt-2 pb-2 h-[100%] relative">
+            <div className="flex flex-col text-text-dark pt-2 pb-2 h-full relative">
                 {task.timeleft && <span className="text-xs opacity-50 bottom-1 right-2.5">{task.timeleft}</span>}
                 <span className="leading-4">{task.title}</span>
                 <span className="text-xs opacity-50">{task.recurrence}</span>
@@ -170,3 +172,7 @@ function TaskBox({ task }:{ task: Task }) {
     );
 }
 
+
+function filterTasksByWeek(tasks: Task[], weekDates: Date[]) {
+
+}
