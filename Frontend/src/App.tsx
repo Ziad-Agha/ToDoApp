@@ -2,7 +2,7 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "./HomePage";
 import LoginForm from "./Components/LoginForm";
 import RegisterForm from "./Components/RegisterForm";
-import WeeklyView from "./WeeklyView";
+import WeeklyView from "./Components/WeeklyView";
 
 
 function App() {
