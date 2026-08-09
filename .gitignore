@@ -1,5 +1,6 @@
 # Dependencies (matches frontend/node_modules and backend/node_modules)
 node_modules/
+/Backend/node_modules/
 
 # Build output
 dist/

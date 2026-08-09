@@ -204,3 +204,5 @@ function calculateDays(timeLeft: number): string {
 function calculateHours(timeLeft: number): string {
   return `${Math.round(timeLeft / 3600000)}h left`;
 }
+
+export {Coin}
