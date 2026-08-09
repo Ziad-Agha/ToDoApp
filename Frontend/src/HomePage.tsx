@@ -50,6 +50,8 @@ function Nav() {
     </header>
 }
 
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-expect-error
 function SubNav() {
     // Currently basic, but later will be expanded
     return <div className="bg-subnav h-24 flex items-center">
