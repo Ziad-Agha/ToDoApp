@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";

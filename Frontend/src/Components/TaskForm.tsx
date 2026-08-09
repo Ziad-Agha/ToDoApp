@@ -1,10 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import DatePicker from "react-datepicker";
 import { HiMiniXMark } from "react-icons/hi2";
-import { apiFetch } from "../utils/api";
 import { useTaskStore } from "../assets/store";
 import { buildDeadline, getMonthRange, getWeekRange } from "../utils/dateUtils"
 import { CustomSelect } from "./ui/CustomSelect";
+import { validateForm } from "../utils/validationUtils";
+import { createTask } from "../services/taskService";
+import type { newTask } from "../utils/types";
 
 export default function TaskForm() {
   const task = useTaskForm();
@@ -108,15 +110,14 @@ export default function TaskForm() {
   );
 }
 
-
+const defaultTime = new Date();
+defaultTime.setHours(23, 59, 0, 0);
 
 //  State hooks for form variables and handle functions
 function useTaskForm() {
-  // const taskCreated = useTaskStore((state) => state.taskCreated);
+
   const addTask = useTaskStore((state) => state.addTask);
   const closeForm = useTaskStore((state) => state.closeForm);
-  const defaultTime = new Date();
-  defaultTime.setHours(23, 59, 0, 0);
 
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
@@ -131,17 +132,18 @@ function useTaskForm() {
   const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
   const [isPrivate, setIsPrivate] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
+
   const weekRange = selectedWeek ? getWeekRange(selectedWeek) : null;
   const monthRange = selectedMonth ? getMonthRange(selectedMonth) : null;
 
   /*  Returns start and end dates based on chosen type [day, week, month] */
-  function getDate(type: string) {
+  function getStartAndEndDate(type: string) {
     if (regular) return null;
 
     if (type === "day" && deadlineDate) {
       const date = new Date(deadlineDate);
       date.setHours(0, 0, 0, 0);
-      return { start: date, end: date };
+      return { start: date, end: new Date(date) };
     }
 
     if (type === "week" && weekRange) {
@@ -153,7 +155,7 @@ function useTaskForm() {
     }
   }
 
-  /*  Returns appropriate elment based on chosen type */
+  /*  Returns appropriate HTML elment based on chosen type [day, week, month] */
   function handleFrequency(type: string) {
     const labels: Record<string, string> = {
       day: "days",
@@ -164,10 +166,7 @@ function useTaskForm() {
     const frequencyInput = (
       <input
         className="task-element w-[16%] text-center focus:outline-none caret-transparent"
-        type="number"
-        min="1"
-        step="1"
-        value={frequency}
+        type="number" min="1" step="1" value={frequency}
         onPaste={(e) => e.preventDefault()}
         onKeyDown={(e) => e.preventDefault()}
         onChange={(e) => setFrequency(Number(e.target.value))}
@@ -212,24 +211,22 @@ function useTaskForm() {
     );
   }
 
-  /*  Returns appropriate DatePickers based on chosen type */
+  /*  Returns appropriate DatePickers based on chosen type [day, week, month] */
   function handleDeadline(type: string) {
     if (type === "day") {
       return (
         <div className="day-date-picker flex gap-2 items-center">
           <label>Date:</label>
-          <DatePicker
+          <DatePicker className="task-element w-full text-sm text-center focus:outline-none caret-transparent"
             wrapperClassName="w-[120px]"
-            className="task-element w-full text-sm text-center focus:outline-none caret-transparent"
             dateFormat="MMM. d, yyyy"
             showDateSelect
             selected={deadlineDate}
             onFocus={(e) => e.target.blur()}
             onChange={(date: Date | null) => setDeadlineDate(date)}
           />
-          <DatePicker
+          <DatePicker className="task-element w-full text-sm text-center focus:outline-none caret-transparent"
             wrapperClassName="w-[90px]"
-            className="task-element w-full text-sm text-center focus:outline-none caret-transparent"
             timeFormat="hh:mm aa"
             dateFormat="hh:mm aa"
             selected={deadlineTime}
@@ -240,6 +237,7 @@ function useTaskForm() {
         </div>
       );
     }
+
     if (type === "week") {
       return (
         <div className="week-date-picker flex gap-2 items-center">
@@ -254,6 +252,7 @@ function useTaskForm() {
         </div>
       );
     }
+
     if (type === "month") {
       return (
         <div className="week-date-picker gap-2 items-center">
@@ -270,50 +269,34 @@ function useTaskForm() {
     }
   }
 
-  function validateForm(): string[] {
-    const errors: string[] = [];
-    if (!title.trim()) errors.push("Title is required.");
-    if (!difficulty) errors.push("Difficulty is required.");
-    if (!regular) {
-      const dateValidators: Record<string, () => string | null> = {
-        day: () => (!deadlineDate ? "Deadline is required." : null),
-        week: () =>
-          !selectedWeek
-            ? "Please select a week."
-            : isNaN(selectedWeek.getTime())
-              ? "Please select a valid week. (MM/DD/YYYY)"
-              : null,
-        month: () =>
-          !selectedMonth
-            ? "Please select a month."
-            : isNaN(selectedMonth.getTime())
-              ? "Please select a valid month."
-              : null,
-      };
-      const dateError = dateValidators[type]?.();
-      if (dateError) errors.push(dateError);
-    }
-
-    return errors;
-  }
-
   async function handleSubmit() {
+
     // Validate
-    const errors = validateForm();
+    const fields = {
+      type,
+      title,
+      regular,
+      difficulty,
+      deadlineDate,
+      selectedWeek,
+      selectedMonth
+    }
+    const errors = validateForm(fields);
+    
     if (errors.length > 0) {
       setErrors(errors);
       return;
     } else setErrors([]);
 
     // Wrap data in an object
-    const dateRange = getDate(type);
-    const newTask = {
+    const dateRange = getStartAndEndDate(type);
+    const newTask: newTask = {
       title: title,
       note: note,
+      type: type,
       difficulty: difficulty,
       created_on: new Date(new Date()),
-      type: type,
-      start_date: dateRange ? new Date(dateRange.start) : null,
+      start_date: new Date(dateRange!.start) ,
       deadline:
         dateRange && deadlineTime
           ? buildDeadline(dateRange.end, deadlineTime)
@@ -324,24 +307,15 @@ function useTaskForm() {
       isPrivate: isPrivate,
     };
 
-    // Send object -> routes -> controller
+    // Create object in database
     try {
-      const response = await apiFetch("/tasks/createTask", {
-        method: "POST",
-        body: JSON.stringify(newTask),
-      });
-      if (!response.ok) {
-        throw new Error(`Server responded with status ${response.status}`);
-      }
-      const createdTask = await response.json();
+      const createdTask = await createTask(newTask);
       addTask(createdTask);
       console.log("Task created:", createdTask);
     } catch (error) {
       console.error("Failed to create task:", error);
     }
 
-    // Close form
-    // taskCreated();
     closeForm();
   }
 
