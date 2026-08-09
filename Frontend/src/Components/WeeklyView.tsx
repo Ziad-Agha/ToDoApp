@@ -1,8 +1,8 @@
 import {useState} from "react";
-import {Coin} from "./DailyView.tsx";
+import {Coin} from "./DailyView"
 import type { Task } from "../utils/types";
-import {useTaskStore} from "../assets/store.ts";
-
+import {useTaskStore} from "../assets/store";
+// import {SubNav, Nav} from "./HomePage.tsx";
 
 export default function WeeklyView() {
     const weekDates = getWeekDates();
