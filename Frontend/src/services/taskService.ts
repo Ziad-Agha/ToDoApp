@@ -14,7 +14,7 @@ export async function getAllTasks(): Promise<Task[]> {
 
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-  return response.json() as Promise<Task[]>;
+  return await response.json() as Promise<Task[]>;
 }
 
 
@@ -33,7 +33,7 @@ export async function getCurrentDayTasks(date: Date): Promise<Task[]> {
 
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-  return response.json() as Promise<Task[]>;
+  return await response.json() as Promise<Task[]>;
 }
 
 
@@ -51,7 +51,7 @@ export async function getCurrentMonthTasks(d: Date): Promise<Task[]> {
 
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-  return response.json() as Promise<Task[]>;
+  return await response.json() as Promise<Task[]>;
 }
 
 
@@ -65,7 +65,7 @@ export async function updateRequest(task_id: string,
 
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-  return response.json() as Promise<Task>;
+  return await response.json() as Promise<Task>;
 }
 
 
@@ -75,7 +75,7 @@ export async function deleteRequest(task_id: string) {
   });
   if (!response.ok) throw new Error(`Server error: ${response.status}`);
 
-  return response.json() as Promise<Task>;
+  return await response.json() as Promise<Task>;
 }
 
 
