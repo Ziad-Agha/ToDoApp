@@ -26,15 +26,17 @@ export default function HomePage() {
   }, []);
 
   return (
-    <>
+    <div className="bg-backdrop flex flex-col ">
       <Nav />
-      <div className="bg-taskcard flex items-center gap-4 w-fit self-center rounded-3xl">
+      <div className="bg-nav flex items-center gap-4 w-fit self-center rounded-3xl">
         {isWeekly ? <WeekDateNav /> : <DayDateNav />}
         <nav className="w-fit flex flex-row justify-center self-center">
-          <NavLink 
+          <NavLink
             to="daily"
             className={({ isActive }) =>
-              isActive ? "text-nav font-bold rounded-3xl bg-nav-active" : "text-nav/50 rounded-3xl"
+              isActive
+                ? " font-bold rounded-3xl bg-nav-active"
+                : " rounded-3xl"
             }
           >
             Daily
@@ -42,7 +44,9 @@ export default function HomePage() {
           <NavLink
             to="weekly"
             className={({ isActive }) =>
-              isActive ? "text-nav font-bold rounded-3xl  bg-nav-active" : "text-nav/50 rounded-3xl"
+              isActive
+                ? "font-bold rounded-3xl  bg-nav-active"
+                : "rounded-3xl"
             }
           >
             Weekly
@@ -52,7 +56,7 @@ export default function HomePage() {
       <Outlet />
       {/* <DateNav /> */}
       {/* <DailyView /> */}
-    </>
+    </div>
   );
 }
 
@@ -132,16 +136,16 @@ function DayDateNav() {
     day: "numeric",
   }).format(currentDate);
   return (
-    <div className="flex justify-center items-center text-nav">
-      <button className="hover:bg-checkmark rounded-l-3xl" onClick={prevDay}>
+    <div className="flex justify-center items-center text-nav-text">
+      <button className="hover:bg-nav-hover rounded-l-3xl" onClick={prevDay}>
         <MdNavigateBefore size={35} />
       </button>
 
-      <button className="hover:bg-checkmark rounded-r-3xl" onClick={nextDay}>
+      <button className="hover:bg-nav-hover rounded-r-3xl" onClick={nextDay}>
         <MdNavigateNext size={35} />
       </button>
 
-      <span>{displayDate}</span>
+      <span className="w-25">{displayDate}</span>
     </div>
   );
 }
