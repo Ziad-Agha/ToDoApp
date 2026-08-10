@@ -8,7 +8,7 @@ import TaskUpdateForm from "./TaskUpdateForm";
 import type { Task } from "../utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { HiMiniXMark } from "react-icons/hi2";
-import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
+// import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
 export default function DailyView() {
   const day = useDateStore((d) => d.currentDate);
