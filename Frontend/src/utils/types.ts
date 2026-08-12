@@ -27,6 +27,7 @@ export interface newTask {
   isPrivate:  boolean;
   frequency:  number;
   status:     string;
+  value:      number;
 }
 
 export interface TaskUpdate {

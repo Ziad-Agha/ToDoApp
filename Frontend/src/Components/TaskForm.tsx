@@ -269,6 +269,13 @@ function useTaskForm() {
     }
   }
 
+  function getTaskValue(difficulty: string): number {
+    let value = 15
+    if (difficulty === "medium") value = 20
+    if (difficulty === "hard") value = 25
+    return value
+  }
+
   async function handleSubmit() {
 
     // Validate
@@ -305,6 +312,7 @@ function useTaskForm() {
       status: "active",
       weekday: weekly,
       isPrivate: isPrivate,
+      value: getTaskValue(difficulty)
     };
 
     // Create object in database
