@@ -2,16 +2,23 @@ import { Routes, Route } from "react-router-dom";
 import HomePage from "./HomePage";
 import LoginForm from "./Components/LoginForm";
 import RegisterForm from "./Components/RegisterForm";
-import WeeklyView from "./WeeklyView";
-
+import ProtectedRoute from "./Components/ProtectedRoute";
+import WeeklyView from "./Components/WeeklyView";
+import DailyView from "./Components/DailyView";
+import { Navigate } from "react-router-dom";
 
 function App() {
   return (
     <Routes>
-      <Route path="/" element={<LoginForm />}></Route>
       <Route path="/register" element={<RegisterForm />}></Route>
-      <Route path="/home" element={<HomePage />} />
-      <Route path="/weekly-view" element={<WeeklyView />} />
+      <Route path="/" element={<LoginForm />}></Route>
+      <Route element={<ProtectedRoute />}>
+        <Route path="/home" element={<HomePage />}>
+          <Route index element={<Navigate to="daily" />} />
+          <Route path="daily" element={<DailyView />} />
+          <Route path="weekly" element={<WeeklyView />} />
+        </Route>
+      </Route>
     </Routes>
   );
 }
