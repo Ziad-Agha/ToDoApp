@@ -276,6 +276,13 @@ function useTaskForm() {
     return value
   }
 
+  function getGracePeriod(difficulty: string): number {
+    let grace_period = 1                          // 2 days
+    if (difficulty === "medium") grace_period = 3 // 4 days
+    if (difficulty === "hard") grace_period = 5   // 6 days
+    return grace_period
+  }
+
   async function handleSubmit() {
 
     // Validate
@@ -303,7 +310,7 @@ function useTaskForm() {
       type: type,
       difficulty: difficulty,
       created_on: new Date(new Date()),
-      start_date: new Date(dateRange!.start) ,
+      start_date: dateRange ? new Date(dateRange.start) : null,
       deadline:
         dateRange && deadlineTime
           ? buildDeadline(dateRange.end, deadlineTime)
@@ -312,7 +319,8 @@ function useTaskForm() {
       status: "active",
       weekday: weekly,
       isPrivate: isPrivate,
-      value: getTaskValue(difficulty)
+      value: getTaskValue(difficulty),
+      grace_period: getGracePeriod(difficulty)
     };
 
     // Create object in database

@@ -26,54 +26,85 @@ app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
 
-// NOTE: change task creation deadlines 
-// to be exclusively in chunks of 30 minutes
-cron.schedule("*/30 * * * *", async () => {
-  try {
-    const now = new Date()
 
-    const overdueTasks = await prisma.task.findMany({
+cron.schedule("* * * * *", async () => {
+  
+  // Move active tasks ==> pending
+  try {
+    const updated = await prisma.task.updateMany({
       where: {
         status: "active",
-        deadline: { lt: now },
+        deadline: { lt: new Date() },
       },
+      data: { status: "pending", },
+    });
+    if (updated.count > 0) {
+      console.log(`${updated.count} tasks marked as pending.`);
+    }
+  } catch (error) {
+    console.error("Cron job: Moving active tasks to pending failed:", error);
+  }
+
+    // Move pending tasks ==> missed
+  try {
+    const missed = await prisma.task.updateMany({
+      where: {
+        status: "pending",
+        grace_period: 0,
+      },
+      data: { status: "missed" },
+    });
+    if (missed.count > 0) {
+      console.log(`${missed.count} tasks marked as missed.`);
+    }
+  } catch (error) {
+    console.error("Cron job: Moving pending tasks to missed failed:", error);
+  }
+  
+  
+  // Verify pending tasks values
+  try {
+    const now = new Date()
+    let ctr = 0
+    const pendingTasks = await prisma.task.findMany({
+      where: { status: "pending" },
     });
 
-    if (overdueTasks.length === 0) return
+    if (pendingTasks.length === 0) return
 
-    for (const task of overdueTasks) {
-
-      // Determine how many days passed after deadline
-      const hoursLate = (now.getTime() - task.deadline!.getTime()) / (1000 * 60 * 60)
-      const pendingDays = Math.floor(hoursLate / 24)
-      // Compute new decayed reward
-      const reward = computeDecayedReward(task.difficulty, pendingDays)
-
-      await prisma.task.update({
-        where: { task_id: task.task_id },
-        data: {
-          status: "pending",
-          value: reward,
-        }
-      })
+    for (const task of pendingTasks) {
+      const reward = getPendingReward(task.difficulty, task.grace_period)
+      if (reward !== task.value) {
+        await prisma.task.update({
+          where: { task_id: task.task_id },
+          data: {
+            value: reward,
+            grace_period: (task.grace_period! - 1)
+          }
+        })
+      }
+      ctr++;
+      console.log(`XXXXX\nTitle: ${task.title}.\ngrace period: ${task.grace_period}.\n`)
     }
 
-    console.log(`${overdueTasks.length} tasks marked pending and rewards updated`)
+    console.log(`${ctr} pending tasks rewards decremented.`)
 
   } catch (error) {
-    console.error("Cron job failed:", error);
+    console.error("Cron Job: Pending reward updates failed:", error);
   }
+
 });
 
-function computeDecayedReward(difficulty: string, pendingDays: number) {
+
+function getPendingReward(difficulty: string, grace_period: number) {
   let decay
 
-  if (difficulty === "easy") 
-    decay = [15, 10, 5, 0]
+  if (difficulty === "easy")
+    decay = [5, 10]
   if (difficulty === "medium")
-    decay = [20, 17, 14, 10, 4, 0]
+    decay = [4, 10, 14, 17]
   if (difficulty === "hard")
-    decay = [25, 23, 21, 18, 14, 10, 6, 0]
+    decay = [6, 10, 14, 18, 21, 23]
 
-  return decay![Math.min(pendingDays, decay!.length - 1)]
+  return decay![grace_period]
 }
