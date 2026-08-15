@@ -5,6 +5,7 @@ import tasksRouter from "./routes/task.routes";
 import authRouter from "./routes/auth.routes";
 import cron from "node-cron";
 import prisma from "./db/prisma";
+import { Task } from "@prisma/client";
 dotenv.config();
 
 const app = express();
@@ -28,8 +29,17 @@ app.listen(PORT, () => {
 
 
 cron.schedule("* * * * *", async () => {
-  
-  // Move active tasks ==> pending
+
+  // moveActivesToPending()
+  // movePendingsToMissed()
+
+
+  // Verify pending tasks values
+  // checkPendingsValues()
+
+});
+
+async function moveActivesToPending() {
   try {
     const updated = await prisma.task.updateMany({
       where: {
@@ -38,14 +48,15 @@ cron.schedule("* * * * *", async () => {
       },
       data: { status: "pending", },
     });
-    if (updated.count > 0) {
-      console.log(`${updated.count} tasks marked as pending.`);
-    }
+
+    console.log(`${updated.count} tasks marked as pending.`);
+
   } catch (error) {
     console.error("Cron job: Moving active tasks to pending failed:", error);
   }
+}
 
-    // Move pending tasks ==> missed
+async function movePendingsToMissed() {
   try {
     const missed = await prisma.task.updateMany({
       where: {
@@ -54,37 +65,37 @@ cron.schedule("* * * * *", async () => {
       },
       data: { status: "missed" },
     });
-    if (missed.count > 0) {
-      console.log(`${missed.count} tasks marked as missed.`);
-    }
+    
+    console.log(`${missed.count} tasks marked as missed.`);
+
   } catch (error) {
     console.error("Cron job: Moving pending tasks to missed failed:", error);
   }
-  
-  
-  // Verify pending tasks values
+}
+
+async function checkPendingsValues() {
   try {
-    const now = new Date()
     let ctr = 0
+    const now = new Date()
     const pendingTasks = await prisma.task.findMany({
       where: { status: "pending" },
     });
 
     if (pendingTasks.length === 0) return
 
-    for (const task of pendingTasks) {
-      const reward = getPendingReward(task.difficulty, task.grace_period)
-      if (reward !== task.value) {
+    for (const t of pendingTasks) {
+      const [new_value, new_grace_period] = validateTaskValue(t, now)
+      if (new_value !== t.value) {
         await prisma.task.update({
-          where: { task_id: task.task_id },
+          where: { task_id: t.task_id },
           data: {
-            value: reward,
-            grace_period: (task.grace_period! - 1)
+            value: new_value,
+            grace_period: new_grace_period
           }
         })
       }
       ctr++;
-      console.log(`XXXXX\nTitle: ${task.title}.\ngrace period: ${task.grace_period}.\n`)
+      console.log(`XXXXX\nTitle: ${t.title}.\ngrace period: ${t.grace_period}.\n`)
     }
 
     console.log(`${ctr} pending tasks rewards decremented.`)
@@ -92,19 +103,26 @@ cron.schedule("* * * * *", async () => {
   } catch (error) {
     console.error("Cron Job: Pending reward updates failed:", error);
   }
+}
 
-});
+function validateTaskValue(task: Task, now: Date): any[] {
+  let values, new_grace_period
+  
+  // How many 24h has the task been pending for
+  const daysLate = (now.getTime() - task.deadline!.getTime()) / 3600000
+  // const new_grace_period = task.grace_period - daysLate
 
+  if (task.difficulty === "easy")
+    new_grace_period = 1 - daysLate
+    values = [5, 10]
 
-function getPendingReward(difficulty: string, grace_period: number) {
-  let decay
+  if (task.difficulty === "medium")
+    new_grace_period = 3 - daysLate
+    values = [4, 10, 14, 17]
 
-  if (difficulty === "easy")
-    decay = [5, 10]
-  if (difficulty === "medium")
-    decay = [4, 10, 14, 17]
-  if (difficulty === "hard")
-    decay = [6, 10, 14, 18, 21, 23]
+  if (task.difficulty === "hard")
+    new_grace_period = 5 - daysLate
+    values = [6, 10, 14, 18, 21, 23]
 
-  return decay![grace_period]
+  return [ values![new_grace_period!], new_grace_period ]
 }
