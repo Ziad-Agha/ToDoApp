@@ -190,6 +190,7 @@ function DeleteAlert({ task, onClose }: { task: Task; onClose: () => void }) {
     document.body,
   );
 }
+
 function calculateTimeLeft(task: Task) {
   const today = new Date();
   const taskDate = new Date(task.deadline);

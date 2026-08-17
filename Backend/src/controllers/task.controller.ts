@@ -15,6 +15,8 @@ export async function createTask(req: Request, res: Response) {
     frequency,
     weekday,
     isPrivate,
+    value,
+    grace_period
   } = req.body;
   if (
     !title ||
@@ -23,7 +25,9 @@ export async function createTask(req: Request, res: Response) {
     !created_on ||
     !type ||
     !status ||
-    isPrivate === null
+    isPrivate === null ||
+    !value
+
   ) {
     return res.status(400).json({ error: "Missing required fields" });
   }
@@ -33,19 +37,21 @@ export async function createTask(req: Request, res: Response) {
         user: {
           connect: { user_id },
         },
-        title,
-        note,
-        difficulty,
-        created_on,
-        type,
-        start_date,
-        status,
-        deadline,
-        frequency,
-        weekday,
-        isPrivate,
-      },
-    });
+      title,
+      note,
+      difficulty,
+      created_on,
+      type,
+      start_date,
+      status,
+      deadline,
+      frequency,
+      weekday,
+      isPrivate,
+      value,
+      grace_period
+    },
+  });
 
     res.status(201).json(newTask);
   } catch (error) {
