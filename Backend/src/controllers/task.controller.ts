@@ -16,6 +16,7 @@ export async function createTask(req: Request, res: Response) {
     frequency,
     weekday,
     isPrivate,
+    value,
   } = req.body;
 
   const newTask = await prisma.task.create({
@@ -34,6 +35,7 @@ export async function createTask(req: Request, res: Response) {
       frequency,
       weekday,
       isPrivate,
+      value
     },
   });
 

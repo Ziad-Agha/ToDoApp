@@ -269,6 +269,13 @@ function useTaskForm() {
     }
   }
 
+  function getTaskValue(difficulty: string): number {
+    let value = 15
+    if (difficulty === "medium") value = 20
+    if (difficulty === "hard") value = 25
+    return value
+  }
+
   async function handleSubmit() {
 
     // Validate
@@ -296,7 +303,7 @@ function useTaskForm() {
       type: type,
       difficulty: difficulty,
       created_on: new Date(new Date()),
-      start_date: new Date(dateRange!.start) ,
+      start_date: dateRange ? new Date(dateRange.start) : null,
       deadline:
         dateRange && deadlineTime
           ? buildDeadline(dateRange.end, deadlineTime)
@@ -305,8 +312,9 @@ function useTaskForm() {
       status: "active",
       weekday: weekly,
       isPrivate: isPrivate,
+      value: getTaskValue(difficulty),
     };
-
+    
     // Create object in database
     try {
       const createdTask = await createTask(newTask);

@@ -37,17 +37,16 @@ model Task {
   difficulty    String    
   created_on    DateTime      @default(now())
   type          String    
-  isPrivate       Boolean       @default(false)
-  value         Int            @default(0)
+  isPrivate     Boolean       @default(false)
+  value         Int           @default(0)
 
-  status        String?   
-  start_date    DateTime?      
-  deadline      DateTime?      
-  grace_period  Int?    
+  status        String?
+  start_date    DateTime?
+  deadline      DateTime?
 
-  frequency     Int?    
-  weekday       String?   
-  streak        Int?    
+  frequency     Int? 
+  weekday       String?  
+  streak        Int?
 
   user          User          @relation(fields: [user_id], references: [user_id])
   completions   Completion[]
