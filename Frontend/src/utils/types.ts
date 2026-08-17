@@ -13,7 +13,6 @@ export interface Task {
   frequency:    number;
   status:       string;
   value:        number;
-  grace_period: number;
 }
 
 export interface newTask {
@@ -29,7 +28,6 @@ export interface newTask {
   frequency:    number;
   status:       string;
   value:        number;
-  grace_period: number;
 }
 
 export interface TaskUpdate {

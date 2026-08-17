@@ -276,13 +276,6 @@ function useTaskForm() {
     return value
   }
 
-  function getGracePeriod(difficulty: string): number {
-    let grace_period = 1                          // 2 days
-    if (difficulty === "medium") grace_period = 3 // 4 days
-    if (difficulty === "hard") grace_period = 5   // 6 days
-    return grace_period
-  }
-
   async function handleSubmit() {
 
     // Validate
@@ -320,9 +313,8 @@ function useTaskForm() {
       weekday: weekly,
       isPrivate: isPrivate,
       value: getTaskValue(difficulty),
-      grace_period: getGracePeriod(difficulty)
     };
-
+    
     // Create object in database
     try {
       const createdTask = await createTask(newTask);
