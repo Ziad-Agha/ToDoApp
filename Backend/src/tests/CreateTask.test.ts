@@ -58,6 +58,8 @@ describe("POST /api/tasks/createTask", () => {
         isPrivate: false,
         frequency: 1,
         status: "active",
+        value: 5,
+        grace_period: 6,
       });
     expect(res.status).toBe(201);
     expect(res.body.title).toBe("Buy groceries");
