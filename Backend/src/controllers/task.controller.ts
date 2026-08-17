@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../db/prisma";
 
-
 export async function createTask(req: Request, res: Response) {
   const user_id = req.user!.user_id;
   const {
@@ -17,29 +16,43 @@ export async function createTask(req: Request, res: Response) {
     weekday,
     isPrivate,
   } = req.body;
-
-  const newTask = await prisma.task.create({
-    data: {
-      user: {
-        connect: { user_id },
+  if (
+    !title ||
+    !difficulty ||
+    !type ||
+    !created_on ||
+    !type ||
+    !status ||
+    isPrivate === null
+  ) {
+    return res.status(400).json({ error: "Missing required fields" });
+  }
+  try {
+    const newTask = await prisma.task.create({
+      data: {
+        user: {
+          connect: { user_id },
+        },
+        title,
+        note,
+        difficulty,
+        created_on,
+        type,
+        start_date,
+        status,
+        deadline,
+        frequency,
+        weekday,
+        isPrivate,
       },
-      title,
-      note,
-      difficulty,
-      created_on,
-      type,
-      start_date,
-      status,
-      deadline,
-      frequency,
-      weekday,
-      isPrivate,
-    },
-  });
+    });
 
-  res.status(201).json(newTask);
+    res.status(201).json(newTask);
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ error });
+  }
 }
-
 
 // Updates the title, note, or privacy of a task.
 export async function updateTask(req: Request, res: Response) {
@@ -59,7 +72,6 @@ export async function updateTask(req: Request, res: Response) {
   }
 }
 
-
 export async function getAllTasks(req: Request, res: Response) {
   const tasks = await prisma.task.findMany({
     where: { user_id: req.user!.user_id },
@@ -67,11 +79,9 @@ export async function getAllTasks(req: Request, res: Response) {
   res.status(200).json(tasks);
 }
 
-
 export async function getCurrentDayTasks(req: Request, res: Response) {
-
-  const start = new Date(req.query.start as string)
-  const end = new Date(req.query.end as string)
+  const start = new Date(req.query.start as string);
+  const end = new Date(req.query.end as string);
 
   const tasks = await prisma.task.findMany({
     where: {
@@ -85,9 +95,8 @@ export async function getCurrentDayTasks(req: Request, res: Response) {
   res.status(200).json(tasks);
 }
 
-
-export async function deleteTask(req: Request, res: Response){
-   try {
+export async function deleteTask(req: Request, res: Response) {
+  try {
     const { user_id } = req.user!;
     const task_id = req.params.task_id as string;
     const deletedTask = await prisma.task.delete({
