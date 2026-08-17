@@ -13,6 +13,16 @@
   --color-text-dark: #191f2f;
   --color-coin-area: #fde7cd;
   --color-coin-value: #dd9d30;
+  /*weekly View*/
+  --color-main: #fff5c6;
+
+  --color-nav1: #273338;
+  --color-sub-nav1: #2b5748;
+  --color-sub-nav: #303747;
+  --color-tasks-view: #fff4f3;
+  --color-tasks-section1: #9cb080;
+  --color-tasks-section: #e2c7c0;
+  --color-task-box: #fff4f3;
 }
 
 :root {
@@ -28,8 +38,8 @@
   --shadow:
     rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
+  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
   --mono: ui-monospace, Consolas, monospace;
 
   font: 18px/145% var(--sans);
@@ -74,8 +84,6 @@ h2 {
   letter-spacing: -0.24px;
 }
 
-
-
 /* ------------------- HOME PAGE ------------------- */
 /* ------------------------------------------------- */
 nav a {
@@ -96,9 +104,6 @@ nav a {
   @apply bg-taskcard rounded pt-1.5 pb-1.5 pr-1.75 pl-1.75;
 }
 
-
-
-
 .number-input::-webkit-inner-spin-button,
 .number-input::-webkit-outer-spin-button {
   -webkit-appearance: none;
@@ -109,8 +114,6 @@ nav a {
   appearance: textfield;
   -moz-appearance: textfield;
 }
-
-
 
 /* ------------- TASK FORM: DATEPICKER ------------- */
 /* !DatePicker cannot be targeted with Tailwind      */
@@ -157,8 +160,7 @@ nav a {
   color: var(--color-nav) !important;
 }
 
-.react-datepicker__month-container 
-.react-datepicker__month-wrapper {
+.react-datepicker__month-container .react-datepicker__month-wrapper {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin: 0;
