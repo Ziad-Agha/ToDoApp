@@ -43,7 +43,6 @@ model Task {
   status        String?
   start_date    DateTime?
   deadline      DateTime?
-  grace_period  Int
 
   frequency     Int? 
   weekday       String?  

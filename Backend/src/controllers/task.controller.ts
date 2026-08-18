@@ -16,7 +16,6 @@ export async function createTask(req: Request, res: Response) {
     weekday,
     isPrivate,
     value,
-    grace_period,
   } = req.body;
   if (
     !title ||
@@ -48,13 +47,12 @@ export async function createTask(req: Request, res: Response) {
         weekday,
         isPrivate,
         value,
-        grace_period,
       },
     });
 
     res.status(201).json(newTask);
   } catch (error) {
-    console.log(error+"gababagoooooooooooooooo");
+    console.log(error + "gababagoooooooooooooooo");
     res.status(500).json({ error });
   }
 }

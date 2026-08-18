@@ -11,14 +11,9 @@ app.listen(PORT, () => {
 
 
 cron.schedule("* * * * *", async () => {
-
-  // moveActivesToPending()
-  // movePendingsToMissed()
-
-
-  // Verify pending tasks values
-  // checkPendingsValues()
-
+  moveActivesToPending()
+  await new Promise(r => setTimeout(r, 1000));
+  checkPendingsValues()
 });
 
 async function moveActivesToPending() {
@@ -38,26 +33,9 @@ async function moveActivesToPending() {
   }
 }
 
-async function movePendingsToMissed() {
-  try {
-    const missed = await prisma.task.updateMany({
-      where: {
-        status: "pending",
-        grace_period: 0,
-      },
-      data: { status: "missed" },
-    });
-    
-    console.log(`${missed.count} tasks marked as missed.`);
-
-  } catch (error) {
-    console.error("Cron job: Moving pending tasks to missed failed:", error);
-  }
-}
-
 async function checkPendingsValues() {
   try {
-    let ctr = 0
+    let pnd_ctr = 0, msd_ctr = 0
     const now = new Date()
     const pendingTasks = await prisma.task.findMany({
       where: { status: "pending" },
@@ -66,45 +44,50 @@ async function checkPendingsValues() {
     if (pendingTasks.length === 0) return
 
     for (const t of pendingTasks) {
-      const [new_value, new_grace_period] = validateTaskValue(t, now)
+      const new_value = validateTaskValue(t, now)
+      if (new_value === 0 ) {
+        await prisma.task.update ({
+          where: { task_id: t.task_id },
+          data: { 
+            status: "missed",
+            value: 0,
+          }
+        })
+        msd_ctr++
+      }
+
       if (new_value !== t.value) {
         await prisma.task.update({
           where: { task_id: t.task_id },
-          data: {
-            value: new_value,
-            grace_period: new_grace_period
-          }
+          data: { value: new_value }
         })
+        pnd_ctr++
       }
-      ctr++;
-      console.log(`XXXXX\nTitle: ${t.title}.\ngrace period: ${t.grace_period}.\n`)
     }
 
-    console.log(`${ctr} pending tasks rewards decremented.`)
+    console.log(`\n${pnd_ctr} tasks lost value. ${msd_ctr} tasks marked as missed.\n`)
 
   } catch (error) {
-    console.error("Cron Job: Pending reward updates failed:", error);
+    console.error("Cron Job: Pending-rewards updates failed:", error);
   }
 }
 
-function validateTaskValue(task: Task, now: Date): any[] {
-  let values, new_grace_period
-  
-  // How many 24h has the task been pending for
-  const daysLate = (now.getTime() - task.deadline!.getTime()) / 3600000
-  // const new_grace_period = task.grace_period - daysLate
-
+function validateTaskValue(task: Task, now: Date): number {
+  let values
   if (task.difficulty === "easy")
-    new_grace_period = 1 - daysLate
-    values = [5, 10]
-
+    values = [10, 5]
   if (task.difficulty === "medium")
-    new_grace_period = 3 - daysLate
-    values = [4, 10, 14, 17]
-
+    values = [17, 14, 10, 4]
   if (task.difficulty === "hard")
-    new_grace_period = 5 - daysLate
-    values = [6, 10, 14, 18, 21, 23]
+    values = [23, 21, 18, 14, 10, 6]
+  
+  // How many 24h has the task been pending for?
+  const daysLate = Math.floor((now.getTime() - task.deadline!.getTime()) / 86400000)
 
-  return [ values![new_grace_period!], new_grace_period ]
+  console.log(`Task name: ${task.title}. Days late: ${daysLate}. New value: ${values![daysLate]}`)
+  // Return value corresponding to # of days late
+  if (daysLate >= values!.length)
+    return 0
+  else 
+    return values![daysLate]
 }
