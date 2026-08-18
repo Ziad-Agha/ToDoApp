@@ -1,5 +1,6 @@
 import type { Request, Response } from "express";
 import prisma from "../db/prisma";
+import { Prisma } from "@prisma/client";
 
 export async function createTask(req: Request, res: Response) {
   const user_id = req.user!.user_id;
@@ -64,12 +65,21 @@ export async function updateTask(req: Request, res: Response) {
     const task_id = req.params.task_id as string;
     const { title, note, isPrivate } = req.body;
 
+    // validate body
+    if (!title && note === undefined && isPrivate === undefined) {
+      return res.status(400).json({ error: "No valid fields provided to update" });
+    }
+
     const updatedTask = await prisma.task.update({
       where: { task_id, user_id },
       data: { title, note, isPrivate },
     });
+
     res.json(updatedTask);
   } catch (error) {
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+      return res.status(404).json({ error: "Task not found" });
+    }
     console.error("Full error:", JSON.stringify(error, null, 2));
     res.status(500).json({ error });
   }
