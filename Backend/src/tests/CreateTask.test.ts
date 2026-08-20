@@ -1,7 +1,33 @@
 import request from "supertest";
 import app from "../app";
+import prisma from "../db/prisma";
 
 describe("POST /api/tasks/createTask", () => {
+  let token: string;
+  let task_id: string;
+
+  // create token before testing
+  beforeAll(async () => {
+    const loginRes = await request(app).post("/api/auth/register").send({
+      username: "testCreate",
+      email: "testCreate@gmail.com",
+      password: "testpassword",
+    });
+
+    token = loginRes.body.token;
+  });
+
+  // delete all created tasks after testing
+  afterAll(async () => {
+    const user = await prisma.user.findUnique({
+      where: { email: "testCreate@gmail.com" },
+    });
+    if (user) {
+      await prisma.task.deleteMany({ where: { user_id: user.user_id } });
+      await prisma.user.delete({ where: { email: "testCreate@gmail.com" } });
+    }
+  });
+
   // test if fails
   it("should return 401 without a token", async () => {
     const res = await request(app)
@@ -20,12 +46,6 @@ describe("POST /api/tasks/createTask", () => {
 
   // test it fails
   it("should return 400 if required fields are missing", async () => {
-    const loginRes = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "meow@gmail.com", password: "meow" });
-
-    const token = loginRes.body.token;
-
     const res = await request(app)
       .post("/api/tasks/createTask")
       .set("Authorization", `Bearer ${token}`)
@@ -37,12 +57,6 @@ describe("POST /api/tasks/createTask", () => {
 
   // test it succeeds
   it("should return 201 with a valid token and correct body", async () => {
-    // first login to get a token
-    const loginRes = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "meow@gmail.com", password: "meow" });
-    const token = loginRes.body.token;
-
     const res = await request(app)
       .post("/api/tasks/createTask")
       .set("Authorization", `Bearer ${token}`)

@@ -8,7 +8,7 @@ const router = Router();
 
 router.use(authMiddleware);
 
-router.get("/allTasks", getAllTasks)
+router.get("/getAllTasks", getAllTasks)
 router.post("/createTask", createTask);
 router.put("/updateTask/:task_id", updateTask);
 router.delete("/deleteTask/:task_id", deleteTask)

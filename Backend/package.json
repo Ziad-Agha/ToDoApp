@@ -46,8 +46,10 @@
     "seed": "ts-node prisma/seed.ts"
   },
   "jest": {
-  "preset": "ts-jest",
-  "testEnvironment": "node",
-  "testMatch": ["**/*.test.ts"]
-}
+    "preset": "ts-jest",
+    "testEnvironment": "node",
+    "testMatch": [
+      "**/*.test.ts"
+    ]
+  }
 }

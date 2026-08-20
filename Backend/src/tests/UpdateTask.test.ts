@@ -6,11 +6,13 @@ describe("PUT /api/tasks/updateTask/:task_id", () => {
   let token: string;
   let task_id: string;
 
-  // get a token and create a real task before all tests
+
   beforeAll(async () => {
-    const loginRes = await request(app)
-      .post("/api/auth/login")
-      .send({ email: "meow@gmail.com", password: "meow" });
+    const loginRes = await request(app).post("/api/auth/register").send({
+      username: "testupdate",
+      email: "testupdate@gmail.com",
+      password: "testpassword",
+    });
 
     token = loginRes.body.token;
 
@@ -29,15 +31,20 @@ describe("PUT /api/tasks/updateTask/:task_id", () => {
         isPrivate: false,
         frequency: 1,
         status: "active",
-        value: 5
+        value: 5,
       });
 
     task_id = taskRes.body.task_id;
   });
 
-  // delete the test task after all tests
   afterAll(async () => {
-    await prisma.task.delete({ where: { task_id } });
+    const user = await prisma.user.findUnique({
+      where: { email: "testupdate@gmail.com" },
+    });
+    if (user) {
+      await prisma.task.deleteMany({ where: { user_id: user.user_id } });
+      await prisma.user.delete({ where: { email: "testupdate@gmail.com" } });
+    }
   });
 
   it("should return 401 without a token", async () => {

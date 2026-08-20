@@ -48,7 +48,7 @@ model Task {
   weekday       String?  
   streak        Int?
 
-  user          User          @relation(fields: [user_id], references: [user_id])
+  user          User  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   completions   Completion[]
 }
 

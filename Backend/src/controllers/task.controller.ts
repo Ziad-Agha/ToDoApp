@@ -67,7 +67,9 @@ export async function updateTask(req: Request, res: Response) {
 
     // validate body
     if (!title && note === undefined && isPrivate === undefined) {
-      return res.status(400).json({ error: "No valid fields provided to update" });
+      return res
+        .status(400)
+        .json({ error: "No valid fields provided to update" });
     }
 
     const updatedTask = await prisma.task.update({
@@ -77,7 +79,10 @@ export async function updateTask(req: Request, res: Response) {
 
     res.json(updatedTask);
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2025") {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
       return res.status(404).json({ error: "Task not found" });
     }
     console.error("Full error:", JSON.stringify(error, null, 2));
@@ -86,10 +91,15 @@ export async function updateTask(req: Request, res: Response) {
 }
 
 export async function getAllTasks(req: Request, res: Response) {
-  const tasks = await prisma.task.findMany({
-    where: { user_id: req.user!.user_id },
-  });
-  res.status(200).json(tasks);
+  try {
+    const tasks = await prisma.task.findMany({
+      where: { user_id: req.user!.user_id },
+    });
+    res.status(200).json(tasks);
+  } catch (error) {
+    console.error("Full error:", JSON.stringify(error, null, 2));
+    res.status(500).json({ error });
+  }
 }
 
 export async function getCurrentDayTasks(req: Request, res: Response) {
@@ -117,6 +127,12 @@ export async function deleteTask(req: Request, res: Response) {
     });
     res.status(200).json(deletedTask);
   } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2025"
+    ) {
+      return res.status(404).json({ error: "Task not found" });
+    }
     console.error("Full error:", JSON.stringify(error, null, 2));
     res.status(500).json({ error });
   }
