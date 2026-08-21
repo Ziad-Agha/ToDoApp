@@ -2,7 +2,7 @@ import { apiFetch } from "../utils/api";
 import type { newTask, Task, TaskUpdate } from "../utils/types";
 
 export async function getAllTasks(): Promise<Task[]> {
-  const response = await apiFetch("/tasks/allTasks", {
+  const response = await apiFetch("/tasks/getAllTasks", {
     method: "GET",
     cache: "no-store",
   });

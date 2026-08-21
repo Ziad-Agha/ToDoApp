@@ -5,7 +5,7 @@ import bcrypt from "bcrypt";
 
 // recieves request body and verifies if then email already exists.
 // creates user record in the database.
-// 
+//
 export async function register(req: Request, res: Response) {
   const { email, username, password } = req.body;
 
@@ -27,14 +27,14 @@ export async function register(req: Request, res: Response) {
     },
   });
 
-  // creates token including signature, jwt header, user_id. 
-  // signature is a combination of user_id, header and secret. 
+  // creates token including signature, jwt header, user_id.
+  // signature is a combination of user_id, header and secret.
   const token = jwt.sign(
     { user_id: newUser.user_id },
     process.env.JWT_SECRET!,
     { expiresIn: "7d" },
   );
-  res.json({ token });
+  res.status(201).json({ token });
 }
 
 // similar to register im too lazy.
