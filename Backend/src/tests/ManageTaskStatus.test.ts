@@ -84,7 +84,7 @@ describe("manageTaskStatus", () => {
         type: "day",
         isPrivate: false,
         status: "active",
-        frequency: 1,
+        frequency: 0,
         weekday: "Monday",
         created_on: new Date(),
         start_date: new Date(),
