@@ -192,10 +192,17 @@ function DeleteAlert({ task, onClose }: { task: Task; onClose: () => void }) {
 }
 
 function calculateTimeLeft(task: Task) {
+  let timeLeftString;
+  if (task.frequency != 0) {
+    const tonight = new Date();
+    tonight.setHours(0, 0, 0, 0);
+    return calculateHours(86400000 + tonight.getTime() - new Date().getTime());
+  }
+
   const today = new Date();
   const taskDate = new Date(task.deadline);
   const timeLeft = taskDate.getTime() - today.getTime();
-  let timeLeftString =
+  timeLeftString =
     timeLeft > 86400000 ? calculateDays(timeLeft) : calculateHours(timeLeft);
   if (timeLeft < 0) timeLeftString = `0 hours left`;
   return timeLeftString;

@@ -60,7 +60,10 @@ export function filterTasksByCategory(tasks: Task[]) {
 
 export function filterTasksByDay(tasks: Task[], day: Date) {
   const dayTasks = tasks.filter(
-    (t) => t.deadline && isSameDay(t.deadline, day),
+    (t) =>
+      (t.deadline && isSameDay(t.deadline, day)) ||
+      t.frequency != 0 ||
+      t.status === "pending",
   );
 
   return filterTasksByCategory(dayTasks);
