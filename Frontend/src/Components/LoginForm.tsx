@@ -1,6 +1,9 @@
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
+// Basic email format check: something@something.tld
+const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 // Login form asks for email and password
 export default function LoginForm() {
   const [error, setError] = useState("");
@@ -12,6 +15,11 @@ export default function LoginForm() {
     e.preventDefault();
     const email = emailRef.current?.value;
     const password = passRef.current?.value;
+
+    if (!email || !EMAIL_REGEX.test(email)) {
+      setError("Please enter a valid email address");
+      return;
+    }
 
     const response = await fetch("http://localhost:3001/api/auth/login", {
       method: "POST",
@@ -27,7 +35,7 @@ export default function LoginForm() {
     // Refer to authmiddleware to see how its used.
     const data = await response.json();
     localStorage.setItem("token", data.token);
-    console.log(`token ${data.token}`)
+    console.log(`token ${data.token}`);
     navigate("/home");
   }
   return (
@@ -39,6 +47,7 @@ export default function LoginForm() {
           <input
             className="border-b focus:outline-none"
             type="text"
+            //  pattern="[^\s@]+@[^\s@]+\.[^\s@]+"
             ref={emailRef}
             placeholder="funky@yahoo.com"
           />
