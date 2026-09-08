@@ -1,5 +1,4 @@
 import { useDateStore, useTaskStore } from "./assets/store";
-import DailyView from "./Components/DailyView";
 import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 import { getAllTasks } from "./services/taskService";
 import { useEffect } from "react";
