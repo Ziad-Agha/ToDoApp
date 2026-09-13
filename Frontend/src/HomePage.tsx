@@ -27,34 +27,11 @@ export default function HomePage() {
   return (
     <div className="bg-backdrop flex flex-col ">
       <Nav />
-      <div className="bg-nav flex items-center gap-4 w-fit self-center rounded-3xl">
-        {isWeekly ? <WeekDateNav /> : <DayDateNav />}
-        <nav className="w-fit flex flex-row justify-center self-center">
-          <NavLink
-            to="daily"
-            className={({ isActive }) =>
-              isActive
-                ? " font-bold rounded-3xl bg-nav-active"
-                : " rounded-3xl"
-            }
-          >
-            Daily
-          </NavLink>
-          <NavLink
-            to="weekly"
-            className={({ isActive }) =>
-              isActive
-                ? "font-bold rounded-3xl  bg-nav-active"
-                : "rounded-3xl"
-            }
-          >
-            Weekly
-          </NavLink>
-        </nav>
+      <div className="bg-subnav flex full h-20 items-center p-3">
+        <DateNav />
+
       </div>
       <Outlet />
-      {/* <DateNav /> */}
-      {/* <DailyView /> */}
     </div>
   );
 }
@@ -125,7 +102,8 @@ function SubNav() {
     </div>
   );
 }
-function DayDateNav() {
+
+function DateNav() {
   const { currentDate, nextDay, prevDay } = useDateStore();
   const displayDate = new Intl.DateTimeFormat("en-US", {
     weekday: "short",
@@ -133,19 +111,43 @@ function DayDateNav() {
     day: "numeric",
   }).format(currentDate);
   return (
-    <div className="flex justify-center items-center text-nav-text">
-      <button className="hover:bg-nav-hover rounded-l-3xl" onClick={prevDay}>
-        <MdNavigateBefore size={35} />
-      </button>
+    <>
+      <div className="bg-nav p-2 rounded-4xl flex items-center text-nav-text gap-1">
+        <button className="hover:bg-subnav rounded-3xl px-4 py-2">
+          Today
+        </button>
+        <button className="hover:bg-subnav rounded-3xl px-1" onClick={prevDay}>
+          <MdNavigateBefore size={35} />
+        </button>
 
-      <button className="hover:bg-nav-hover rounded-r-3xl" onClick={nextDay}>
-        <MdNavigateNext size={35} />
-      </button>
+        <button className="hover:bg-subnav rounded-3xl px-1" onClick={nextDay}>
+          <MdNavigateNext size={35} />
+        </button>
 
-      <span className="w-25">{displayDate}</span>
-    </div>
+        <span className="w-30 pr-3">{displayDate}</span>
+      </div>
+      <nav className="w-fit flex flex-row justify-center self-center">
+        <NavLink
+          to="daily"
+          className={({ isActive }) =>
+            isActive
+              ? " font-bold rounded-3xl bg-nav-active"
+              : " rounded-3xl"
+          }
+        >
+          Daily
+        </NavLink>
+        <NavLink
+          to="weekly"
+          className={({ isActive }) =>
+            isActive
+              ? "font-bold rounded-3xl  bg-nav-active"
+              : "rounded-3xl"
+          }
+        >
+          Weekly
+        </NavLink>
+      </nav>
+    </>
   );
-}
-function WeekDateNav() {
-  return "yaman code";
 }
