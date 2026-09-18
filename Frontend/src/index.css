@@ -11,8 +11,8 @@
   --color-taskcard: #e2c6c2;
   --color-checkmark: #d5aea4;
   --color-text-dark: #191f2f;
-  --color-coin-area: #fde7cd;
-  --color-coin-value: #dd9d30;
+  /* --color-coin-area: #fde7cd; */
+  --color-coin-value: #c1843c;
 
   /*weekly View*/
   --color-main: #fff5c6;

@@ -126,24 +126,16 @@ function DateNav() {
 
         <span className="w-30 pr-3">{displayDate}</span>
       </div>
-      <nav className="w-fit flex flex-row justify-center self-center">
+      <nav className="bg-nav rounded-3xl p-1 flex justify-center self-center">
         <NavLink
           to="daily"
-          className={({ isActive }) =>
-            isActive
-              ? " font-bold rounded-3xl bg-nav-active"
-              : " rounded-3xl"
-          }
+          className="rounded-l-3xl"
         >
           Daily
         </NavLink>
         <NavLink
           to="weekly"
-          className={({ isActive }) =>
-            isActive
-              ? "font-bold rounded-3xl  bg-nav-active"
-              : "rounded-3xl"
-          }
+          className="rounded-r-3xl"
         >
           Weekly
         </NavLink>

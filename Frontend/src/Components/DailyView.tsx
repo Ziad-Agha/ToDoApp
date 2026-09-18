@@ -8,7 +8,7 @@ import TaskUpdateForm from "./TaskUpdateForm";
 import type { Task } from "../utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { HiMiniXMark } from "react-icons/hi2";
-import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
+// import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
 export default function DailyView() {
   const day = useDateStore((d) => d.currentDate);
@@ -35,7 +35,7 @@ function TaskSection({ header, tasks }: { header: string; tasks: Task[] }) {
         <h2>{header}</h2>
         <NewTaskButton header={header} />
       </div>
-      <div className="bg-taskcard flex flex-col h-[60vh] p-1.5 rounded-sm overflow-auto">
+      <div className="bg-taskcard border flex flex-col h-[60vh] p-1 rounded-sm overflow-auto">
         <div className="flex flex-col w-full gap-1">
           {tasks.map((task) => (
             <TaskBox key={task.task_id} task={task} />
@@ -59,12 +59,12 @@ function TaskBox({ task }: { task: Task }) {
 
   return (
     <article
-      className="bg-backdrop grid grid-cols-[60px_1fr_60px] gap-1 rounded overflow-hidden"
+      className="bg-backdrop border grid grid-cols-[50px_1fr_60px] gap rounded overflow-hidden"
       onMouseEnter={() => setIsMenuOpen(true)}
       onMouseLeave={() => setIsMenuOpen(false)}
     >
       <div className="flex justify-center py-3">
-        <button className="bg-checkmark w-8 h-8 rounded border border-checkmark" />
+        <button className="bg-checkmark w-5 h-5 rounded border" />
       </div>
       <div className="flex flex-col text-text-dark text-left h-full relative -ml-1">
         {isMenuOpen && <TaskMenu task={task} />}
@@ -87,7 +87,7 @@ function TaskBox({ task }: { task: Task }) {
           {calculateTimeLeft(task)}
         </span>
       </div>
-      <div className="bg-coin-area flex flex-col justify-center items-center gap-1 h-full">
+      <div className="flex flex-col justify-center items-center gap-1 h-full">
         <Coin />
         <span className="text-coin-value font-semibold text-sm leading-2">
           {task.value}
