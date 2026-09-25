@@ -25,7 +25,7 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="bg-backdrop flex flex-col ">
+    <div className="flex flex-col ">
       <Nav />
       <div className="bg-subnav flex full h-20 items-center p-3">
         <DateNav />
@@ -112,21 +112,21 @@ function DateNav() {
   }).format(currentDate);
   return (
     <>
-      <div className="bg-nav p-2 rounded-4xl flex items-center text-nav-text gap-1">
+      <div className="bg-nav p-1.5 rounded-4xl flex items-center text-nav-text">
         <button className="hover:bg-subnav rounded-3xl px-4 py-2">
           Today
         </button>
-        <button className="hover:bg-subnav rounded-3xl px-1" onClick={prevDay}>
+        <button className="hover:bg-subnav rounded-3xl mx-1" onClick={prevDay}>
           <MdNavigateBefore size={35} />
         </button>
 
-        <button className="hover:bg-subnav rounded-3xl px-1" onClick={nextDay}>
+        <button className="hover:bg-subnav rounded-3xl mr-1" onClick={nextDay}>
           <MdNavigateNext size={35} />
         </button>
 
         <span className="w-30 pr-3">{displayDate}</span>
       </div>
-      <nav className="bg-nav rounded-3xl p-1 flex justify-center self-center">
+      <nav className="bg-nav rounded-3xl p-0.5 flex justify-center self-center mx-2">
         <NavLink
           to="daily"
           className="rounded-l-3xl"
@@ -135,7 +135,7 @@ function DateNav() {
         </NavLink>
         <NavLink
           to="weekly"
-          className="rounded-r-3xl"
+          className="rounded-r-3xl "
         >
           Weekly
         </NavLink>

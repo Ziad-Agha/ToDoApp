@@ -17,7 +17,7 @@ export default function DailyView() {
 
   return (
     <main>
-      <div className="bg-backdrop w-full h-[80vh] grid grid-cols-[repeat(3,minmax(0,310px))] gap-2 p-5">
+      <div className="grid grid-cols-[repeat(3,minmax(0,340px))] gap-6 p-7">
         <TaskSection header="Dailies" tasks={tasks.regulars} />
         <TaskSection header="To Dos" tasks={tasks.uniques} />
         <TaskSection header="Pending" tasks={tasks.pendings} />
@@ -30,17 +30,15 @@ function TaskSection({ header, tasks }: { header: string; tasks: Task[] }) {
   const isFormOpen = useTaskStore((state) => state.isFormOpen);
 
   return (
-    <section className="">
-      <div className="text-subnav flex justify-between mb-0.5">
+    <section>
+      <div className="text-subnav flex justify-between mb-1">
         <h2>{header}</h2>
         <NewTaskButton header={header} />
       </div>
-      <div className="bg-taskcard border flex flex-col h-[60vh] p-1 rounded-sm overflow-auto">
-        <div className="flex flex-col w-full gap-1">
-          {tasks.map((task) => (
-            <TaskBox key={task.task_id} task={task} />
-          ))}
-        </div>
+      <div className="bg-taskcard border rounded-md flex flex-col gap-1 h-120 p-1 overflow-auto">
+        {tasks.map((task) => (
+          <TaskBox key={task.task_id} task={task} />
+        ))}
       </div>
       {isFormOpen === header &&
         createPortal(
@@ -59,12 +57,12 @@ function TaskBox({ task }: { task: Task }) {
 
   return (
     <article
-      className="bg-backdrop border grid grid-cols-[50px_1fr_60px] gap rounded overflow-hidden"
+      className="bg-backdrop border grid grid-cols-[55px_1fr_70px] h-19 gap-0.5 pt-3 rounded overflow-hidden"
       onMouseEnter={() => setIsMenuOpen(true)}
-      onMouseLeave={() => setIsMenuOpen(false)}
+    onMouseLeave={() => setIsMenuOpen(false)}
     >
-      <div className="flex justify-center py-3">
-        <button className="bg-checkmark w-5 h-5 rounded border" />
+      <div className="flex justify-center py-1">
+        <button className="bg-checkmark w-5.5 h-5.5 rounded border" />
       </div>
       <div className="flex flex-col text-text-dark text-left h-full relative -ml-1">
         {isMenuOpen && <TaskMenu task={task} />}
@@ -81,32 +79,37 @@ function TaskBox({ task }: { task: Task }) {
             </div>,
             document.body,
           )}
-        <span className="pt-3 text-sm leading-4">{task.title}</span>
-        <span className="pb-3 text-xs opacity-50">{task.frequency}</span>
-        <span className="text-xs opacity-50 text-right absolute bottom-1 right-2.5">
+        <span className="text-sm leading-4">{task.title}</span>
+        {task.note && <span className="text-xs opacity-50 w-30 truncate" >{task.note}</span>}
+        <span className="text-xs opacity-30">{task.frequency}</span>
+      </div>
+      <div className="flex flex-col pt-1 gap-1">
+        <Coin value={task.value} />
+
+        <span className="text-xs opacity-50">
           {calculateTimeLeft(task)}
         </span>
-      </div>
-      <div className="flex flex-col justify-center items-center gap-1 h-full">
-        <Coin />
-        <span className="text-coin-value font-semibold text-sm leading-2">
-          {task.value}
-        </span>
+
       </div>
     </article>
   );
 }
 
-function Coin({ size = 24, outerColor = "#F5B731", innerColor = "#D4952A" }) {
+function Coin({ size = 28, outerColor = "#da9d43", innerColor = "#f6ca79", value = 1 }) {
   const center = size / 2;
   const outerRadius = size / 2;
   const innerRadius = size * 0.35;
 
-  return (
+  return (<div className="flex items-center justify-center relative">
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
       <circle cx={center} cy={center} r={outerRadius} fill={outerColor} />
       <circle cx={center} cy={center} r={innerRadius} fill={innerColor} />
     </svg>
+    <span className="text-coin-value font-semibold text-xs absolute">
+        {value}
+    </span>
+  </div>
+
   );
 }
 
@@ -129,20 +132,20 @@ export function TaskMenu({ task }: { task: Task }) {
   const [isAlertOpen, setIsAlertOpen] = useState(false);
 
   return (
-    <div className="absolute top-2 right-0 flex flex-col gap-2">
+    <div className="absolute top-1.5 right-0 flex flex-col gap-2 text-black/70">
       <button
-        className="hover:text-blue-500 z-60"
+        className="hover:text-blue-600/70 z-60"
         onClick={() => {
           openUpdateForm(task.task_id);
         }}
       >
-        <Pencil size={15} />
+        <Pencil size={17} />
       </button>
       <button
-        className="hover:text-red-500 z-60"
+        className="hover:text-red-800/70 z-60"
         onClick={() => setIsAlertOpen(true)}
       >
-        <Trash2 size={15} />
+        <Trash2 size={17} />
       </button>
       {isAlertOpen && (
         <DeleteAlert task={task} onClose={() => setIsAlertOpen(false)} />
@@ -204,7 +207,7 @@ function calculateTimeLeft(task: Task) {
   const timeLeft = taskDate.getTime() - today.getTime();
   timeLeftString =
     timeLeft > 86400000 ? calculateDays(timeLeft) : calculateHours(timeLeft);
-  if (timeLeft < 0) timeLeftString = `0 hours left`;
+  if (timeLeft < 0) timeLeftString = `0h left`;
   return timeLeftString;
 }
 

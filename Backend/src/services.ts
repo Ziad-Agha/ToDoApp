@@ -79,6 +79,6 @@ function validateTaskValue(task: Task, now: Date): number {
     `Task name: ${task.title}. Days late: ${daysLate}. New value: ${values![daysLate]}`,
   );
   // Return value corresponding to # of days late
-  if (daysLate >= values!.length) return 0;
+  if (daysLate >= (values!.length)) return 0;
   else return values![daysLate];
 }
