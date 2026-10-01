@@ -79,21 +79,21 @@ function TaskBox({ task }: { task: Task }) {
           )}
         <span className="text-sm leading-4">{task.title}</span>
         {task.note && <span className="text-xs opacity-50 w-30 truncate" >{task.note}</span>}
-        <span className="text-xs opacity-30">{task.frequency}</span>
+        {/* <span className="text-xs opacity-30">{task.frequency}</span> */}
       </div>
       <div className="flex flex-col pt-1 gap-1">
         <Coin value={task.value} />
 
-        <span className="text-xs opacity-50">
+        {/* <span className="text-xs opacity-50">
           {calculateTimeLeft(task)}
-        </span>
+        </span> */}
 
       </div>
     </article>
   );
 }
 
-function Coin({ size = 28, outerColor = "#da9d43", innerColor = "#f6ca79", value = 1 }) {
+export function Coin({ size = 28, outerColor = "#da9d43", innerColor = "#f6ca79", value = 1 }) {
   const center = size / 2;
   const outerRadius = size / 2;
   const innerRadius = size * 0.35;
@@ -192,28 +192,27 @@ function DeleteAlert({ task, onClose }: { task: Task; onClose: () => void }) {
   );
 }
 
-function calculateTimeLeft(task: Task) {
-  let timeLeftString;
-  if (task.frequency != 0) {
-    const tonight = new Date();
-    tonight.setHours(0, 0, 0, 0);
-    return calculateHours(86400000 + tonight.getTime() - new Date().getTime());
-  }
+// function calculateTimeLeft(task: Task) {
+//   let timeLeftString;
+//   if (!task.isRegular) {
+//     const tonight = new Date();
+//     tonight.setHours(0, 0, 0, 0);
+//     return calculateHours(86400000 + tonight.getTime() - new Date().getTime());
+//   }
 
-  const today = new Date();
-  const taskDate = new Date(task.deadline);
-  const timeLeft = taskDate.getTime() - today.getTime();
-  timeLeftString =
-    timeLeft > 86400000 ? calculateDays(timeLeft) : calculateHours(timeLeft);
-  if (timeLeft < 0) timeLeftString = `0h left`;
-  return timeLeftString;
-}
+//   const today = new Date();
+//   const taskDate = new Date(task.deadline);
+//   const timeLeft = taskDate.getTime() - today.getTime();
+//   timeLeftString =
+//     timeLeft > 86400000 ? calculateDays(timeLeft) : calculateHours(timeLeft);
+//   if (timeLeft < 0) timeLeftString = `0h left`;
+//   return timeLeftString;
+// }
 
-function calculateDays(timeLeft: number): string {
-  return `${Math.round(timeLeft / 86400000)}d left`;
-}
+// function calculateDays(timeLeft: number): string {
+//   return `${Math.round(timeLeft / 86400000)}d left`;
+// }
 
-function calculateHours(timeLeft: number): string {
-  return `${Math.round(timeLeft / 3600000)}h left`;
-}
-export { Coin };
+// function calculateHours(timeLeft: number): string {
+//   return `${Math.round(timeLeft / 3600000)}h left`;
+// }

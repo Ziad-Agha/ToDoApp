@@ -49,9 +49,9 @@ export async function deleteRequest(task_id: string) {
 }
 
 export function filterTasksByCategory(tasks: Task[]) {
-  const regulars = tasks.filter((task) => task.frequency > 0);
+  const regulars = tasks.filter((task) => task.isRegular);
   const uniques = tasks.filter(
-    (task) => task.frequency == 0 && task.status == "active",
+    (task) => !task.isRegular && task.status == "active",
   );
   const pendings = tasks.filter((task) => task.status === "pending");
 

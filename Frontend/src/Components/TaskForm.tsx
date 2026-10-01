@@ -1,10 +1,7 @@
 import { useState } from "react";
-import DatePicker from "react-datepicker";
 import { HiMiniXMark } from "react-icons/hi2";
 import { useTaskStore } from "../assets/store";
-import { buildDeadline, getMonthRange, getWeekRange } from "../utils/dateUtils"
 import { CustomSelect } from "./ui/CustomSelect";
-import { validateForm } from "../utils/validationUtils";
 import { createTask } from "../services/taskService";
 import type { newTask } from "../utils/types";
 
@@ -56,6 +53,8 @@ export default function TaskForm() {
             : task.handleDeadline(task.type)}
         </div> */}
 
+
+        {/* Change to horizontal selection */}
         <div className="task-difficulty-input flex gap-2 items-center">
           <label>Difficulty:</label>
           <CustomSelect
@@ -72,9 +71,9 @@ export default function TaskForm() {
         <div className="task-type flex gap-2 items-center ">
           <input
             type="checkbox"
-            name="repeating"
-            checked={task.regular}
-            onChange={() => task.setRegular(!task.regular)}
+            name="regular"
+            checked={task.isRegular}
+            onChange={() => task.setIsRegular(!task.isRegular)}
           />
           <p>Regular</p>
         </div>
@@ -121,145 +120,10 @@ function useTaskForm() {
 
   const [title, setTitle] = useState<string>("");
   const [note, setNote] = useState<string>("");
-  const [type, setType] = useState("day");
-  const [deadlineDate, setDeadlineDate] = useState<Date | null>(new Date());
-  const [deadlineTime, setDeadlineTime] = useState<Date | null>(defaultTime);
   const [difficulty, setDifficulty] = useState("easy");
-  const [regular, setRegular] = useState(false);
-  // const [weekly, setWeekly] = useState("Sunday");
-  const [frequency, setFrequency] = useState(1);
-  // const [selectedWeek, setSelectedWeek] = useState<Date | null>(null);
-  // const [selectedMonth, setSelectedMonth] = useState<Date | null>(null);
+  const [isRegular, setIsRegular] = useState(false);
   const [isPrivate, setIsPrivate] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
-
-  // const weekRange = selectedWeek ? getWeekRange(selectedWeek) : null;
-  // const monthRange = selectedMonth ? getMonthRange(selectedMonth) : null;
-
-  /*  Returns start and end dates based on chosen type [day, week, month] */
-  function getStartAndEndDate(type: string) {
-    if (regular) return null;
-
-    if (type === "day" && deadlineDate) {
-      const date = new Date(deadlineDate);
-      date.setHours(0, 0, 0, 0);
-      return { start: date, end: new Date(date) };
-    }
-  }
-
-  /*  Returns appropriate HTML elment based on chosen type [day, week, month] */
-  // function handleFrequency(type: string) {
-  //   const labels: Record<string, string> = {
-  //     day: "days",
-  //     week: "weeks",
-  //     month: "months",
-  //   };
-
-  //   const frequencyInput = (
-  //     <input
-  //       className="task-element w-[16%] text-center focus:outline-none caret-transparent"
-  //       type="number" min="1" step="1" value={frequency}
-  //       onPaste={(e) => e.preventDefault()}
-  //       onKeyDown={(e) => e.preventDefault()}
-  //       onChange={(e) => setFrequency(Number(e.target.value))}
-  //     />
-  //   );
-
-  //   const weekdaySelect = type === "week" && (
-  //     <div className="flex gap-2 items-center">
-  //       <p>Day:</p>
-  //       <select
-  //         className="task-element"
-  //         name="weekly-task"
-  //         value={weekly}
-  //         onChange={(e) => setWeekly(e.target.value)}
-  //       >
-  //         {[
-  //           "Monday",
-  //           "Tuesday",
-  //           "Wednesday",
-  //           "Thursday",
-  //           "Friday",
-  //           "Saturday",
-  //           "Sunday",
-  //         ].map((day) => (
-  //           <option key={day} value={day}>
-  //             {day}
-  //           </option>
-  //         ))}
-  //       </select>
-  //     </div>
-  //   );
-
-  //   return (
-  //     <div className="flex flex-col gap-2">
-  //       <div className="flex gap-2 items-center">
-  //         <p>Repeats every</p>
-  //         {frequencyInput}
-  //         <p>{labels[type]}</p>
-  //       </div>
-  //       {weekdaySelect}
-  //     </div>
-  //   );
-  // }
-
-  /*  Returns appropriate DatePickers based on chosen type [day, week, month] */
-  // function handleDeadline(type: string) {
-  //   if (type === "day") {
-  //     return (
-  //       <div className="day-date-picker flex gap-2 items-center">
-  //         <label>Date:</label>
-  //         <DatePicker className="task-element w-full text-sm text-center focus:outline-none caret-transparent"
-  //           wrapperClassName="w-[120px]"
-  //           dateFormat="MMM. d, yyyy"
-  //           showDateSelect
-  //           selected={deadlineDate}
-  //           onFocus={(e) => e.target.blur()}
-  //           onChange={(date: Date | null) => setDeadlineDate(date)}
-  //         />
-  //         <DatePicker className="task-element w-full text-sm text-center focus:outline-none caret-transparent"
-  //           wrapperClassName="w-[90px]"
-  //           timeFormat="hh:mm aa"
-  //           dateFormat="hh:mm aa"
-  //           selected={deadlineTime}
-  //           showTimeSelect
-  //           showTimeSelectOnly
-  //           onChange={(date: Date | null) => setDeadlineTime(date)}
-  //         />
-  //       </div>
-  //     );
-  //   }
-
-  //   if (type === "week") {
-  //     return (
-  //       <div className="week-date-picker flex gap-2 items-center">
-  //         <DatePicker
-  //           className="task-element focus:outline-none caret-transparent"
-  //           placeholderText="Select a week"
-  //           showWeekPicker
-  //           calendarStartDay={1}
-  //           selected={weekRange?.end}
-  //           onChange={(date: Date | null) => setSelectedWeek(date)}
-  //         />
-  //       </div>
-  //     );
-  //   }
-
-  //   if (type === "month") {
-  //     return (
-  //       <div className="week-date-picker gap-2 items-center">
-  //         <DatePicker
-  //           className="task-element focus:outline-none"
-  //           placeholderText="Select a month"
-  //           dateFormat="MMMM yyyy"
-  //           showMonthYearPicker
-  //           selected={monthRange?.end}
-  //           onChange={(date: Date | null) => setSelectedMonth(date)}
-  //         />
-  //       </div>
-  //     );
-  //   }
-  // }
 
   function getTaskValue(difficulty: string): number {
     let value = 15
@@ -270,50 +134,34 @@ function useTaskForm() {
 
   async function handleSubmit() {
 
-    // Validate
-    const fields = {
-      type,
-      title,
-      regular,
-      difficulty,
-      deadlineDate
-    }
-    const errors = validateForm(fields);
-    
+    const errors: string[] = [];
+    if (!title.trim()) errors.push("Title is required.");
+
     if (errors.length > 0) {
       setErrors(errors);
       return;
     } else setErrors([]);
 
     // Wrap data in an object
-    const dateRange = getStartAndEndDate(type);
     const newTask: newTask = {
       title: title,
       note: note,
-      // type: type,
       difficulty: difficulty,
-      created_on: new Date(new Date()),
-      // start_date: dateRange ? new Date(dateRange.start) : null,
-      deadline:
-        dateRange && deadlineTime
-          ? buildDeadline(dateRange.end, deadlineTime)
-          : null,
-      frequency: regular ? frequency : 0,
+      created_on: new Date(),
       status: "active",
-      // weekday: weekly,
+      isRegular: isRegular,
       isPrivate: isPrivate,
       value: getTaskValue(difficulty),
     };
-    
+
     // Create object in database
     try {
       const createdTask = await createTask(newTask);
-      addTask(createdTask);
+      addTask(createdTask); // to state manager
       console.log("Task created:", createdTask);
     } catch (error) {
       console.error("Failed to create task:", error);
     }
-
     closeForm();
   }
 
@@ -322,12 +170,10 @@ function useTaskForm() {
     setTitle,
     note,
     setNote,
-    type,
-    setType,
     difficulty,
     setDifficulty,
-    regular,
-    setRegular,
+    isRegular,
+    setIsRegular,
     isPrivate,
     setIsPrivate,
     errors,

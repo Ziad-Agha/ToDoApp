@@ -12,7 +12,7 @@ async function moveActivesToPending() {
       where: {
         status: "active",
         deadline: { lt: new Date() },
-        frequency: 0,
+        isRegular: false,
       },
       data: { status: "pending" },
     });

@@ -31,24 +31,21 @@ model User {
 
 model Task {
   task_id       String        @id @default(uuid())
-  user_id       String    
-  title         String    
-  note          String?   
-  difficulty    String    
-  created_on    DateTime      @default(now())
-  type          String    
-  isPrivate     Boolean       @default(false)
-  value         Int           @default(0)
+  user_id       String
 
-  status        String?
-  start_date    DateTime?
+  title         String    
+  note          String? 
+  status        String 
+  difficulty    String  
+  
+  isPrivate     Boolean       @default(false)
+  isRegular     Boolean       @default(false)
+  value         Int           @default(0)
+  
+  created_on    DateTime      @default(now())
   deadline      DateTime?
 
-  frequency     Int? 
-  weekday       String?  
-  streak        Int?
-
-  user          User  @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
+  user          User          @relation(fields: [user_id], references: [user_id], onDelete: Cascade)
   completions   Completion[]
 }
 

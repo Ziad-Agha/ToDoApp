@@ -7,24 +7,19 @@ export async function createTask(req: Request, res: Response) {
   const {
     title,
     note,
+    status,
     difficulty,
     created_on,
-    type,
-    start_date,
-    status,
-    deadline,
-    frequency,
-    weekday,
+    isRegular,
     isPrivate,
     value,
   } = req.body;
   if (
     !title ||
     !difficulty ||
-    !type ||
     !created_on ||
-    !type ||
     !status ||
+    isRegular === null ||
     isPrivate === null ||
     !value
   ) {
@@ -40,12 +35,8 @@ export async function createTask(req: Request, res: Response) {
         note,
         difficulty,
         created_on,
-        type,
-        start_date,
         status,
-        deadline,
-        frequency,
-        weekday,
+        isRegular,
         isPrivate,
         value,
       },
