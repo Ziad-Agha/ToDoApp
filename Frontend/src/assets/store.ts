@@ -8,8 +8,8 @@ import type { Task } from "../utils/types";
 // }
 
 type TaskStore = {
-  isFormOpen: string | null;
-  openForm: (header: string) => void;
+  isFormOpen: boolean;
+  openForm: () => void;
   closeForm: () => void;
 
   isUpdateFormOpen: string | null;
@@ -38,9 +38,9 @@ type TaskStore = {
 // }))
 
 export const useTaskStore = create<TaskStore>((set) => ({
-  isFormOpen: null,
-  openForm: (header) => set({ isFormOpen: header }),
-  closeForm: () => set({ isFormOpen: null }),
+  isFormOpen: false,
+  openForm: () => set({ isFormOpen: true }),
+  closeForm: () => set({ isFormOpen: false }),
 
   isUpdateFormOpen: null,
   openUpdateForm: (task_id) => set({ isUpdateFormOpen: task_id }),

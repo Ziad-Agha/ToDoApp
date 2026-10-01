@@ -11,34 +11,39 @@ import { HiMiniXMark } from "react-icons/hi2";
 
 export default function DailyView() {
   const rawTasks = useTaskStore((s) => s.tasks);
-  const tasks = filterTasksByCategory(rawTasks);
 
   return (
     <main>
       <div className="grid grid-cols-[repeat(3,minmax(0,340px))] gap-6 p-7">
-        <TaskSection header="Dailies" tasks={tasks.regulars} />
+        {/* <TaskSection header="Dailies" tasks={tasks.regulars} />
         <TaskSection header="To Dos" tasks={tasks.uniques} />
-        <TaskSection header="Pending" tasks={tasks.pendings} />
-      </div>{" "}
+        <TaskSection header="Pending" tasks={tasks.pendings} /> */}
+        <TaskSection rawTasks={rawTasks} />
+      </div>
     </main>
   );
 }
 
-function TaskSection({ header, tasks }: { header: string; tasks: Task[] }) {
+function TaskSection({ rawTasks }: { rawTasks: Task[] }) {
   const isFormOpen = useTaskStore((state) => state.isFormOpen);
+  const tasks = filterTasksByCategory(rawTasks);
 
   return (
     <section>
       <div className="text-subnav flex justify-between mb-1">
-        <h2>{header}</h2>
-        <NewTaskButton header={header} />
+        <h2>To Dos</h2>
+        <NewTaskButton />
       </div>
       <div className="bg-taskcard border rounded-md flex flex-col gap-1 h-120 p-1 overflow-auto">
-        {tasks.map((task) => (
+        {tasks.uniques.map((task) => (
+          <TaskBox key={task.task_id} task={task} />
+        ))}
+        <br /><hr /><br />
+        {tasks.regulars.map((task) => (
           <TaskBox key={task.task_id} task={task} />
         ))}
       </div>
-      {isFormOpen === header &&
+      {isFormOpen === true &&
         createPortal(
           <div className="fixed inset-0 z-70 flex items-center justify-center bg-black/50">
             <TaskForm />
@@ -111,13 +116,13 @@ export function Coin({ size = 28, outerColor = "#da9d43", innerColor = "#f6ca79"
   );
 }
 
-function NewTaskButton({ header }: { header: string }) {
+function NewTaskButton() {
   const openForm = useTaskStore((state) => state.openForm);
 
   return (
     <button
       className="p-0.5 text-subnav/70 hover:text-subnav"
-      onClick={() => openForm(header)}
+      onClick={() => openForm()}
     >
       <FaPlus size={24} />
     </button>
