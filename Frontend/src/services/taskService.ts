@@ -58,22 +58,22 @@ export function filterTasksByCategory(tasks: Task[]) {
   return { regulars, uniques, pendings };
 }
 
-export function filterTasksByDay(tasks: Task[], day: Date) {
-  const dayTasks = tasks.filter(
-    (t) =>
-      (t.deadline && isSameDay(t.deadline, day)) ||
-      t.frequency != 0 ||
-      t.status === "pending",
-  );
+// export function filterTasksByDay(tasks: Task[], day: Date) {
+//   const dayTasks = tasks.filter(
+//     (t) =>
+//       (t.deadline && isSameDay(t.deadline, day)) ||
+//       t.frequency != 0 ||
+//       t.status === "pending",
+//   );
 
-  return filterTasksByCategory(dayTasks);
-}
+//   return filterTasksByCategory(dayTasks);
+// }
 
-export function isSameDay(deadline: string | Date, targetDate: Date): boolean {
-  const d = new Date(deadline);
-  return (
-    d.getFullYear() === targetDate.getFullYear() &&
-    d.getMonth() === targetDate.getMonth() &&
-    d.getDate() === targetDate.getDate()
-  );
-}
+// export function isSameDay(deadline: string | Date, targetDate: Date): boolean {
+//   const d = new Date(deadline);
+//   return (
+//     d.getFullYear() === targetDate.getFullYear() &&
+//     d.getMonth() === targetDate.getMonth() &&
+//     d.getDate() === targetDate.getDate()
+//   );
+// }

@@ -1,11 +1,11 @@
 import { create } from "zustand";
 import type { Task } from "../utils/types";
 
-type DateStore = {
-  currentDate: Date
-  nextDay: () => void
-  prevDay: () => void
-}
+// type DateStore = {
+//   currentDate: Date
+//   nextDay: () => void
+//   prevDay: () => void
+// }
 
 type TaskStore = {
   isFormOpen: string | null;
@@ -23,19 +23,19 @@ type TaskStore = {
   deleteTask: (task_id: string | null) => void;
 };
 
-export const useDateStore = create<DateStore>((set) => ({
-  currentDate: new Date(),
-  nextDay: () => set((date) => {
-    const next = new Date(date.currentDate)
-    next.setDate(next.getDate() + 1)
-    return { currentDate: next }
-  }),
-  prevDay: () => set((date) => {
-    const prev = new Date(date.currentDate)
-    prev.setDate(prev.getDate() - 1)
-    return { currentDate: prev }
-  })
-}))
+// export const useDateStore = create<DateStore>((set) => ({
+//   currentDate: new Date(),
+//   nextDay: () => set((date) => {
+//     const next = new Date(date.currentDate)
+//     next.setDate(next.getDate() + 1)
+//     return { currentDate: next }
+//   }),
+//   prevDay: () => set((date) => {
+//     const prev = new Date(date.currentDate)
+//     prev.setDate(prev.getDate() - 1)
+//     return { currentDate: prev }
+//   })
+// }))
 
 export const useTaskStore = create<TaskStore>((set) => ({
   isFormOpen: null,

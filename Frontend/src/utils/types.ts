@@ -20,10 +20,10 @@ export interface newTask {
   note?:        string | null;
   difficulty:   string;
   created_on:   Date;
-  start_date:   Date | null;
+  // start_date:   Date | null;
   deadline:     Date | null;
-  weekday:      string;
-  type:         string;
+  // weekday:      string;
+  // type:         string;
   isPrivate:    boolean;
   frequency:    number;
   status:       string;

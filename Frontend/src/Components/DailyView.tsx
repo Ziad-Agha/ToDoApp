@@ -2,18 +2,16 @@ import { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import TaskForm from "./TaskForm";
 import { createPortal } from "react-dom";
-import { deleteRequest, filterTasksByDay } from "../services/taskService";
-import { useDateStore, useTaskStore } from "../assets/store";
+import { deleteRequest, filterTasksByCategory } from "../services/taskService";
+import { useTaskStore } from "../assets/store";
 import TaskUpdateForm from "./TaskUpdateForm";
 import type { Task } from "../utils/types";
 import { Pencil, Trash2 } from "lucide-react";
 import { HiMiniXMark } from "react-icons/hi2";
-// import { MdNavigateNext, MdNavigateBefore } from "react-icons/md";
 
 export default function DailyView() {
-  const day = useDateStore((d) => d.currentDate);
   const rawTasks = useTaskStore((s) => s.tasks);
-  const tasks = filterTasksByDay(rawTasks, day);
+  const tasks = filterTasksByCategory(rawTasks);
 
   return (
     <main>
