@@ -13,14 +13,7 @@ export default function DailyView() {
   const rawTasks = useTaskStore((s) => s.tasks);
 
   return (
-    <main>
-      <div className="grid grid-cols-[repeat(3,minmax(0,340px))] gap-6 p-7">
-        {/* <TaskSection header="Dailies" tasks={tasks.regulars} />
-        <TaskSection header="To Dos" tasks={tasks.uniques} />
-        <TaskSection header="Pending" tasks={tasks.pendings} /> */}
-        <TaskSection rawTasks={rawTasks} />
-      </div>
-    </main>
+    <TaskSection rawTasks={rawTasks} />
   );
 }
 
@@ -29,16 +22,16 @@ function TaskSection({ rawTasks }: { rawTasks: Task[] }) {
   const tasks = filterTasksByCategory(rawTasks);
 
   return (
-    <section>
-      <div className="text-subnav flex justify-between mb-1">
+    <main className="p-8 w-150 self-center">
+      <div className="text-subnav flex justify-between">
         <h2>To Dos</h2>
         <NewTaskButton />
       </div>
-      <div className="bg-taskcard border rounded-md flex flex-col gap-1 h-120 p-1 overflow-auto">
+      <div className="bg-taskcard border rounded-xs flex flex-col gap-1.5 p-1.5 h-120 overflow-auto">
         {tasks.uniques.map((task) => (
           <TaskBox key={task.task_id} task={task} />
         ))}
-        <br /><hr /><br />
+        <hr />
         {tasks.regulars.map((task) => (
           <TaskBox key={task.task_id} task={task} />
         ))}
@@ -50,7 +43,7 @@ function TaskSection({ rawTasks }: { rawTasks: Task[] }) {
           </div>,
           document.body,
         )}
-    </section>
+    </main>
   );
 }
 
@@ -60,14 +53,14 @@ function TaskBox({ task }: { task: Task }) {
 
   return (
     <article
-      className="bg-backdrop border grid grid-cols-[55px_1fr_70px] h-19 gap-0.5 pt-3 rounded overflow-hidden"
+      className="bg-backdrop border rounded-xs grid grid-cols-[65px_81fr_80px] h-20 py-3 overflow-hidden"
       onMouseEnter={() => setIsMenuOpen(true)}
-    onMouseLeave={() => setIsMenuOpen(false)}
+      onMouseLeave={() => setIsMenuOpen(false)}
     >
       <div className="flex justify-center py-1">
-        <button className="bg-checkmark w-5.5 h-5.5 rounded border" />
+        <button className="bg-checkmark w-6 h-6 rounded-xs border" />
       </div>
-      <div className="flex flex-col text-text-dark text-left h-full relative -ml-1">
+      <div className="flex flex-col min-w-0 text-text-dark text-left h-full relative ">
         {isMenuOpen && <TaskMenu task={task} />}
         {isUpdateFormOpen === task.task_id &&
           createPortal(
@@ -82,34 +75,28 @@ function TaskBox({ task }: { task: Task }) {
             </div>,
             document.body,
           )}
-        <span className="text-sm leading-4">{task.title}</span>
-        {task.note && <span className="text-xs opacity-50 w-30 truncate" >{task.note}</span>}
-        {/* <span className="text-xs opacity-30">{task.frequency}</span> */}
+        <span>{task.title}</span>
+        {task.note && <span className="text-sm opacity-50 block truncate" >{task.note}</span>}
       </div>
-      <div className="flex flex-col pt-1 gap-1">
+      <div className="flex flex-col pt-2">
         <Coin value={task.value} />
-
-        {/* <span className="text-xs opacity-50">
-          {calculateTimeLeft(task)}
-        </span> */}
-
       </div>
     </article>
   );
 }
 
-export function Coin({ size = 28, outerColor = "#da9d43", innerColor = "#f6ca79", value = 1 }) {
+export function Coin({ size = 32, outerColor = "#da9d43", innerColor = "#f6ca79", value = 1 }) {
   const center = size / 2;
   const outerRadius = size / 2;
   const innerRadius = size * 0.35;
 
   return (<div className="flex items-center justify-center relative">
     <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
-      <circle cx={center} cy={center} r={outerRadius} fill={outerColor} />
+      <circle cx={center} cy={center} r={outerRadius} fill={outerColor}/>
       <circle cx={center} cy={center} r={innerRadius} fill={innerColor} />
     </svg>
     <span className="text-coin-value font-semibold text-xs absolute">
-        {value}
+      {value}
     </span>
   </div>
 
@@ -121,10 +108,10 @@ function NewTaskButton() {
 
   return (
     <button
-      className="p-0.5 text-subnav/70 hover:text-subnav"
+      className="p-1 text-subnav/70 hover:text-subnav"
       onClick={() => openForm()}
     >
-      <FaPlus size={24} />
+      <FaPlus size={30} />
     </button>
   );
 }
@@ -142,13 +129,13 @@ export function TaskMenu({ task }: { task: Task }) {
           openUpdateForm(task.task_id);
         }}
       >
-        <Pencil size={17} />
+        <Pencil size={20} />
       </button>
       <button
         className="hover:text-red-800/70 z-60"
         onClick={() => setIsAlertOpen(true)}
       >
-        <Trash2 size={17} />
+        <Trash2 size={20} />
       </button>
       {isAlertOpen && (
         <DeleteAlert task={task} onClose={() => setIsAlertOpen(false)} />

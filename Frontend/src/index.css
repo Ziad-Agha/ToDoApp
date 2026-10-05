@@ -74,13 +74,13 @@ body {
 h1 {
   font-family: var(--heading);
   font-weight: 500;
-  font-size: 56px;
+  font-size: 50px;
 }
 
 h2 {
   font-family: var(--heading);
   font-weight: 500;
-  font-size: 22px;
+  font-size: 30px;
   letter-spacing: -0.24px;
 }
 
