@@ -10,15 +10,15 @@ export default function TaskForm() {
   const closeForm = useTaskStore((state) => state.closeForm);
 
   return (
-    <div className="task-form bg-backdrop rounded-xl w-85 p-5 flex flex-col text-text-dark">
+    <div className="bg-backdrop border rounded-md rounded-br-4xl rounded-tl-4xl w-98 p-7 flex flex-col text-text-dark">
       <button
         className="text-nav/50 absolute self-end hover:text-nav"
         onClick={closeForm}
       >
-        <HiMiniXMark size={28} />
+        <HiMiniXMark size={32} />
       </button>
 
-      <div className="flex flex-col gap-3 p-5 self-center">
+      <div className="flex flex-col gap-3 m-5 self-center">
         <input
           className="border-b w-full text-2xl focus:outline-none"
           type="text"
@@ -27,35 +27,16 @@ export default function TaskForm() {
           onChange={(e) => task.setTitle(e.target.value)}
         />
         <textarea
-          className="border-b w-full text-lg focus:outline-none"
+          className="border-b text-xl focus:outline-none"
           name="note"
           value={task.note}
           rows={1}
           placeholder="Add Note"
           onChange={(e) => task.setNote(e.target.value)}
         />
-        {/* <div className="task-type flex gap-2 items-center">
-          <label>Type:</label>
-          <CustomSelect
-            value={task.type}
-            onChange={task.setType}
-            options={[
-              { value: "day", label: "daily" },
-              { value: "week", label: "weekly" },
-              { value: "month", label: "monthly" },
-            ]}
-          />
-        </div> 
-
-        <div className="frequency-options">
-          {task.regular
-            ? task.handleFrequency(task.type)
-            : task.handleDeadline(task.type)}
-        </div> */}
-
 
         {/* Change to horizontal selection */}
-        <div className="task-difficulty-input flex gap-2 items-center">
+        <div className="task-difficulty-input text-lg flex gap-2 items-center">
           <label>Difficulty:</label>
           <CustomSelect
             value={task.difficulty}
@@ -68,7 +49,7 @@ export default function TaskForm() {
           />
         </div>
 
-        <div className="task-type flex gap-2 items-center ">
+        <div className="text-lg flex gap-2 items-center ">
           <input
             type="checkbox"
             name="regular"
@@ -78,7 +59,7 @@ export default function TaskForm() {
           <p>Regular</p>
         </div>
 
-        <div className="is-private flex gap-2">
+        <div className="text-lg flex gap-2">
           <input
             type="checkbox"
             name="private"
@@ -100,7 +81,7 @@ export default function TaskForm() {
       </div>
 
       <button
-        className="bg-nav text-backdrop w-[33%] p-2 rounded self-end text-lg hover:bg-subnav"
+        className="bg-nav text-backdrop w-[33%] p-2 mb-1 mr-1 rounded-br-xl self-end text-lg hover:bg-subnav"
         onClick={() => task.handleSubmit()}
       >
         Create

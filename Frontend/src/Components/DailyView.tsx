@@ -53,7 +53,7 @@ function TaskBox({ task }: { task: Task }) {
 
   return (
     <article
-      className="bg-backdrop border rounded-xs grid grid-cols-[65px_81fr_80px] h-20 py-3 overflow-hidden"
+      className="bg-backdrop border border-taskcard-border rounded-xs grid grid-cols-[65px_81fr_80px] h-20 py-3 overflow-hidden"
       onMouseEnter={() => setIsMenuOpen(true)}
       onMouseLeave={() => setIsMenuOpen(false)}
     >

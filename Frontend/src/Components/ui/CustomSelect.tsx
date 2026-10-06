@@ -31,11 +31,11 @@ export function CustomSelect({ value, onChange, options }: CustomSelectProps) {
   }, []);
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative border border-nav rounded-sm">
       {/* Trigger */}
       <button
         type="button"
-        className="task-element flex items-center gap-4"
+        className="task-element flex items-center gap-4 h-9 text-md"
         onClick={() => setIsOpen((prev) => !prev)}
       >
         {selectedLabel}
@@ -44,11 +44,11 @@ export function CustomSelect({ value, onChange, options }: CustomSelectProps) {
 
       {/* Dropdown */}
       {isOpen && (
-        <ul className="absolute z-10 mt-1 w-full bg-backdrop border-taskcard border-2 rounded shadow-md">
+        <ul className="absolute z-10 mt-1 w-full bg-taskcard/70 border rounded shadow-md">
           {options.map((option) => (
             <li
               key={option.value}
-              className={`p-1.5 m-0.5 rounded-xs cursor-pointer hover:bg-taskcard/60`}
+              className={`p-1 m-1 rounded-xs cursor-pointer hover:bg-taskcard/60`}
               onClick={() => {
                 onChange(option.value);
                 setIsOpen(false);
