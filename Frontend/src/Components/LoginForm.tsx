@@ -39,7 +39,7 @@ export default function LoginForm() {
     navigate("/home");
   }
   return (
-    <div className="bg-backdrop flex flex-col self-center m-6 w-80 rounded-xl p-8 gap-4">
+    <div className="bg-taskcard border flex flex-col self-center m-6 w-80 rounded-xl p-8 mt-20 gap-4">
       <p className="text-2xl text-nav font-bold w-fit">Log in</p>
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
         <div className="flex flex-col text-left gap-1">
